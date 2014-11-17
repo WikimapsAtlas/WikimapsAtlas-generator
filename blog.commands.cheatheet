@@ -1,0 +1,92 @@
+blog.commands.cheatheet:
+=============================================================
+MAKEFILES ===================================================
+
+man MAKEFILE: make - GNU make utility to maintain groups of programs
+	-C dir, --directory=dir
+		Change to directory `dir` before reading the makefiles or doing anything else. If multiple -C options are specified, each is  interpreted relative to the previous one: -C / -C etc is equivalent to -C /etc.  This is typically used  with  recursive  invocations  of make.
+	-f file, --file=file, --makefile=FILE
+		Run `file` as a makefile.
+	.PHONY: make tasks do their job systematically without checking if the output files exist and is recent or not.
+	@
+		run command silently.
+
+
+=============================================================
+GIS TOOLS ===================================================
+
+man OGR2OGR:
+man TOPOJSON:
+	-p, properties : https://github.com/mbostock/topojson/wiki/Command-Line-Reference#properties
+
+man GDAL_polygonize (topography)
+man GDAL_calc.py        --/!\def of calc & noDataValue to recheck online.
+	$	gdal_calc.py -A crop.tif --outfile=level0050.tif --calc="50*(A>50)" --NoDataValue=0
+	-A
+		input file.
+	--oufile=file.ext
+		output file.
+	--calc="y*(A>x)"
+		for each point of A>x, point value set to y.
+	--NoDataValue=x
+		for each point without value, assign value=x.
+
+man GDAL_translate: gdal_translate ---- gdal_translate converts raster data between different formats.
+	$gdal_translate -projwin $(WEST) $(NORTH) $(EAST) $(SOUTH) world.tif crop.tif
+	-projwin ulx uly lrx lry:
+		Selects a subwindow from the source image for copying, using corners given in georeferenced decimal coordinates.
+	-stats:
+		(GDAL >= 1.8.0) Force (re)computation of statistics.
+	-a_ullr ulx uly lrx lry
+		Assign/override the georeferenced bounds of the output file.
+
+=============================================================
+IMAGE PROCESSING ============================================
+
+
+=============================================================
+UTILITIES : =================================================
+
+man SED: sed - stream editor for filtering and transforming text.
+	$sed -ne 's/pattern_before_match *:,//p' #print match within the current line.
+	's/regexp/replacement/'
+		Attempt to match regexp against the pattern space. If successful, replace  that portion matched with replacement. The replacement may contain the special character & to refer to that portion of the pattern space which matched, and the special escapes \1 through \9 to refer to the corresponding matching sub-expressions in the regexp.
+	p
+		Print the current pattern space.
+
+
+man UNZIP: unzip ---- list, test and extract compressed files in a ZIP archive 
+	$unzip -n ../data/file.zip '*.tif' # from inside file.zip, extract the *.tif only.
+	-n 
+		never overwrite existing files.  If a output file already exists, skip the extraction of the input file without prompting. 
+	-d
+		extract to target directory.
+
+man TOUCH: touch - change file timestamps
+	$touch file.png
+
+man CURL: curl - transfer a URL
+	$curl -L -C - 'http://site.net/file.zip' -o ../data/file.zip
+	-o 
+		output file.
+	-L, --location
+		follow webpage's redirects.
+	-C, --continue-at <offset>
+		Continue/Resume a previous file transfer at  the  given  offset.
+		Use "-C -" to tell curl to automatically find out  where/how  to resume  the  transfer. It then uses the given output/input files to figure that out.
+
+man MKDIR: mkdir - make directories
+	$mkdir -p ../data/ ../data/ETOPO1 #create 2 dirs
+	-p, --parents
+		no error if existing, make parent directories as needed
+
+
+man RM: rm ---- remove files or directories
+	$rm -f *.png    #removes all *.png
+    -f, --force
+        ignore nonexistent files and arguments, never prompt
+	-r, -R, --recursive
+		<EXTREMLY DANGEROUS. @HUMANS: GET 1 MINUTE BREAK BEFORE EACH USE:> remove directories and their contents recursively. 
+
+=============================================================
+=============================================================

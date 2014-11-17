@@ -1,0 +1,8 @@
+make -f master.makefile ITEM=France 	WEST=-5.8 	NORTH=51.5 EAST=10.0 SOUTH=41.0
+make -f master.makefile ITEM=France 	WEST=-5.8 	NORTH=51.5 EAST=10.0 SOUTH=41.0
+make -f master.makefile ITEM=France 	WEST=-5.8 	NORTH=51.5 EAST=10.0 SOUTH=41.0
+make -f master.makefile ITEM=Cambodia 	WEST=102.1 	NORTH=14.7 EAST=107.8 SOUTH=10.3
+make -f master.makefile ITEM=Iceland 	WEST=-24.89 NORTH=66.67 EAST=-13.09 SOUTH=63.33
+make -f master.makefile ITEM=India 		WEST=67.0 	NORTH=37.5  EAST=99.0 SOUTH=05.0
+make -f master.makefile ITEM=China 		WEST=70.58 	NORTH=55.21 EAST=138.06 SOUTH=16.43
+make -f master.makefile ITEM="United States" WEST=-177.0 NORTH=74.0 EAST=-61.7 SOUTH=16.3 WIDTH=4000

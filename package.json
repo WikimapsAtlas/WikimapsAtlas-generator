@@ -1,0 +1,13 @@
+{
+  "name": "wikiatlas",
+  "version": "0.0.0",
+  "description": "Wikimaps Atlas (2014)",
+  "main": "nothing here",
+  "dependencies": {
+      "topojson": "~1.6.18",
+      "jsdom":"~1.0.3",
+      "minimist":"~1.1.0"
+  },
+  "author": "Hugo lopez and Arun Ganesh",
+  "license": "BSD"
+}

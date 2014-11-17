@@ -1,0 +1,42 @@
+# Folder/all
+**/arch/
+**/academic/
+**/test*
+**/test/
+
+# Folder/back or front
+front/**/France/
+front/**/Japan/
+back/data/
+back/node_modules/
+
+# Files (globes)
+*.zip
+*.rar
+*.shp
+*.shx
+*.dbf
+*.prj
+*.tif
+*.tiff
+*.sql
+*.pdf
+*.sbn
+*.sbx
+*.tsv
+*.csv
+*.gif
+#*.png
+#*.jpg
+*.geo.json
+#*.topo.json
+#*.html
+*_.html
+#*.svg
+
+# Root
+*.README.html
+*.VERSION.txt
+
+
+
