@@ -20,7 +20,7 @@ make -f ./install.makefile     # install needed tools
 make -f ./data.makefile        # install default data (recommanded)
 ```
 
-**On OS X** use [Homebrew](http://mxcl.github.io/homebrew/)'s `brew install <program>`. (Are you on Mac ? We welcome a brew version of our linux `dependencies.makefile`).
+**On OS X** use [Homebrew](http://mxcl.github.io/homebrew/)'s `brew install <program>`. (Are you on Mac ? We need Mac users feedbacks and welcome a brew version of our linux installation process!).
 
 If needed, please report issues or ideas [there](https://github.com/WikimapsAtlas/WikiAtlas_scripts/issues).
 
