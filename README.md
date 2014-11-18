@@ -8,7 +8,7 @@ Wikimaps Atlas makefiles and Single Page Applications takes the power of GIS to 
 
 [1]: http://i.stack.imgur.com/Vc0qK.png
 
-## Installation (90%)
+## Installation (100%)
 We will install gdal, nodejs, npm's modules topojson and jsdom, as well as NaturalEarth and SRTM GIS data.
 
 **On Linux Ubuntu**, run the following:
@@ -24,7 +24,7 @@ make -f ./data.makefile        # install default data (recommanded)
 
 If needed, please report issues or ideas [there](https://github.com/WikimapsAtlas/WikiAtlas_scripts/issues).
 
-## Projections and dimensions (10%)
+## Projections and dimensions (100%)
 **Per default**, output files have the following characteristics:
 * WGS 84 lat/long reference system
 * Non-projected or Mercator projected, *cartesian* coordinates
