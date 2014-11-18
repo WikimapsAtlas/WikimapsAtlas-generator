@@ -24,7 +24,7 @@ make -f ./data.makefile        # install default data (recommanded)
 
 If needed, please report issues or ideas [there](https://github.com/WikimapsAtlas/WikiAtlas_scripts/issues).
 
-## Projections and dimensions (75%)
+## Projections and dimensions (10%)
 **Per default**, output files have the following characteristics:
 * WGS 84 lat/long reference system
 * Non-projected or Mercator projected, *cartesian* coordinates
@@ -73,7 +73,7 @@ Sub-makefiles could also be run separatedly.
 For similar data and similar px dimensions, file sizes are `.tif`:5.0MB, `.png`:1.6MB, `.jpg`:239KB. Also, whenever possible and relevant, we use the lighter format.
 
 ## Ouput
-Generated files are build with a strict structure. Polygons have clear `id` allowing easy **data biding** .
+Generated files are built with a strict structure. Polygons have clear `id` allowing easy **data biding**. By default, we propose a basic serie of combinations into refined, data binding friendly svgs maps.
 
 ### Basic elements (80%)
 * administrative.topo.json, containing:
@@ -92,8 +92,7 @@ Generated files are build with a strict structure. Polygons have clear `id` allo
  * color+hillshade_multiply (jpg)
 
 ### Refined svg (30%)
-
-We mirror best practices refined by Wikipedia cartographers over the past 8 years :
+We mirror best practices refined by Wikipedia cartographers over the past 8 years.
 * Administrative
  * {ITEM}_administrative_location_map.svg -- without labels
  * {ITEM}_administrative_location_map-en.svg -- with English labels
