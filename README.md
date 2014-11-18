@@ -2,7 +2,7 @@ NOTE : PROJECT & DOCUMENTATION ARE ONGOING.
 `<section title> (xx%)` EXPRESS THE SECTION'S DEGREE OF COMPLETION.
 
 # WikimapsAtlas
-Wikimaps Atlas Scripts and Single Page Applications takes the power of GIS to the hands of common webdevs, graphists, scientists, journalists and online readers.  Excessively heavy GIS sources are processed into geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG optimized for screens display. Shapes -or groups- keeps key metadatas allowing rich data binding while the graphic side keep up to the solid and elegant [Wikipedia Map Conventions][WP:MAP/Guidelines]. You output maps of any large area
+Wikimaps Atlas makefiles and Single Page Applications takes the power of GIS to the hands of common webdevs, graphists, scientists, journalists and online readers.  Excessively heavy GIS sources are processed into geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG optimized for screens display. Shapes and groups of shapes keep key metadatas allowing rich data binding while the graphic side keep up to the solid and elegant Wikipedia Map Conventions (cf references). You output maps of any large area.
 
 ![ORGANIGRAM][1]
 
@@ -74,22 +74,10 @@ Sub-makefiles could also be run separatedly.
 
 For similar data and similar px dimensions, file sizes are `.tif`:5.0MB, `.png`:1.6MB, `.jpg`:239KB. Also, whenever possible and relevant, we use the lighter format.
 
-### Layers produced (80%)
+## Ouput
+Generated files are build with a strict structure. Polygons have clear `id` allowing easy **data biding** .
 
-We mirror best practices refined by Wikipedia cartographers over the past 8 years :
-* Administrative
- * {ITEM}_administrative_location_map.svg -- without labels
- * {ITEM}_administrative_location_map-en.svg -- with English labels
-* Waters
- * {ITEM}_rivers_location_map.topojson
-* Topography (vector)
- * {ITEM}_topography_location_map.svg
-* Shaded relief:
- * {ITEM}_shaded_relief_map-transparent.png
- * {ITEM}_shaded_relief_map-white.jpg
- * {ITEM}_shaded_relief_map-wikimaps.jpg (wp colored relief)
-
-**Output:** 
+### Basic elements (80%)
 * administrative.topo.json, containing:
  * `admin_0` (countries)
  * `admin_1` (subdivisions of the target country)
@@ -105,9 +93,24 @@ We mirror best practices refined by Wikipedia cartographers over the past 8 year
 * 1 composite:
  * color+hillshade_multiply (jpg)
 
-**Data biding:** Generated files are build with a strict structure. Polygons have clear `id` allowing easy data biding.
+### Refined svg (30%)
 
-### API
+We mirror best practices refined by Wikipedia cartographers over the past 8 years :
+* Administrative
+ * {ITEM}_administrative_location_map.svg -- without labels
+ * {ITEM}_administrative_location_map-en.svg -- with English labels
+* Waters
+ * {ITEM}_rivers_location_map.topojson
+* Topography (vector)
+ * {ITEM}_topography_location_map.svg
+* Shaded relief:
+ * {ITEM}_shaded_relief_map-transparent.png
+ * {ITEM}_shaded_relief_map-white.jpg
+ * {ITEM}_shaded_relief_map-wikimaps.jpg (wp colored relief)
+* Localisator:
+ * {ITEM}_globe_localisator.svg
+
+## API
 This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagick) APIs. Elements are ordered by order of apparition, from master, to administrative, to shaded relief, to topography.
 
 * **ITEM**: name of the target/central geographic item, according to Natural Earth spelling.
@@ -153,15 +156,15 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
  * if the input GIS raster is in feet, then `s` scale should be edited. See `man gdal`.
  * you must have data in the right folder, with correct name, and with correct attributes, as called by the makefiles.
 
-////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////   DETAILS   //////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+/* **************************************************************** */
+/* **************************  GALLERY  *************************** */
 
 ## Gallery of Examples
 
 * {HAND OF EXAMPLE HERE}
 
-### References
+## References
+### Manuals
 
 * [OGR2ORG documentation](http://www.gdal.org/ogr2ogr.html)
 * [ImageMagick/Command-Line Options](http://www.imagemagick.org/script/command-line-options.php)  —— on raster image processing
@@ -175,23 +178,16 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 
 ### Tools
 
-* [JSONeditoronline.org](http://jsoneditoronline.org) —— explore json and topojson data structure.
 * [Topojson > The Distillery](http://hugolpz.github.io/distillery/) —— pre-visualize geojson or topojsons.
+* [JSONeditoronline.org](http://jsoneditoronline.org) —— explore json and topojson data structure.
 * [OSM Mapzen API](https://github.com/mapzen/vector-datasource/wiki/Mapzen-Vector-Tile-Service) —— serving OSM data as geojson.
 * [Wikipedia:MAP/Guidelines](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Maps/Conventions) 
 
 
-### Tips
-
-	# Convert topoJSON into ESRI Shapefile via shell
-        ogr2ogr -f 'Esri Shapefile' -lco=UTF8 output.shp input.geo.json
-
-////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////   CREDITS   //////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-
 ## Credits (90%)
+### Licence (100%)
+
+Copyright 2014 [MIT License](./LICENSE) — LOPEZ Hugo, GANESH Arun, LOPEZ Edouard.
 
 ### Authors (100%)
 
@@ -204,83 +200,3 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 Individuals: cartographers from the French, German, and English Wikipedias, Yuvipanda, Siko Bouterse.
 
 Organisations : Wikimedia Fundation's [Individual Engagement Grant](http://meta.wikimedia.org/wiki/Grants:IEG/Wikimaps_Atlas), Wikimedia-CH, Wikimedia-FR.
-
-##Licence (100%)
-
-Copyright 2014 LOPEZ Hugo, GANESH Arun, LOPEZ Edouard, offered under the [MIT License](./LICENSE) (where the data source's license does not apply).
-
-### Data Source (80%: miss license)
-
-We are build and tested to work with the following open sources data:
-
-* NaturalEarth —— for administrative divisions.
- * Admin L0
- * Admin L1
-* ETOPO1  ——  for topography.
-* SRTM ——  for topography.
-
-For more details on them and on other datasets, check out [Wikipedia:Map Workshop/GIS resources](https://en.wikipedia.org/wiki/Wikipedia:Graphic_Lab/Resources/Gis_sources_and_palettes)
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////  TO REMOVE (?)  /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-Make sure you run `make clean` if you've generated files before because `make` won't overwrite them if they already exist.
-
-
-### Further Properties (0%)
-
-To keep other properties from the original administrative shapefile, define the `PROPERTIES` variable:
-
-    make topo/ch-cantons.json PROPERTIES=id=+KANTONSNUM,name=NAME,abbr=ABBR
-
-
-### Reproject to Spherical Coordinates (0%)
-
-If you want to combine your JSON files with other libraries like [Leaflet](http://leafletjs.com) or want to use another projection, you need to reproject the files to spherical coordinates first. You can do this by simply running
-
-    make topo/ch-cantons.json REPROJECT=true
-
-It's double important that you run `make clean` or `rm -rf shp` first if you've generated files in cartesian coordinates (the default mode) before. Otherwise TopoJSON will throw an error. The `WIDTH` and `HEIGHT` variables will be ignored.
-
-
-**Customization:** 
-Provided layers can be combined, deleted, edited by graphists. For more, relevant `*.makefile` and color palettes can also be edited.
-
-## Output (50%)
-
-**Country (L0)**
-* *id* ('IT')
-* *name* ('ITALY')
-
-**State (L1)**
-* *id* (the official id number)
-* *name*
-
-**District (L2)**
-* *id* (the official id number)
-* *name*
-
-**Lake & waters bodies**
-* *id* {WHAT}
-* *name*
-
-**Rivers**
-* *id* {WHAT}
-* *name*
-
-**Topography**
-* *id* (elevation)
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////     TO   DO     /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-* Update man "Action" sections
-////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////      MANUAL     /////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
