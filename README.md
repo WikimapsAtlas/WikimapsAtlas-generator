@@ -8,9 +8,7 @@ Wikimaps Atlas makefiles and Single Page Applications takes the power of GIS to 
 
 [1]: http://i.stack.imgur.com/Vc0qK.png
 
-## Getting Started
-
-### Install (90%)
+## Installation (90%)
 We will install gdal, nodejs, npm's modules topojson and jsdom, as well as NaturalEarth and SRTM GIS data.
 
 **On Linux Ubuntu**, run the following:
@@ -26,28 +24,28 @@ make -f ./data.makefile        # install default data (recommanded)
 
 If needed, please report issues or ideas [there](https://github.com/WikimapsAtlas/WikiAtlas_scripts/issues).
 
-### Projections and Dimensions (75%)
-#### Default (100%)
-Per default, `make` will generate output topojson files with the following characteristics:
+## Projections and dimensions (75%)
+**Per default**, `make` will generate output topojson files with the following characteristics:
 * WGS 84 lat/long reference system
 * Non-projected or Mercator projected, *cartesian* coordinates
 * *Simplified* and *scaled* to a width of **1980px**
 
-#### Reprojection (50%)
-To use other projections you must edit the scripts at several points.
-
-For gdal commands, something such:
-
+**Reprojection** is possible by editing the scripts at several points. As these modules are serverside, we recommand to reproject ([list of projections](http://spatialreference.org/ref/epsg/)) early on:
+```bash
+# using ogr2ogr 
+ogr2ogr -f 'ESRI Shapefile' -t_srs 'EPSG:...' output.shp input.shp
+# then crop vector files via ogr2ogr -clipsrc, raster files via gdal_translate -projwin.
+```
 
 For D3js codes, something such: 
 ```javascript
 var path = d3.geo.path()
-  .projection(d3.geo.albersUsa());
+    .projection(null);
 ```
 See [Reproject shp/topojson : ways to reproject my data and comparative manual?](http://stackoverflow.com/questions/23086493/)
 
-## Run Wikimaps Atlas
-Wikimaps Atlas is usually run using the `master.makefile`, which pass variables to sub-module makefiles. Modules can be ran independently as well.
+## Use
+Wikimaps Atlas is usually run using the `master.makefile`, which pass variables to sub-module makefiles generating a full suit of topojson and svgs. Modules can be ran independently as well.
 
 ### Master (100%)
 **Action:** When run, the `master.makefile` runs other layer-specialized sub-makefiles. These sub-makefiles download process the GIS sources, output topoJSON file(s) which `nodejs`, `jsdom`, and `D3js` codes can convert into stand alone SVGs. Command:
@@ -156,15 +154,11 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
  * if the input GIS raster is in feet, then `s` scale should be edited. See `man gdal`.
  * you must have data in the right folder, with correct name, and with correct attributes, as called by the makefiles.
 
-/* **************************************************************** */
-/* **************************  GALLERY  *************************** */
-
 ## Gallery of Examples
 
-* {HAND OF EXAMPLE HERE}
+* {HAND OF SCREENSHOT EXAMPLE HERE}
 
-## References
-### Manuals
+## Manuals of reference
 
 * [OGR2ORG documentation](http://www.gdal.org/ogr2ogr.html)
 * [ImageMagick/Command-Line Options](http://www.imagemagick.org/script/command-line-options.php)  —— on raster image processing
@@ -176,7 +170,7 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 * [D3 > API](https://github.com/mbostock/d3/wiki/API-Reference)
 * [D3.geo > API](https://github.com/mbostock/d3/wiki/Geo)
 
-### Tools
+## Tools
 
 * [Topojson > The Distillery](http://hugolpz.github.io/distillery/) —— pre-visualize geojson or topojsons.
 * [JSONeditoronline.org](http://jsoneditoronline.org) —— explore json and topojson data structure.
@@ -184,18 +178,17 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 * [Wikipedia:MAP/Guidelines](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Maps/Conventions) 
 
 
-## Credits (90%)
-### Licence (100%)
+## Licence (100%)
 
 Copyright 2014 [MIT License](./LICENSE) — LOPEZ Hugo, GANESH Arun, LOPEZ Edouard.
 
-### Authors (100%)
+## Authors (100%)
 
 * [Hugo Lopez](http://twitter.com/hugo_lz) —— project design, prototyping, refining. Technologies: gdal, ogr2ogr, imagemagick, topojson, nodejs, jsdom, d3js.
 * [Arun Ganesh](http://twitter.com/planemad) —— project improvement, scaling up, automation. Technologies: gdal, ogr2ogr, topojson, d3js, QuantumGIS, PostgreSQL.
 * [Edouard Lopez](http://twitter.com/edouard_lopez) —— software engineering suppervision. Technologies: make, bash, git, js.
 
-### Supports (100%)
+## Supports (100%)
 
 Individuals: cartographers from the French, German, and English Wikipedias, Yuvipanda, Siko Bouterse.
 

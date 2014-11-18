@@ -63,7 +63,6 @@ resize: crop
 
 crop: unzip
 	gdal_translate -projwin $(WEST) $(NORTH) $(EAST) $(SOUTH) ETOPO1_Ice_g_geotiff.tif cropXL.tmp.tif
-	# ulx uly lrx lry (geodegrees)  // W N E S #todo: add name parameter
 
 #---- DOWNLOADS
 unzip: clean
