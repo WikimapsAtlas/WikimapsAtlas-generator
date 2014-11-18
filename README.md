@@ -14,15 +14,15 @@ We will install gdal, nodejs, npm's modules topojson and jsdom, as well as Natur
 **On Linux Ubuntu**, run the following:
 ```shell
 sudo apt-get install git make  # tools needed for install
-git clone git@github.com:WikimapsAtlas/WikiAtlas_scripts.git #get code
-cd ./WikiAtlas_scripts/back
+git clone git@github.com:WikimapsAtlas/make-modules.git #get code
+cd ./make-modules
 make -f ./install.makefile     # install needed tools
 make -f ./data.makefile        # install default data (recommanded)
 ```
 
 **On OS X** use [Homebrew](http://mxcl.github.io/homebrew/)'s `brew install <program>`. (Are you on Mac ? We need Mac users feedbacks and welcome a brew version of our linux installation process!).
 
-If needed, please report issues or ideas [there](https://github.com/WikimapsAtlas/WikiAtlas_scripts/issues).
+**Help needed?** Please report issues or ideas [to us](https://github.com/WikimapsAtlas/make-modules/issues).
 
 ## Projections and dimensions (100%)
 **Per default**, output files have the following characteristics:
