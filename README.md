@@ -25,24 +25,22 @@ make -f ./data.makefile        # install default data (recommanded)
 If needed, please report issues or ideas [there](https://github.com/WikimapsAtlas/WikiAtlas_scripts/issues).
 
 ## Projections and dimensions (75%)
-**Per default**, `make` will generate output topojson files with the following characteristics:
+**Per default**, output files have the following characteristics:
 * WGS 84 lat/long reference system
 * Non-projected or Mercator projected, *cartesian* coordinates
-* *Simplified* and *scaled* to a width of **1980px**
+* *Simplified* and *scaled* to best fit a width of **1980px**
 
-**Reprojection** is possible by editing the scripts at several points. As these modules are serverside, we recommand to reproject ([list of projections](http://spatialreference.org/ref/epsg/)) early on:
+**Reprojection** is possible by editing at several points. As these modules are serverside, we recommand to reproject ([list of projections](http://spatialreference.org/ref/epsg/)) early on, before or at the top of the crop task:
 ```bash
 # using ogr2ogr 
 ogr2ogr -f 'ESRI Shapefile' -t_srs 'EPSG:...' output.shp input.shp
-# then crop vector files via ogr2ogr -clipsrc, raster files via gdal_translate -projwin.
-```
+# then crop vector files via ogr2ogr -clipsrc, raster files via gdal_translate -projwin.```
 
-For D3js codes, something such: 
+Within the nodejs module, D3js codes should be keep projection-agnostic, something such: 
 ```javascript
 var path = d3.geo.path()
-    .projection(null);
-```
-See [Reproject shp/topojson : ways to reproject my data and comparative manual?](http://stackoverflow.com/questions/23086493/)
+    .projection(null);```
+For more, see [Reproject shp/topojson : ways to reproject my data and comparative manual?](http://stackoverflow.com/questions/23086493/)
 
 ## Use
 Wikimaps Atlas is usually run using the `master.makefile`, which pass variables to sub-module makefiles generating a full suit of topojson and svgs. Modules can be ran independently as well.
