@@ -34,12 +34,14 @@ If needed, please report issues or ideas [there](https://github.com/WikimapsAtla
 ```bash
 # using ogr2ogr 
 ogr2ogr -f 'ESRI Shapefile' -t_srs 'EPSG:...' output.shp input.shp
-# then crop vector files via ogr2ogr -clipsrc, raster files via gdal_translate -projwin.```
+# then crop vector files via ogr2ogr -clipsrc, raster files via gdal_translate -projwin.
+```
 
 Within the nodejs module, D3js codes should be keep projection-agnostic, something such: 
 ```javascript
 var path = d3.geo.path()
-    .projection(null);```
+    .projection(null);
+```
 For more, see [Reproject shp/topojson : ways to reproject my data and comparative manual?](http://stackoverflow.com/questions/23086493/)
 
 ## Use
