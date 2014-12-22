@@ -4,6 +4,7 @@ escaped_A = $(subst $e ,_,$(ITEM))
 escaped_ITEM = $(subst $e' ,\',$(escaped_A))# THIS TWO MAY BE MERGED ! $(subst $e' ,\',$(subst $e ,_,$(ITEM)) )
 QUANTIZATION=1e4
 TOPOJSON_LOC=../node_modules/topojson/bin/topojson
+#TOPOJSON_LOC=../node_modules/.bin/topojson
 # Admin layer:
 SELECTOR_L1=admin IN ('$(ITEM)')
 SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE ADM0NAME = '$(ITEM)' ORDER BY POP_MAX DESC LIMIT 30
