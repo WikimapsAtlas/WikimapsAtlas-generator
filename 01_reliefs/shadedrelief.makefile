@@ -11,6 +11,8 @@ Z=5
 SHADOW=50
 S=111120
 #S=370400   // frequent alternative
+PROJECTION=epsg:4326
+#PROJECTION=epsg:3857 // mercator
 #---- MAKEFILE
 #---- End here
 done: transparencies_layer hillshades_composite regeocoordinates clean
@@ -47,7 +49,7 @@ shade: resize
 #---- Crop, Resize
 resize: crop
 #	convert shadedrelief.tmp.tif 	-resize $(WIDTH) shadedrelief.sized.tmp.tif
-	gdalwarp -of GTiff -s_srs epsg:4326 -t_srs epsg:4326 -te $(WEST) $(SOUTH) $(EAST) $(NORTH) \
+	gdalwarp -of GTiff -s_srs epsg:4326 -t_srs $(PROJECTION) -te $(WEST) $(SOUTH) $(EAST) $(NORTH) \
 		-ts $(WIDTH) 0 cropXL.tmp.tif resized.tmp.tif
 #	gdalwarp -of GTiff -s_srs epsg:4326 -t_srs epsg:3857 -te $(WEST) $(SOUTH) $(EAST) $(NORTH) \
 #		-ts $(WIDTH) 0 cropXL.tmp.tif resized.tmp.tif  #mercator, need to remove -s 111120

@@ -14,10 +14,11 @@ We will install gdal, nodejs, npm's modules topojson and jsdom, as well as Natur
 **On Linux Ubuntu**, run the following:
 ```shell
 sudo apt-get install git make  # tools needed for install
-git clone git@github.com:WikimapsAtlas/make-modules.git #get code
+git clone https://github.com/WikimapsAtlas/make-modules.git  #get code
 cd ./make-modules
 make -f ./install.makefile     # install needed tools
 make -f ./data.makefile        # install default data (recommanded)
+git clone https://github.com/WikimapsAtlas/node_modules.git  # get nodejs modules
 ```
 
 **On OS X** use [Homebrew](http://mxcl.github.io/homebrew/)'s `brew install <program>`. (Are you on Mac ? We need Mac users feedbacks and welcome a brew version of our linux installation process!).
@@ -122,6 +123,9 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 * **WIDTH**: width of the final SVG and associated bitmaps (tif, png). The EIGHT is calculated from `WNES` values and the `WIDTH`.
  * *default*: `1980` (px), 
  * *range*: `>0`.
+ * **PROJECTION**: code of the projection used.
+  * *default*: `epsg:4326` (equirectangular).
+  * *major alternatives*: `epsg:3857` (mercator, requires `S=370400`)
 * **SELECTOR_L1**: selects and keeps L1 administrative areas via SQL query.
  * *default*: `"admin IN ('India')"`
 * **SELECTOR_PLACES**: selects and keeps placess (towns and cities) via SQL query.
