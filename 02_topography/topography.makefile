@@ -61,19 +61,14 @@ zvals: crop
 # 1105,1110,1020,1030,1150,1170
 
 #---- Crop, resize, regeolocalise
-crop: unzip
-	gdal_translate -projwin $(WEST) $(NORTH) $(EAST) $(SOUTH) ETOPO1_Ice_g_geotiff.tif cropXL.tmp.tif
+crop: clean
+	gdal_translate -projwin $(WEST) $(NORTH) $(EAST) $(SOUTH) ../data/noaa/ETOPO1_Ice_g_geotiff.tif cropXL.tmp.tif
 	gdalwarp -of GTiff -s_srs epsg:4326 -t_srs epsg:4326 -te $(WEST) $(SOUTH) $(EAST) $(NORTH) \
 		-ts $(WIDTH) 0 cropXL.tmp.tif crop.tmp.tif
 	# ulx uly lrx lry (geodegrees)  // W N E S #todo: add name parameter
 #	convert crop.origin.tif 	-resize $(WIDTH) crop.small.tif
 #	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) crop.small.tif crop.tmp.tif
 #	gdalinfo -mm crop.tmp.tif
-
-#---- Download
-unzip: clean
-	unzip -n ../data/ETOPO1/ETOPO1.zip '*.tif' #-n: no overwrite if exist;
-	touch ETOPO1_Ice_g_geotiff.tif
 
 clean:
 	rm -f *.json
