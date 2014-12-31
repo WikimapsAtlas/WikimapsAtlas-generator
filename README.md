@@ -14,10 +14,11 @@ We will install gdal, nodejs, npm's modules topojson and jsdom, as well as Natur
 **On Linux Ubuntu**, run the following:
 ```shell
 sudo apt-get install git make  # tools needed for install
-git clone git@github.com:WikimapsAtlas/make-modules.git #get code
+git clone https://github.com/WikimapsAtlas/make-modules.git  #get code
 cd ./make-modules
 make -f ./install.makefile     # install needed tools
 make -f ./data.makefile        # install default data (recommanded)
+git clone https://github.com/WikimapsAtlas/node_modules.git  # get nodejs modules
 ```
 
 **On OS X** use [Homebrew](http://mxcl.github.io/homebrew/)'s `brew install <program>`. (Are you on Mac ? We need Mac users feedbacks and welcome a brew version of our linux installation process!).
@@ -73,7 +74,7 @@ Sub-makefiles could also be run separatedly.
 For similar data and similar px dimensions, file sizes are `.tif`:5.0MB, `.png`:1.6MB, `.jpg`:239KB. Also, whenever possible and relevant, we use the lighter format.
 
 ## Ouput
-Generated files are built with a strict structure. Polygons have clear `id` allowing easy **data biding**. By default, we propose a basic serie of combinations into refined, data binding friendly svgs maps.
+Generated files are built with a strict structure. Polygons have meaningful `id` allowing easy **data biding**. By default, we propose a serie of layer combinations into refined, data binding friendly svgs maps.
 
 ### Basic elements (80%)
 * administrative.topo.json, containing:
@@ -122,6 +123,9 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 * **WIDTH**: width of the final SVG and associated bitmaps (tif, png). The EIGHT is calculated from `WNES` values and the `WIDTH`.
  * *default*: `1980` (px), 
  * *range*: `>0`.
+ * **PROJECTION**: code of the projection used.
+  * *default*: `epsg:4326` (equirectangular).
+  * *major alternatives*: `epsg:3857` (mercator, requires `S=370400`)
 * **SELECTOR_L1**: selects and keeps L1 administrative areas via SQL query.
  * *default*: `"admin IN ('India')"`
 * **SELECTOR_PLACES**: selects and keeps placess (towns and cities) via SQL query.
@@ -133,6 +137,8 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 * **Z** (aka zFactor): vertical exaggeration used to pre-multiply the elevations
  * *default*: `5`,
  * *range*: `>0`.
+* **S** (aka scale): vertical exaggeration used to pre-multiply the elevations
+ * *default*: `111120` (if surface in decimal degrees and vertical in meters use `S=111120`, if vertical in feets use `S=370400`)
 * **AZ**: azimuth of the light, in degrees. 0 if it comes from the top of the raster, 90 from the east, ... The default value, 315, should rarely be changed as it is the value generally used to generate shaded maps.
  * *default*: `315`, 
  * *range*: `[0-359]`.
@@ -173,22 +179,22 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 
 * [Topojson > The Distillery](http://hugolpz.github.io/distillery/) —— pre-visualize geojson or topojsons.
 * [JSONeditoronline.org](http://jsoneditoronline.org) —— explore json and topojson data structure.
+* [D3js Search > Bl.ocksplorer.org](http://bl.ocksplorer.org) —— search d3js gists by d3js methods.
 * [OSM Mapzen API](https://github.com/mapzen/vector-datasource/wiki/Mapzen-Vector-Tile-Service) —— serving OSM data as geojson.
 * [Wikipedia:MAP/Guidelines](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Maps/Conventions) 
 
 
-## Licence (100%)
-
-Copyright 2014 [MIT License](./LICENSE) — LOPEZ Hugo, GANESH Arun, LOPEZ Edouard.
-
-## Authors (100%)
-
+## Thanks
+**Authors:** 
 * [Hugo Lopez](http://twitter.com/hugo_lz) —— project design, prototyping, refining. Technologies: gdal, ogr2ogr, imagemagick, topojson, nodejs, jsdom, d3js.
-* [Arun Ganesh](http://twitter.com/planemad) —— project improvement, scaling up, automation. Technologies: gdal, ogr2ogr, topojson, d3js, QuantumGIS, PostgreSQL.
+* [Arun Ganesh](http://twitter.com/planemad) —— project scaling up, automation. Technologies: gdal, ogr2ogr, topojson, d3js, QuantumGIS, PostgreSQL.
 * [Edouard Lopez](http://twitter.com/edouard_lopez) —— software engineering suppervision. Technologies: make, bash, git, js.
 
-## Supports (100%)
-
+**Our supports:** 
 Individuals: cartographers from the French, German, and English Wikipedias, Yuvipanda, Siko Bouterse.
 
 Organisations : Wikimedia Fundation's [Individual Engagement Grant](http://meta.wikimedia.org/wiki/Grants:IEG/Wikimaps_Atlas), Wikimedia-CH, Wikimedia-FR.
+
+## Licence (100%)
+
+Copyright 2014 [MIT License](./LICENSE) — LOPEZ Hugo, GANESH Arun, LOPEZ Edouard.
