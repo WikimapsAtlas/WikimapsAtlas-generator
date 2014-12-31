@@ -2,8 +2,8 @@
 
 # UNZIP DATA
 unzip: NE ETOPO1
-	unzip -n ./data/noaa/ETOPO1_Ice_g_geotiff.zip '*.tif'         
-	unzip -n ./data/natural_earth_vector.zip
+	unzip -n ./data/noaa/ETOPO1_Ice_g_geotiff.zip '*.tif'  -d ./data/noaa/       
+	unzip -n ./data/natural_earth_vector.zip  -d ./data/natural_earth_vector/
     
 
 # ---------- TOPOGRAPHIC 1km from NOAA -----------------------------------#
@@ -16,6 +16,7 @@ ETOPO1: clean
 
 # ---------- ADMINISTRATIVE from NATURAL EARTH ---------------------------#
 NE:
+	mkdir -p ./data/natural_earth_vector/
 	curl \
 		-L -C - 'http://naciscdn.org/naturalearth/packages/natural_earth_vector.zip' \
 		-o ./data/natural_earth_vector.zip
