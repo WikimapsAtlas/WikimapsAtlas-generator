@@ -1,16 +1,16 @@
 
 # UNZIP DATA
 unzip: NE ETOPO1
-	unzip -n ./data/ETOPO1_Ice_g_geotiff.zip '*.tif'         
+	unzip -n ./data/noaa/ETOPO1_Ice_g_geotiff.zip '*.tif'         
 	unzip -n ./data/natural_earth_vector.zip
     
 
 # ---------- TOPOGRAPHIC 1km from NOAA -----------------------------------#
 ETOPO1: clean
-	mkdir -p $(DATA_DIR)/noaa
+	mkdir -p ./data/noaa
 	curl \
 		-L -C - 'http://www.ngdc.noaa.gov/mgg/global/relief/ETOPO1/data/ice_surface/grid_registered/georeferenced_tiff/ETOPO1_Ice_g_geotiff.zip' \
-		-o $(DATA_DIR)/noaa/ETOPO1_Ice_g_geotiff.zip
+		-o ./data/noaa/ETOPO1_Ice_g_geotiff.zip
 	### Downloaded 100%: ETOPO1, topography 1km raster. ###
 
 # ---------- ADMINISTRATIVE from NATURAL EARTH ---------------------------#
