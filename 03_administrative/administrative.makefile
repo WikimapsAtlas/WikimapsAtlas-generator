@@ -7,7 +7,7 @@ TOPOJSON_LOC=../node_modules/topojson/bin/topojson
 #TOPOJSON_LOC=../node_modules/.bin/topojson
 # Admin layer:
 SELECTOR_L1=admin IN ('$(ITEM)')
-SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE ADM0NAME = '$(ITEM)' ORDER BY POP_MAX DESC LIMIT 30
+SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE iso_a2 = '$(ITEM)' ORDER BY POP_MAX DESC LIMIT 30
 #SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE ADM0NAME = '$(ITEM)' AND POP_MAX > '2000000'
 #SELECTOR_PLACES=SELECT TOP 30 POP_MAX * FROM ne_10m_populated_places WHERE ADM0NAME = '$(ITEM)'
 # STILL TO VERIFY:
