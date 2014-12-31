@@ -32,18 +32,12 @@ geojson_filters: crop
 #or "iso_a2 = 'AT' AND SCALERANK < 20" , see also sr_adm0_a3
 #ADM0NAME = 'Egypt' OR ADM0NAME = 'Iran' OR SOV0NAME = 'Saudi Arabia' OR SOV0NAME = 'Lebanon' OR SOV0NAME = 'Turkey' OR SOV0NAME = 'Syria' OR SOV0NAME = 'Iraq' OR ISO_A2 = 'noFR'
 
-crop: touch
-	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_rivers.shp ne_10m_rivers_lake_centerlines.shp
-	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_lakes.shp ne_10m_lakes.shp
+crop: clean
+	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_rivers.shp ../data/natural_earth_vector/10m_physical/ne_10m_rivers_lake_centerlines.shp
+	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_lakes.shp ../data/natural_earth_vector/10m_physical/ne_10m_lakes.shp
 #	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_rivers.shp ne_10m_rivers_lake_centerlines_scale_rank.shp
 #	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_lakes.shp ne_10m_rivers_lake_centerlines_scale_rank.shp
 
-touch: unzip
-	touch *.shp
-unzip: clean
-	unzip -n ../data/NE/rivers.zip 
-	unzip -n ../data/NE/lakes.zip
-	
 clean:
 	rm -f *.json
 	rm -f *.dbf

@@ -17,15 +17,15 @@ export VERSION=0.5
 #---- MAKE SCRIPT
 run:
 #raster relief | works
-#	$(MAKE) -C 01_reliefs 			-f shadedrelief.makefile
+	$(MAKE) -C 01_reliefs 			-f shadedrelief.makefile
 #vector relief | works
-#	$(MAKE) -C 02_topography		-f topography.makefile
+	$(MAKE) -C 02_topography		-f topography.makefile
 #admin | works
-#	$(MAKE) -C 03_administrative 	-f administrative.makefile
+	$(MAKE) -C 03_administrative 	-f administrative.makefile
 #water | works
 	$(MAKE) -C 04_water 			-f water.makefile
 #svg creation | works
-#	$(MAKE) -C 09_d3 				-f d3.makefile
+	$(MAKE) -C 09_d3 				-f d3.makefile
 #files grouping | todo
-#	$(MAKE) -C 07_merge 			-f merge.makefile
+	$(MAKE) -C 07_merge 			-f merge.makefile
 
