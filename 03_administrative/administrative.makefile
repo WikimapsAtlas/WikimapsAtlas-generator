@@ -58,7 +58,7 @@ disputed_fix: geojson_filters
 		-o disputed.geo.json \
 		-- disputed=disputed.tmp.geo.json
 
-geojson_filters: crop unzip
+geojson_filters: crop
 	ogr2ogr -f GeoJSON \
 		countries.tmp.geo.json \
 		crop_L0.shp
@@ -67,7 +67,7 @@ geojson_filters: crop unzip
 		crop_disputed.shp
 	ogr2ogr -f GeoJSON -where "admin IN ('India')" \
 		subunits.geo.json \
-		ne_10m_admin_1_states_provinces.shp
+		../data/natural_earth_vector/10m_cultural/ne_10m_admin_1_states_provinces_shp.shp
 
 	ogr2ogr -f GeoJSON -sql "$(SELECTOR_PLACES)" -dialect SQLITE \
 		places.tmp.geo.json \
@@ -75,20 +75,10 @@ geojson_filters: crop unzip
 #or "iso_a2 = 'AT' AND SCALERANK < 20" , see also sr_adm0_a3
 #ADM0NAME = 'Egypt' OR ADM0NAME = 'Iran' OR SOV0NAME = 'Saudi Arabia' OR SOV0NAME = 'Lebanon' OR SOV0NAME = 'Turkey' OR SOV0NAME = 'Syria' OR SOV0NAME = 'Iraq' OR ISO_A2 = 'noFR'
 
-crop: unzip touch
-	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_L0.shp ne_10m_admin_0_countries.shp
-	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_disputed.shp ne_10m_admin_0_disputed_areas.shp
+crop: clean
+	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_L0.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_0_countries.shp
+	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_disputed.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_0_disputed_areas.shp
 
-touch: unzip
-	touch ne_10m_admin_0_countries.shp
-	touch ne_10m_admin_1_states_provinces.shp
-	touch ne_10m_admin_0_disputed_areas.shp
-	touch ne_10m_populated_places.shp
-unzip: clean
-	unzip -n ../data/NE/countries.zip 
-	unzip -n ../data/NE/subunits.zip
-	unzip -n ../data/NE/disputed.zip
-	unzip -n ../data/NE/places.zip
 	
 clean:
 	rm -f *.json

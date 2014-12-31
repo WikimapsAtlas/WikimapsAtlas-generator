@@ -1,13 +1,13 @@
-# VARIABLES
-#DATA_DIR=./data
-# For wikiatlas-server :
-DATA_DIR=../../data/download 
 
 # UNZIP DATA
 unzip: data
-	unzip -n $(DATA_DIR)/ETOPO1_Ice_g_geotiff.zip '*.tif' 
+	unzip -n ./data/ETOPO1_Ice_g_geotiff.zip '*.tif' 
 	touch ETOPO1_Ice_g_geotiff.tif
-    
+        
+	unzip -n ./data/NE/countries.zip 
+	unzip -n ./data/NE/subunits.zip
+	unzip -n ./data/NE/disputed.zip
+	unzip -n ./data/NE/places.zip
     
 # DOWNLOAD DATA
 data: NE ETOPO1
