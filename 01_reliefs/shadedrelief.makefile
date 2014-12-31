@@ -21,7 +21,7 @@ done: transparencies_layer hillshades_composite regeocoordinates clean
 
 regeocoordinates: hillshades_composite 
 	# More in: [[commons:User:ShareMap/Hillshade_with_ImageMagick]]
-	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) ./color_hillsades.jpg ./color_hillsades.gis.tif
+	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=JPEG -co PHOTOMETRIC=YCBCR ./color_hillsades.jpg ./color_hillsades.gis.tif
 
 #----PROCESSING RASTER DATA
 hillshades_composite: colors_layer transparencies_layer white_rectangle
