@@ -71,7 +71,7 @@ geojson_filters: crop
 
 	ogr2ogr -f GeoJSON -sql "$(SELECTOR_PLACES)" -dialect SQLITE \
 		places.tmp.geo.json \
-		ne_10m_populated_places.shp
+		../data/natural_earth_vector/10m_cultural/ne_10m_populated_places.shp
 #or "iso_a2 = 'AT' AND SCALERANK < 20" , see also sr_adm0_a3
 #ADM0NAME = 'Egypt' OR ADM0NAME = 'Iran' OR SOV0NAME = 'Saudi Arabia' OR SOV0NAME = 'Lebanon' OR SOV0NAME = 'Turkey' OR SOV0NAME = 'Syria' OR SOV0NAME = 'Iraq' OR ISO_A2 = 'noFR'
 
