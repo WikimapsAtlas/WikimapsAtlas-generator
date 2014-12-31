@@ -1,16 +1,9 @@
 
 # UNZIP DATA
-unzip: data
-	unzip -n ./data/ETOPO1_Ice_g_geotiff.zip '*.tif' 
-	touch ETOPO1_Ice_g_geotiff.tif
-        
-	unzip -n ./data/NE/countries.zip 
-	unzip -n ./data/NE/subunits.zip
-	unzip -n ./data/NE/disputed.zip
-	unzip -n ./data/NE/places.zip
+unzip: NE ETOPO1
+	unzip -n ./data/ETOPO1_Ice_g_geotiff.zip '*.tif'         
+	unzip -n ./data/natural_earth_vector.zip
     
-# DOWNLOAD DATA
-data: NE ETOPO1
 
 # ---------- TOPOGRAPHIC 1km from NOAA -----------------------------------#
 ETOPO1: clean
@@ -21,34 +14,11 @@ ETOPO1: clean
 	### Downloaded 100%: ETOPO1, topography 1km raster. ###
 
 # ---------- ADMINISTRATIVE from NATURAL EARTH ---------------------------#
-NE: clean NE_0 NE_countries NE_subunits NE_places NE_disputed NE_rivers NE_lakes
-	### Downloaded 100%: NaturalEarthData.com's, admin shapefiles. ###
-NE_0:
-	mkdir -p ./data/NE/ 
-NE_countries:
+NE:
 	curl \
-		-L -C - 'http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_countries.zip' \
-		-o ./data/NE/countries.zip
-NE_subunits:
-	curl \
-		-L -C - 'http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_1_states_provinces.zip' \
-		-o ./data/NE/subunits.zip 
-NE_places:
-	curl \
-		-L -C - 'http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_populated_places.zip' \
-		-o ./data/NE/places.zip
-NE_disputed:
-	curl \
-		-L -C - 'http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_disputed_areas.zip' \
-		-o ./data/NE/disputed.zip
-NE_rivers:
-	curl \
-		-L -C - 'http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/physical/ne_10m_rivers_lake_centerlines.zip' \
-		-o ./data/NE/rivers.zip
-NE_lakes:
-	curl \
-		-L -C - 'http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/physical/ne_10m_lakes.zip' \
-		-o ./data/NE/lakes.zip
+		-L -C - 'http://naciscdn.org/naturalearth/packages/natural_earth_vector.zip' \
+		-o ./data/natural_earth_vector.zip
+        ### Downloaded 100%: Natural Earth Vectors ###
 clean: 
 #	rm -f ./data/NE/*.zip
 #	rm -f ./data/NE/*.dbf
