@@ -1,11 +1,23 @@
+# VARIABLES
+#DATA_DIR=./data
+# For wikiatlas-server :
+DATA_DIR=../../data/download 
+
+# UNZIP DATA
+unzip: data
+	unzip -n $(DATA_DIR)/ETOPO1_Ice_g_geotiff.zip '*.tif' 
+	touch ETOPO1_Ice_g_geotiff.tif
+    
+    
+# DOWNLOAD DATA
 data: NE ETOPO1
 
 # ---------- TOPOGRAPHIC 1km from NOAA -----------------------------------#
 ETOPO1: clean
-	mkdir -p ./data/ETOPO1
+	mkdir -p $(DATA_DIR)/noaa
 	curl \
 		-L -C - 'http://www.ngdc.noaa.gov/mgg/global/relief/ETOPO1/data/ice_surface/grid_registered/georeferenced_tiff/ETOPO1_Ice_g_geotiff.zip' \
-		-o ./data/ETOPO1/ETOPO1.zip
+		-o $(DATA_DIR)/noaa/ETOPO1_Ice_g_geotiff.zip
 	### Downloaded 100%: ETOPO1, topography 1km raster. ###
 
 # ---------- ADMINISTRATIVE from NATURAL EARTH ---------------------------#
