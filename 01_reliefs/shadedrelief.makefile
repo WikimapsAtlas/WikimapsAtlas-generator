@@ -66,7 +66,7 @@ crop: unzip
 
 #---- DOWNLOADS
 unzip: clean
-	unzip -n ../data/ETOPO1/ETOPO1.zip '*.tif' 
+	unzip -n ../../data/download/ETOPO1_Ice_g_geotiff.zip '*.tif' 
 	touch ETOPO1_Ice_g_geotiff.tif
 
 .PHONY: clean
