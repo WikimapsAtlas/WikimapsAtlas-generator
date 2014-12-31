@@ -22,7 +22,7 @@ man TOPOJSON:
 	-p, properties : https://github.com/mbostock/topojson/wiki/Command-Line-Reference#properties
 
 man GDALDEM: gdaldem Tools to analyze and visualize DEMs. (since GDAL 1.7.0)
->hillshade:
+> hillshade: to generate a shaded relief map from any GDAL-supported elevation raster
 	-z zFactor:
 		vertical exaggeration used to pre-multiply the elevations
 	-s scale:
@@ -31,6 +31,12 @@ man GDALDEM: gdaldem Tools to analyze and visualize DEMs. (since GDAL 1.7.0)
 		azimuth of the light, in degrees. 0 if it comes from the top of the raster, 90 from the east, ... The default value, 315, should rarely be changed as it is the value generally used to generate shaded maps.
 	-alt altitude:
 		altitude of the light, in degrees. 90 if the light comes from above the DEM, 0 if it is raking light.
+
+> color-relief : to generate a color relief map from any GDAL-supported elevation raster
+	$ 	gdaldem color-relief input.tif color_table.txt output.tif
+	# Color tiff depending on color_relief.txt file. Color_table.txt syntax: elevation R G B. 
+	# Elevation as: floating point value, `nv` keyword, or percentage.
+	# 0% being the minimum value found in the raster, 100% the maximum value.
 
 man GDAL_polygonize (topography)
 	
@@ -54,6 +60,10 @@ man gdal_translate ---- gdal_translate converts raster data between different fo
 		(GDAL >= 1.8.0) Force (re)computation of statistics.
 	-a_ullr ulx uly lrx lry
 		Assign/override the georeferenced bounds of the output file.
+	-co (http://www.gdal.org/frmt_gtiff.html):
+		COMPRESS=[JPEG/LZW/PACKBITS/DEFLATE/CCITTRLE/CCITTFAX3/CCITTFAX4/NONE]
+		PHOTOMETRIC=[MINISBLACK/MINISWHITE/RGB/CMYK/YCBCR/CIELAB/ICCLAB/ITULAB]
+		ALPHA=[YES/NON-PREMULTIPLIED/PREMULTIPLIED/UNSPECIFIED]: This is necessary if you want to produce a greyscale TIFF file with an alpha band (for instance).
 
 
 =============================================================

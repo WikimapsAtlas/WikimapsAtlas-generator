@@ -14,8 +14,8 @@ SHELL=/bin/bash
 
 #MAKEFILE
 done: topojson
-	mkdir -p ../files/$(escaped_ITEM)
-	mv levels.topo.json levels.tmp.geo.json -t ../files/$(escaped_ITEM)/
+	mkdir -p ../output/$(escaped_ITEM)
+	mv levels.topo.json levels.tmp.geo.json -t ../output/$(escaped_ITEM)/
 
 topojson: geojsonize
 	$(TOPOJSON_LOC) --id-property none -q $(QUANTIZATION) --simplify-proportion=0.5 -p name=elev -o levels.topo.json -- levels.tmp.geo.json
