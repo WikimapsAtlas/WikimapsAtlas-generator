@@ -1,5 +1,5 @@
 #---- RUN
-# make -f shadedrelief.makefile ITEM=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 DATA_DIR=./data
+# make -f shadedrelief.makefile ITEM=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
 
 #---- DEFAULT VALUES (customizable):
 WIDTH=1980
@@ -56,7 +56,7 @@ resize: crop
 
 
 crop: clean
-	gdal_translate -projwin $(WEST) $(NORTH) $(EAST) $(SOUTH) $(DATA_DIR)/noaa/ETOPO1_Ice_g_geotiff.tif cropXL.tmp.tif
+	gdal_translate -projwin $(WEST) $(NORTH) $(EAST) $(SOUTH) ../data/noaa/ETOPO1_Ice_g_geotiff.tif cropXL.tmp.tif
 
 #---- DOWNLOADS
 .PHONY: clean

@@ -11,7 +11,6 @@ export NORTH=37.5
 export EAST=99.0
 export SOUTH=05.0
 export WIDTH=1980
-export DATA_DIR=../../data/download
 # script data
 export VERSION=0.5
 
