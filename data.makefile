@@ -11,7 +11,7 @@ ETOPO1: clean
 	curl \
 		-L -C - 'http://www.ngdc.noaa.gov/mgg/global/relief/ETOPO1/data/ice_surface/grid_registered/georeferenced_tiff/ETOPO1_Ice_g_geotiff.zip' \
 		-o ./data/noaa/ETOPO1_Ice_g_geotiff.zip
-	echo "/* Downloaded 100% of: ETOPO1, topography 1km raster ******/"
+	#* Downloaded 100% of: ETOPO1, topography 1km raster ******#
 
 # ---------- ADMINISTRATIVE from NATURAL EARTH ---------------------------#
 NE:
@@ -19,7 +19,7 @@ NE:
 	curl \
 		-L -C - 'http://naciscdn.org/naturalearth/packages/natural_earth_vector.zip' \
 		-o ./data/natural_earth_vector/natural_earth_vector.zip
-	echo "/* Downloaded 100% of: Natural Earth Vectors **************/"
+	#* Downloaded 100% of: Natural Earth Vectors **************#
 clean: 
 #	rm -f ./data/NE/*.zip
 #	rm -f ./data/NE/*.dbf
