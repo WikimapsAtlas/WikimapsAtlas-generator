@@ -2,12 +2,11 @@
 data/
 node_modules/
 output/
+files/
 **/arch/
 **/academic/
 **/test*
 **/test/
-
-# Folder/back or front
 
 
 # Files (globes)
@@ -27,12 +26,13 @@ output/
 *.csv
 *.gif
 #*.png
-#*.jpg
+*.jpg
 *.geo.json
 #*.topo.json
 #*.html
 *_.html
 #*.svg
+*.b64
 *.cpg
 
 # Root

@@ -16,12 +16,15 @@ PROJECTION=epsg:4326
 #---- MAKEFILE
 #---- End here
 done: transparencies_layer hillshades_composite regeocoordinates clean
-	mkdir -p ../files/$(escaped_ITEM)
-	cp ./color_hillshades.jpg ../files/$(escaped_ITEM)/ # NEEED MORE !!!!!!!!
+	mkdir -p ../output/$(escaped_ITEM)
+	cp ./*.gis.* ../output/$(escaped_ITEM)/
 
 regeocoordinates: hillshades_composite 
 	# More in: [[commons:User:ShareMap/Hillshade_with_ImageMagick]]
 	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=JPEG -co PHOTOMETRIC=YCBCR ./color_hillshades.jpg ./color_hillshades.gis.tif
+	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=JPEG -co PHOTOMETRIC=RGB 	 ./white_hillshades.jpg ./white_hillshades.gis.tif
+	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=JPEG -co PHOTOMETRIC=YCBCR ./color.jpg ./color.gis.tif
+	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=LZW  -co ALPHA=YES 		 ./trans.png ./trans.gis.tif
 
 #----PROCESSING RASTER DATA
 hillshades_composite: colors_layer transparencies_layer white_rectangle
