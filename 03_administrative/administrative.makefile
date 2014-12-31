@@ -65,7 +65,7 @@ geojson_filters: crop
 	ogr2ogr -f GeoJSON \
 		disputed.tmp.geo.json \
 		crop_disputed.shp
-	ogr2ogr -f GeoJSON -where "admin IN ('India')" \
+	ogr2ogr -f GeoJSON -where "iso_a2 = ('$(ITEM)')" \
 		subunits.geo.json \
 		../data/natural_earth_vector/10m_cultural/ne_10m_admin_1_states_provinces_shp.shp
 
