@@ -1,5 +1,5 @@
 // Run me with: 
-// $ COLOR=#66AAFF node svgcreator.node.js > out.svg   #passing var COLOR
+// $ COLOR=#66AAFF node svgcreator.node.js > out.svg   #passing var COLOR the old way
 //
 var jsdom = require('jsdom');
 var fs    = require('fs');
@@ -16,7 +16,8 @@ jsdom.env(
         EAST  = process.env.EAST,
         SOUTH = process.env.SOUTH,
         ITEM  = process.env.ITEM,
-	WIDTH = process.env.WIDTH;
+	WIDTH = process.env.WIDTH,
+	HEIGHT = process.env.HEIGHT;
     var DATE  = (new Date()).toISOString().slice(0,10).replace(/-/g,""),
         VERSION = process.env.VERSION,/*
          = process.env.,
@@ -25,7 +26,7 @@ jsdom.env(
 
 /* ***************************************************************** */
 /* SVG INIT ******************************************************** */
-    var width = WIDTH, height = 500;
+    var width = WIDTH, height = HEIGHT;
 
     var svg = window.d3.select("body").append("svg")
 /**/	.attr(":xmlns:svg","http://www.w3.org/2000/svg")
@@ -33,15 +34,15 @@ jsdom.env(
 	.attr(":xmlns:xlink","http://www.w3.org/1999/xlink") // if not: Namespace prefix xlink for href
 /**/	.attr(":xmlns:rdf","http://www.w3.org/1999/02/22-rdf-syntax-ns#") 
 	.attr(":xmlns:cc","http://creativecommons.org/ns#")
-//        .attr("width", width)
-//        .attr("height", height)
+        .attr("width", width)
+        .attr("height", height)
 	.attr("viewBox", "0 0 "+width+" "+height);
 
 /* ***************************************************************** */
 /* METADATA ******************************************************** */
 // http://stackoverflow.com/questions/26821677/
 var geotag = '<dcterms:spatial xsi:type="dcterms:Box">'
-	+'name='+ITEM+';'
+	+'name='+ITEM+"_"+width+"_"+height+';'
 	+'northlimit='+NORTH+';'
 	+'eastlimit='+EAST+';'
 	+'southlimit='+SOUTH+';'
