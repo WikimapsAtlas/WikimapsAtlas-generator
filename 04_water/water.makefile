@@ -13,8 +13,8 @@ SELECTOR_LAKES=SCALERANK > 0 #NOT WORKING with -where "$(SELECTOR_LAKES)" ??
 
 #MAKEFILE
 done: topojson
-	mkdir -p ../output/$(escaped_ITEM)
-	mv water.topo.json lakes.geo.json rivers.geo.json -t ../output/$(escaped_ITEM)/
+	mkdir -p ../output/$(ITEM)
+	mv water.topo.json lakes.geo.json rivers.geo.json -t ../output/$(ITEM)/
 
 topojson: geojson_filters
 	$(TOPOJSON_LOC) \

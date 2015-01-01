@@ -1,7 +1,6 @@
 #DEFAULT VALUES (customizable):
 # inherit ITEM, WEST, NORTH, EAST, SOUTH from master.makefile or command.
 escaped_A = $(subst $e ,_,$(ITEM))
-escaped_ITEM = $(subst $e' ,\',$(escaped_A))# THIS TWO MAY BE MERGED ! $(subst $e' ,\',$(subst $e ,_,$(ITEM)) )
 WIDTH=1980
 QUANTIZATION=1e4
 TOPOJSON_LOC=../node_modules/topojson/bin/topojson
@@ -14,8 +13,8 @@ SHELL=/bin/bash
 
 #MAKEFILE
 done: topojson
-	mkdir -p ../output/$(escaped_ITEM)
-	mv levels.topo.json levels.tmp.geo.json -t ../output/$(escaped_ITEM)/
+	mkdir -p ../output/$(ITEM)
+	mv levels.topo.json levels.tmp.geo.json -t ../output/$(ITEM)/
 
 topojson: geojsonize
 	$(TOPOJSON_LOC) --id-property none -q $(QUANTIZATION) --simplify-proportion=0.5 -p name=elev -o levels.topo.json -- levels.tmp.geo.json

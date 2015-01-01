@@ -1,5 +1,5 @@
 #---- RUN
-# make -f shadedrelief.makefile ITEM=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
+# make -f shadedrelief.makefile ITEM=IN WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
 
 #---- DEFAULT VALUES (customizable):
 WIDTH=1980
@@ -16,8 +16,8 @@ PROJECTION=epsg:4326
 #---- MAKEFILE
 #---- End here
 done: transparencies_layer hillshades_composite regeocoordinates clean
-	mkdir -p ../output/$(escaped_ITEM)
-	cp ./*.gis.* ../output/$(escaped_ITEM)/
+	mkdir -p ../output/$(ITEM)
+	cp ./*.gis.* ../output/$(ITEM)/
 
 regeocoordinates: hillshades_composite 
 	# More in: [[commons:User:ShareMap/Hillshade_with_ImageMagick]]

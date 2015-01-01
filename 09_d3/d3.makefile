@@ -14,7 +14,7 @@ output: clean b64
 	node svgcreator.node.js
 
 b64: clean
-#	openssl base64 -in ../output/$(escaped_ITEM)/color_relief-hillshade-wp-multiply.jpg -out image.b64
+#	openssl base64 -in ../output/$(ITEM)/color_relief-hillshade-wp-multiply.jpg -out image.b64
 
 clean:
 	rm -f *.svg

@@ -17,8 +17,8 @@ SHP_ATT2id=name
 
 #MAKEFILE
 done: topojson
-	mkdir -p ../output/$(escaped_ITEM)
-	mv administrative.topo.json countries.geo.json subunits.geo.json disputed.geo.json places.geo.json -t ../output/$(escaped_ITEM)/
+	mkdir -p ../output/$(ITEM)
+	mv administrative.topo.json countries.geo.json subunits.geo.json disputed.geo.json places.geo.json -t ../output/$(ITEM)/
 
 topojson: geojson_filters places_fix countries_fix disputed_fix
 	$(TOPOJSON_LOC) \
