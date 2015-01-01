@@ -10,11 +10,11 @@ escaped_ITEM = $(subst $e' ,\',$(escaped_A))# THIS TWO MAY BE MERGED ! $(subst $
 #	script: { DATE, VERSION }         ==> see master file's variable declaration
 
 #---- MAKEFILE
-output: clean b64
+output: b64 clean
 	node svgcreator.node.js
 
 b64: clean
-#	openssl base64 -in ../output/$(ITEM)/color_relief-hillshade-wp-multiply.jpg -out image.b64
+	openssl base64 -in ../output/$(ITEM)/color_hillshades.gis.tif -out image.b64
 
 clean:
 	rm -f *.svg
