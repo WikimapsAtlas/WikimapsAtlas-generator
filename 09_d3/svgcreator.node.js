@@ -79,15 +79,22 @@ var geotag = '<dcterms:spatial xsi:type="dcterms:Box">'
 
 /* ***************************************************************** */
 /* RASTER INJECTION ************************************************ */
-var i64 = fs.readFileSync('./img/color_hillshades.gis.tif.b64');
-svg.append("image")
-  .attr("y","0")
-  .attr("x","0")
-  .attr("xlink:xlink:href", "data:image/jpg;base64," + i64) // replace link by data URI
-  .attr("width", width)
-  .attr("height", height)
-  .attr("class", "bg-image")
-  .style("opacity", 1);
+var addBaseRaster= function(url){
+	var i64 = fs.readFileSync(url);
+	var id = url.replace(/(\.|\/|img|gis|tif|b64)/g, "")
+	svg.append("image")
+	  .attr("class", "bg-image raster")
+	  .attr("id", id)
+	  .attr("y","0")
+	  .attr("x","0")
+	  .attr("xlink:xlink:href", "data:image/jpg;base64," + i64) // replace link by data URI
+	  .attr("width", width)
+	  .attr("height", height)
+	  .style("opacity", 1);
+};
+addBaseRaster('./img/color_hillshades.gis.tif.b64'); // z-order: below
+addBaseRaster('./img/color.gis.tif.b64'); // z-order: between
+addBaseRaster('./img/trans.gis.tif.b64'); // z-order: upper
 
 // END svg design
 
