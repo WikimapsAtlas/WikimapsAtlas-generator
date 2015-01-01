@@ -1,8 +1,6 @@
 #---- RUN
 # make -f master.makefile ITEM=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
 EXPORT imgb64=nothing
-escaped_A = $(subst $e ,_,$(ITEM))
-escaped_ITEM = $(subst $e' ,\',$(escaped_A))# THIS TWO MAY BE MERGED ! $(subst $e' ,\',$(subst $e ,_,$(ITEM)) )
 
 #---- DEFAULT VALUES (customizable):
 # Some variables are defined by master.makefile & called by svgcreator.node.js 
@@ -14,7 +12,11 @@ output: b64 clean
 	node svgcreator.node.js
 
 b64: clean
-	openssl base64 -in ../output/$(ITEM)/color_hillshades.gis.tif -out image.b64
+	for file in ../output/$(ITEM)/*.gis.*; \
+	do echo $$file ; openssl base64 -in $$file -out ./img/`basename $$file`.b64; \
+	done
+	# ../output/India/color.gis.tif ; ../output/India/color_hillshades.gis.tif
+	# ../output/India/trans.gis.tif ; ../output/India/white_hillshades.gis.tif
 
 clean:
 	rm -f *.svg
