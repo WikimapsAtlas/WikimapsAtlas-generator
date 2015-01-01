@@ -15,7 +15,8 @@ jsdom.env(
         NORTH = process.env.NORTH,
         EAST  = process.env.EAST,
         SOUTH = process.env.SOUTH,
-        ITEM  = process.env.ITEM;
+        ITEM  = process.env.ITEM,
+	WIDTH = process.env.WIDTH;
     var DATE  = (new Date()).toISOString().slice(0,10).replace(/-/g,""),
         VERSION = process.env.VERSION,/*
          = process.env.,
@@ -24,7 +25,7 @@ jsdom.env(
 
 /* ***************************************************************** */
 /* SVG INIT ******************************************************** */
-    var width = 300, height = 100;
+    var width = WIDTH, height = 500;
 
     var svg = window.d3.select("body").append("svg")
 /**/	.attr(":xmlns:svg","http://www.w3.org/2000/svg")
@@ -77,7 +78,7 @@ var geotag = '<dcterms:spatial xsi:type="dcterms:Box">'
 
 /* ***************************************************************** */
 /* RASTER INJECTION ************************************************ */
-var i64 = fs.readFileSync('./image.b64');
+var i64 = fs.readFileSync('./img/color_hillshades.gis.tif.b64');
 svg.append("image")
   .attr("y","0")
   .attr("x","0")
