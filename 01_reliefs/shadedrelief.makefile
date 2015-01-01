@@ -24,7 +24,7 @@ regeocoordinates: hillshades_composite
 	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=JPEG -co PHOTOMETRIC=YCBCR ./color_hillshades.jpg ./color_hillshades.gis.tif
 	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=JPEG -co PHOTOMETRIC=RGB 	 ./white_hillshades.jpg ./white_hillshades.gis.tif
 	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=JPEG -co PHOTOMETRIC=YCBCR ./color.jpg ./color.gis.tif
-	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=LZW  -co ALPHA=YES 		 ./trans.png ./trans.gis.tif
+	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=LZW -co ALPHA=YES -expand rgba ./trans.png ./trans.gis.tif
 
 #----PROCESSING RASTER DATA
 hillshades_composite: colors_layer transparencies_layer white_rectangle
