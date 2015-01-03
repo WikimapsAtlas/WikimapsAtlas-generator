@@ -11,7 +11,7 @@ from pprint import pprint
 
 parser = argparse.ArgumentParser(
     description="Create an atlas of SVG maps",
-    epilog="Example usage: python makeatlas.py -c IN -b '67.0,5.0,99.0,37.5'")
+    epilog="Example usage: python makeatlas.py -C IN")
 
 parser.add_argument("-C", "--hasc", dest="hasc",
     type=str, default='W',
@@ -53,7 +53,7 @@ def load_index():
     with open('index.json', 'r') as f:
         try:
             index = json.load(f)
-            for region in index["index"]:
+            for region in index:
                 # Generate atlas if territory code found in index file, or generate all if argument is W
                 if args.hasc == 'W' or  args.hasc == region["hasc"] :
                     make_wikiatlas(region["hasc"],region["name"],Bbox(region["bbox"]))
