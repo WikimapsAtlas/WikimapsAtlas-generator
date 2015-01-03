@@ -18,7 +18,7 @@ parser.add_argument("-C", "--hasc", dest="hasc",
     help="""HASC or ISO-A2 code of territory.""")
 
 parser.add_argument("-B", "--bbox", dest="bbox",
-    type=str, default='67.0,5.0,99.0,37.5',
+    type=str, default=None,
     help="""Bounding box of map canvas in decimal degrees. Formatted as 'left,bottom,right,top' or 'minLon,minLat,maxLon,maxLat'""")
 
 parser.add_argument("-b", "--buffer", dest="buffer",
@@ -48,21 +48,31 @@ class Bbox:
         self.n = self.n + abs(self.n) * buffer_percentage
 
         
-def load_index(hasc):
+def load_index():
     # Read country list
     with open('../data/json/index.json', 'r') as f:
         try:
             index = json.load(f)
-            
             for region in index["index"]:
-                print "Making maps for {} with extents {}".format(region["name"],region["bbox"])
-                bbox = Bbox(region["bbox"])
-                command = "make -f master.makefile ITEM={} WEST={} NORTH={}  EAST={} SOUTH={}".format(region["hasc"],bbox.w,bbox.n,bbox.e,bbox.s) 
-                subprocess.call(command, shell=True)
-    
+                # Generate atlas if territory code found in index file, or generate all if argument is W
+                if args.hasc == 'W' or  args.hasc == region["hasc"] :
+                    make_wikiatlas(region["hasc"],region["name"],Bbox(region["bbox"]))
+
         finally:
                 f.close()
     return 0
 
+def make_wikiatlas(hasc,name,bbox):
+    "Run master.makefile for an item"
+    
+    print "Making maps for {} with extents {}".format(name, bbox.wsen)
+    command = "make -f master.makefile ITEM={} WEST={} NORTH={}  EAST={} SOUTH={}".format(hasc,bbox.w,bbox.n,bbox.e,bbox.s) 
+    subprocess.call(command, shell=True)
+
 if __name__ == '__main__':
-    load_index(args.hasc)
+    # If country code and bbox parameters are set
+    if(args.hasc != 'W' and args.bbox is not None):
+        make_wikiatlas(args.hasc,'',args.bbox)
+    else:
+        #Generate atlas using parameters from index file
+        load_index()
