@@ -50,7 +50,7 @@ class Bbox:
         
 def load_index():
     # Read country list
-    with open('../data/json/index.json', 'r') as f:
+    with open('index.json', 'r') as f:
         try:
             index = json.load(f)
             for region in index["index"]:
