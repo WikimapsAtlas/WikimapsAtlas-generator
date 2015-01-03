@@ -21,8 +21,8 @@ parser.add_argument("-B", "--bbox", dest="bbox",
     type=str, default='67.0,5.0,99.0,37.5',
     help="""Bounding box of map canvas in decimal degrees. Formatted as 'left,bottom,right,top' or 'minLon,minLat,maxLon,maxLat'""")
 
-parser.add_argument("-b", "--buffer", dest="margin",
-    type=int, default='5',
+parser.add_argument("-b", "--buffer", dest="buffer",
+    type=int, default='2',
     help="""Percentage of buffer area around the territory included in the map""")
 
 args = parser.parse_args()
@@ -37,15 +37,15 @@ class Bbox:
         self.s = float(bbox.split(',')[1])
         self.e = float(bbox.split(',')[2])
         self.n = float(bbox.split(',')[3])
-        self.buffer_bbox(5)
+        self.buffer_bbox(args.buffer)
         
     def buffer_bbox(self, buffer_percentage):
-        "Extend the bounds by a small percentage to include surrounding areas"
-        multiplier = 1 + (buffer_percentage * 0.01)
-        self.w *= multiplier
-        self.s *= multiplier
-        self.e *= multiplier
-        self.n *= multiplier
+        "Extend the bounds by a small percentage to include surrounding areas" 
+        buffer_percentage *= 0.01 
+        self.w = self.w - abs(self.w) * buffer_percentage
+        self.s = self.s - abs(self.s) * buffer_percentage
+        self.e = self.e + abs(self.e) * buffer_percentage
+        self.n = self.n + abs(self.n) * buffer_percentage
 
         
 def load_index(hasc):
