@@ -18,6 +18,7 @@ jsdom.env(
         ITEM  = process.env.ITEM,
 	WIDTH = process.env.WIDTH,
 	HEIGHT = process.env.HEIGHT;
+
     var DATE  = (new Date()).toISOString().slice(0,10).replace(/-/g,""),
         VERSION = process.env.VERSION,/*
          = process.env.,
