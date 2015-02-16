@@ -4,8 +4,9 @@
 unzip: NE ETOPO1
 	unzip -n ./data/noaa/ETOPO1_Ice_g_geotiff.zip '*.tif'  -d ./data/noaa/       
 	unzip -n ./data/natural_earth_vector/natural_earth_vector.zip  -d ./data/natural_earth_vector/
+	unzip -n ./data/gadm/gadm.zip -d ./data/gadm/
 
-# ---------- TOPOGRAPHIC 1km from NOAA -----------------------------------#
+# TOPOGRAPHIC 1km from NOAA ----------------------------------------------#
 ETOPO1: clean
 	mkdir -p ./data/noaa
 	curl \
@@ -13,13 +14,21 @@ ETOPO1: clean
 		-o ./data/noaa/ETOPO1_Ice_g_geotiff.zip
 	#* Downloaded 100% of: ETOPO1, topography 1km raster ******#
 
-# ---------- ADMINISTRATIVE from NATURAL EARTH ---------------------------#
+# ADMINISTRATIVE from NATURAL EARTH ------------------------------------- #
 NE:
 	mkdir -p ./data/natural_earth_vector/
 	curl \
 		-L -C - 'http://naciscdn.org/naturalearth/packages/natural_earth_vector.zip' \
 		-o ./data/natural_earth_vector/natural_earth_vector.zip
 	#* Downloaded 100% of: Natural Earth Vectors **************#
+
+
+# ADMINISTRATIVE from GADM.org ------------------------------------------ #
+GADM2:
+	mkdir -p ./data/gadm/
+	curl \
+		-L -C - 'http://biogeo.ucdavis.edu/data/gadm2/gadm_v2_shp.zip' \
+		-o ./data/gadm/gadm2.zip
 clean: 
 #	rm -f ./data/NE/*.zip
 #	rm -f ./data/NE/*.dbf

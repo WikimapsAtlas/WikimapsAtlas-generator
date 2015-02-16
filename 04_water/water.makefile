@@ -14,27 +14,23 @@ SELECTOR_LAKES=SCALERANK > 0 #NOT WORKING with -where "$(SELECTOR_LAKES)" ??
 #MAKEFILE
 done: topojson
 	mkdir -p ../output/$(ITEM)
-	mv water.topo.json lakes.geo.json rivers.geo.json -t ../output/$(ITEM)/
+	mv waters.topo.json -t ../output/$(ITEM)/
 
-topojson: geojson_filters
+topojson: crop
 	$(TOPOJSON_LOC) \
 		--id-property none \
 		-p name=name \
 		-p scalerank=scalerank \
 		-q $(QUANTIZATION) \
 		--filter=small \
-		-o water.topo.json \
-		-- lakes=lakes.geo.json rivers=rivers.geo.json
-
-geojson_filters: crop
-	ogr2ogr -f GeoJSON lakes.geo.json crop_lakes.shp
-	ogr2ogr -f GeoJSON rivers.geo.json crop_rivers.shp
-#or "iso_a2 = 'AT' AND SCALERANK < 20" , see also sr_adm0_a3
-#ADM0NAME = 'Egypt' OR ADM0NAME = 'Iran' OR SOV0NAME = 'Saudi Arabia' OR SOV0NAME = 'Lebanon' OR SOV0NAME = 'Turkey' OR SOV0NAME = 'Syria' OR SOV0NAME = 'Iraq' OR ISO_A2 = 'noFR'
+		-o waters.topo.json \
+		-- lakes=crop_lakes.shp rivers=crop_rivers.shp
 
 crop: clean
-	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_rivers.shp ../data/natural_earth_vector/10m_physical/ne_10m_rivers_lake_centerlines.shp
-	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_lakes.shp ../data/natural_earth_vector/10m_physical/ne_10m_lakes.shp
+	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) \
+		./crop_rivers.shp ../data/natural_earth_vector/10m_physical/ne_10m_rivers_lake_centerlines.shp
+	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) \
+		./crop_lakes.shp ../data/natural_earth_vector/10m_physical/ne_10m_lakes.shp
 #	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_rivers.shp ne_10m_rivers_lake_centerlines_scale_rank.shp
 #	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) ./crop_lakes.shp ne_10m_rivers_lake_centerlines_scale_rank.shp
 

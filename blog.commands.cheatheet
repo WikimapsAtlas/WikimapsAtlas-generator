@@ -18,8 +18,20 @@ man MAKEFILE: make - GNU make utility to maintain groups of programs
 GIS TOOLS ===================================================
 
 man OGR2OGR:
+	-clipsrc:
+	-sql <selector> -dialect SQLITE:
 man TOPOJSON:
 	-p, properties : https://github.com/mbostock/topojson/wiki/Command-Line-Reference#properties
+	-q, --quantization, --no-quantization:
+		maximum number of differentiable points along either dimension
+	-s, --simplify:
+		precision threshold for Visvalingam simplification
+	--simplify-proportion:
+		proportion of points to retain for Visvalingam simplification
+	--width:
+		scale and translate to fit a viewport of the specified width
+	--height:
+		scale and translate to fit a viewport of the specified height
 
 man GDALDEM: gdaldem Tools to analyze and visualize DEMs. (since GDAL 1.7.0)
 > hillshade: to generate a shaded relief map from any GDAL-supported elevation raster
@@ -102,7 +114,7 @@ man CURL: curl - transfer a URL
 		Use "-C -" to tell curl to automatically find out  where/how  to resume  the  transfer. It then uses the given output/input files to figure that out.
 
 man MKDIR: mkdir - make directories
-	$mkdir -p ../data/ ../data/ETOPO1 #create 2 dirs
+	$mkdir -p ../data/ ../data/ETOPO1 			#create 2 dirs
 	-p, --parents
 		no error if existing, make parent directories as needed
 
