@@ -4,7 +4,7 @@
 unzip: NE ETOPO1
 	unzip -n ./data/noaa/ETOPO1_Ice_g_geotiff.zip '*.tif'  -d ./data/noaa/       
 	unzip -n ./data/natural_earth_vector/natural_earth_vector.zip  -d ./data/natural_earth_vector/
-	unzip -n ./data/gadm/gadm.zip -d ./data/gadm/
+	unzip -n ./data/gadm/gadm2.zip -d ./data/gadm/
 
 # TOPOGRAPHIC 1km from NOAA ----------------------------------------------#
 ETOPO1: clean
