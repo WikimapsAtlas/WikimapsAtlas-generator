@@ -11,7 +11,8 @@ HEIGHT=`identify ../output/$(ITEM)/color.gis.tif | cut -f 3 -d " " | sed s/.*x//
 
 #---- MAKEFILE
 output: b64
-	WIDTH=$(WIDTH) HEIGHT=$(HEIGHT) node svgcreator.node.js 		# see inside this file for parameters' calls
+	WIDTH=$(WIDTH) node svgcreator.node.js 		# see inside this file for parameters' calls
+	WIDTH=$(WIDTH) node location.node.js		# see inside this file for parameters' calls
 
 b64: clean
 	for file in ../output/$(ITEM)/*.gis.*; \

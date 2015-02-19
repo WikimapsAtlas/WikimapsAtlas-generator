@@ -1,5 +1,5 @@
 #---- RUN
-# make -f master.makefile ITEM=IN WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
+# make -f master.makefile ITEM=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 PLACES=15
 # ITEM uses ISO-A2 2 letter alphabet codes to identify countries
 
 #---- DEFAULT VALUES (customizable):

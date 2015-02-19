@@ -8,7 +8,7 @@ TOPOJSON_LOC=../node_modules/topojson/bin/topojson
 # Admin layer:
 PLACES=15
 SELECTOR_L1=admin IN ('$(ITEM)')
-SELECTOR_PLACES=SELECT * FROM tmp ORDER BY POP_MAX DESC LIMIT '$(PLACES)'
+SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places ORDER BY POP_MAX DESC LIMIT '$(PLACES)'
 ## Some past selector:
 #SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE iso_a2 = '$(ITEM)' ORDER BY POP_MAX DESC LIMIT 50
 #SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE ADM0NAME = '$(ITEM)' AND POP_MAX > '2000000'
@@ -32,7 +32,6 @@ topojson: crop admin_0 admin_1 disputed places
 		-p status=status \
 		-p pop=pop \
 		-q $(QUANTIZATION) \
-		-s 1 \
 		--filter=small \
 		-o administrative.topo.json \
 		-- admin_0=admin_0.topo.json admin_1=admin_1.topo.json disputed=disputed.topo.json places=places.topo.json
@@ -77,7 +76,7 @@ disputed: crop
 		--filter=small \
 		-o disputed.topo.json \
 		-- disputed=crop_disputed.shp
-places: crop filter_places
+places: crop
 	$(TOPOJSON_LOC) \
 		--bbox \
 		--id-property NAME \
@@ -98,9 +97,6 @@ places: crop filter_places
 #		../data/natural_earth_vector/10m_cultural/ne_10m_admin_1_states_provinces_shp.shp
 # or "iso_a2 = 'AT' AND SCALERANK < 20" , see also sr_adm0_a3
 # SOV0NAME = 'Lebanon' OR SOV0NAME = 'Turkey' OR ISO_A2 = 'noFR'
-filter_places: crop
-	ogr2ogr -sql "$(SELECTOR_PLACES)" -dialect SQLITE ./places.shp ./crop_places.shp
-
 
 crop: clean
 	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) \
@@ -109,9 +105,9 @@ crop: clean
 		./crop_L1.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_1_states_provinces_shp.shp
 	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) \
 		./crop_disputed.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_0_disputed_areas.shp
-	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) \
-		./crop_places.shp ../data/natural_earth_vector/10m_cultural/ne_10m_populated_places.shp
-	
+	ogr2ogr -spat $(WEST) $(NORTH) $(EAST) $(SOUTH) \
+		-sql "$(SELECTOR_PLACES)" -dialect SQLITE \
+		./places.shp ../data/natural_earth_vector/10m_cultural/ne_10m_populated_places.shp
 clean:
 	rm -f *.json
 	rm -f *.dbf

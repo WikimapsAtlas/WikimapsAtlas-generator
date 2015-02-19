@@ -1,0 +1,19 @@
+{ // Configure your Run and Preview buttons here.
+// Run button configuration
+  "commands": {
+        "Node version": "node --version",
+        "Git minor": "git commit --am \"minor\";git push",
+	  	"Ungit UI":"ungit --port=9501"
+  },
+
+// Preview button configuration
+  "preview": {
+        "Project Index (static)": "https://{{domain}}/{{index}}",
+        "Current File (static)": "https://{{domain}}/{{filepath}}",
+        "Box URL": "http://{{domain}}:3000/",
+        "Box URL SSL": "https://{{domain}}:9500/",
+	    "Visit Ungit": "https://{{domain}}:9501/#/repository?path=\/home\/codio/workspace",
+	  	"Visit Ungit (tested)": "http://{{domain}}:8448/#/repository?path=/home/codio/workspace",
+        "Jekyll": "https://{{domain}}:4000/"
+  }
+}

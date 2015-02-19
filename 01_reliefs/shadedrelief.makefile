@@ -15,11 +15,11 @@ PROJECTION=epsg:4326
 #PROJECTION=epsg:3857 // mercator
 #---- MAKEFILE
 #---- End here
-done: transparencies_layer hillshades_composite regeocoordinates clean
+done: shade_trans composite regeo clean
 	mkdir -p ../output/$(ITEM)
 	cp ./*.gis.* ../output/$(ITEM)/
 
-regeocoordinates: hillshades_composite 
+regeo: composite 
 	# More in: [[commons:User:ShareMap/Hillshade_with_ImageMagick]]
 	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=JPEG -co PHOTOMETRIC=YCBCR ./color_hillshades.jpg ./color_hillshades.gis.tif
 	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=JPEG -co PHOTOMETRIC=RGB 	 ./white_hillshades.jpg ./white_hillshades.gis.tif
@@ -27,26 +27,28 @@ regeocoordinates: hillshades_composite
 	gdal_translate -a_ullr $(WEST) $(NORTH) $(EAST) $(SOUTH) -co COMPRESS=LZW -co ALPHA=YES ./trans.png ./trans.gis.tif
 
 #----PROCESSING RASTER DATA
-hillshades_composite: colors_layer transparencies_layer white_rectangle
+composite: colors_layer shade_trans background_white
 	convert color.jpg 	 trans.png -compose Multiply -composite color_hillshades.jpg 		#note: perfect +++
 	convert white_bg.jpg trans.png -compose Multiply -composite white_hillshades.jpg 		#note: perfect +++
 
 #--- White, trans, color, white_rect
-white_rectangle: resize
+background_white: resize
 	convert whited.jpg -fuzz 100% -fill "#ffffffff" -opaque white  white_bg.jpg
 
 colors_layer: resize
 	gdaldem color-relief resized.tmp.tif color_relief-wikimaps.txt color.tiff #GIS file
 	convert color.tiff color.jpg  #tiff:5.0MB, png:1.6MB, jpg:239KB 
 
-transparencies_layer: grey_whitening
-	convert whited.jpg -alpha copy -channel alpha -negate +channel trans.png 				# nice & light
+shade_trans: shade_white
+	convert whited.jpg -alpha copy -channel alpha -negate +channel trans.png 				# nice & light, +++ kept
+	convert grey2trans.tmp.png -alpha copy -channel alpha -negate +channel shadedrelief.trans.png     # ++  deleted line
 
-grey_whitening: shade
-	convert shadedrelief.tmp.tif -fuzz $(FUZZ)% -fill "#FFFFFF" -opaque "#DDDDDD"  whited.jpg 	# lighter (0.9M)
+shade_white: shade_grey
+	convert shadedrelief.tmp.tif -fuzz $(FUZZ)% -fill "#FFFFFF" -opaque "#DDDDDD"  whited.jpg 	# lighter (0.9M) kept
+# 
+	convert shadedrelief.tmp.tif -fuzz $(FUZZ)% -transparent "#DDDDDD" grey2trans.tmp.png		# heavier (2.6M) deleted line
 
-#--- Shaded relief (grey)
-shade: resize
+shade_grey: resize
 	gdaldem hillshade resized.tmp.tif shadedrelief.tmp.tif -s $(S) -z $(Z) -az $(AZ) -alt 60 -compute_edges  # 
 
 #---- Crop, Resize

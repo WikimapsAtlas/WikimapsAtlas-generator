@@ -20,6 +20,7 @@ GIS TOOLS ===================================================
 man OGR2OGR:
 	-clipsrc:
 	-sql <selector> -dialect SQLITE:
+	-spat:
 man TOPOJSON:
 	-p, properties : https://github.com/mbostock/topojson/wiki/Command-Line-Reference#properties
 	-q, --quantization, --no-quantization:
