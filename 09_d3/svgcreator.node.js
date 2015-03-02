@@ -97,10 +97,7 @@ var addBaseRaster= function(url){
     	.attr("height", width);
 };
 // 1st img is below, then added uppon.
-//addBaseRaster('./img/color.gis.tif.b64');
-//addBaseRaster('./img/img0_gis.gis.tif.b64');
-addBaseRaster('./img/img1.gis.png.b64');
-addBaseRaster('./img/img2_gis.gis.tif.b64');
+addBaseRaster('./img/color.jpg.b64');
 
 // END svg design
 
@@ -108,7 +105,10 @@ addBaseRaster('./img/img2_gis.gis.tif.b64');
 /* SVG PRINT ******************************************************* */
     var svgheader = '<?xml version="1.0" encoding="utf-8"?>'
 	+'<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
-    fs.writeFileSync('administrative_map_(wikiatlas_2014).svg', svgheader + window.d3.select("body").html());
+setTimeout(
+    fs.writeFileSync('test.svg', svgheader + window.d3.select("body").html()),
+    5000
+);
     // console.log(window.d3.select("body").html());
  }
 // END (D3JS) * * * * * * * * * * * * * * * * * * * * * * * *

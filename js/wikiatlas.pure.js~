@@ -375,14 +375,14 @@ injectPattern("#hook svg"); //Pattern injection : disputed-in, disputed-out
 
  
 // Data (getJSON: TopoJSON)
-d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) {
+d3.json("http://rugger-demast.codio.io/output/"+target+"/administrative.topo.json", function(error, Stone) {
 
 /* DATA ********************************************************** */
     var admin_0   = topojson.feature(Stone, Stone.objects.admin_0),
         admin_1   = topojson.feature(Stone, Stone.objects.admin_1),
         disputed  = topojson.feature(Stone, Stone.objects.disputed),
         places    = topojson.feature(Stone, Stone.objects.places),
-		coast     = topojson.mesh(Stone, Stone.objects.admin_0, function(a,b) { return a===b;}),
+	coast     = topojson.mesh(Stone, Stone.objects.admin_0, function(a,b) { return a===b;}),
         L0_border = topojson.mesh(Stone, Stone.objects.admin_0, function(a,b) { return a!==b;}),
 		L1_border = topojson.mesh(Stone, Stone.objects.admin_1, function(a,b) { 
 			return a !==b && a.properties.L0 === b.properties.L0 && a.properties.L0 === target;

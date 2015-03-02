@@ -11,15 +11,16 @@ HEIGHT=`identify ../output/$(ITEM)/color.gis.tif | cut -f 3 -d " " | sed s/.*x//
 
 #---- MAKEFILE
 output: b64
-	WIDTH=$(WIDTH) node svgcreator.node.js 		# see inside this file for parameters' calls
+#	WIDTH=$(WIDTH) node svgcreator.node.js 		# see inside this file for parameters' calls
 	WIDTH=$(WIDTH) node location.node.js		# see inside this file for parameters' calls
 
 b64: clean
-	for file in ../output/$(ITEM)/*.gis.*; \
-	do echo $$file ; openssl base64 -in $$file -out ./img/`basename $$file`.b64; \
+	for file in ../output/$(ITEM)/*.jpg; \
+	do echo $$file ; openssl base64 -in $$file -out ../output/$(ITEM)/`basename $$file`.b64; \
 	done
-	# ../output/India/color.gis.tif ; ../output/India/color_hillshades.gis.tif
-	# ../output/India/trans.gis.tif ; ../output/India/white_hillshades.gis.tif
+	for file in ../output/$(ITEM)/*.png; \
+	do echo $$file ; openssl base64 -in $$file -out ../output/$(ITEM)/`basename $$file`.b64; \
+	done
 
 clean:
 	rm -f *.svg

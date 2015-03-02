@@ -375,7 +375,7 @@ injectPattern("#hook svg"); //Pattern injection : disputed-in, disputed-out
 
  
 // Data (getJSON: TopoJSON)
-d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) {
+d3.json("http://rugger-demast.codio.io/output/"+target+"/administrative.topo.json", function(error, Stone) {
 
 /* DATA ********************************************************** */
     var admin_0   = topojson.feature(Stone, Stone.objects.admin_0),
@@ -391,7 +391,7 @@ d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) 
 
 /* STYLES ******************************************************** */
 	var S = {};
-  		S.focus = wp.location.focus+ wp.stroke.no,
+		S.focus = wp.location.focus+ wp.stroke.no,
 		S.land  = wp.location.land + wp.stroke.no,
 		S.coast = wp.location.waterline+ wp.stroke.md,
 		S.water = wp.location.waterarea,

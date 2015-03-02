@@ -8,8 +8,8 @@
 /* SUGAR ************************************************ */
 
 // Function Click > Console (for fun)
-    function click(a){ var name = a.properties.name || a.id ; console.log(name);}
-    function dblclick(a){window.location.assign("http://en.wikipedia.org/wiki/"+a.properties.name, '_blank');}
+function click(a){ var name = a.properties.name || a.id ; console.log(name);}
+function dblclick(a){window.location.assign("http://en.wikipedia.org/wiki/"+a.properties.name, '_blank');}
 
 /* MATH TOOLKIT ***************************************** */
 function parallel(φ, λ0, λ1) {
@@ -338,32 +338,38 @@ step(); */
 
 /* ****************************************************** */
 /* LOCATION MAP MODULE  ********************************* */
-module.exports = {
-	locationMap : function(hookId, width, target, title, WEST, NORTH, EAST, SOUTH){
-	
+
+var locationMap = function(hookId, width, target, title, WEST, NORTH, EAST, SOUTH){
+	console.log("locationMp()");
 /* SETTINGS ******************************************************************** */
 // SVG injection:
-var width  = 600;
-var svg = d3.select("#hook").append("svg")
+var width  = 600 || width,
+	title_ = title.replace(/ /g, "_").replace(/(_)+/g, "_"),
+	titleId = title.replace(/[^a-zA-Z0-9]/gi, "_").replace(/(_)+/g, "_");
+var svg = d3.select(hookId).append("svg")
+		.attr("name", title_+"_administrative_map_\(2015\)")
+		.attr("id", titleId+"_administrative_map_\(2015\)")
 		.attr("width", width)
-		.attr('xmlns','http://www.w3.org/2000/svg')
-		.attr('xlink','http://www.w3.org/1999/xlink')
+		//.attr(':xmlns:xlink','').attr('xmlns:xlink','').attr('xlink','')
 		.attr(':xmlns:geo','http://www.example.com/boundingbox/')
-		.attr(':xmlns:inkscape','http://www.inkscape.org/namespaces/inkscape');
-/* Tags:
-	console.log(d3.ns.prefix);
-//	d3.ns.prefix.geo = "http://www.example.com/boundingbox/";
-//	d3.ns.prefix.inkscape ="http://www.inkscape.org/namespaces/inkscape";
-	console.log(d3.ns.prefix); */
+		.attr(':xmlns:inkscape','http://www.inkscape.org/namespaces/inkscape')
+		.attr(":xmlns:cc","http://creativecommons.org/ns#");
+	/*  var svg = d3.select(hookId).append("svg").attr("width", width)
+	svg.attr(':xmlns','http://www.w3.org/2000/svg')		// if not: file does not appear to have any style information
+			.attr(':xmlns:xlink','http://www.w3.org/1999/xlink')// if not: Namespace prefix xlink for href
+			// no = client: no img; crowbar: raster yes; node: raster yes ?
+			.attr(":xmlns:rdf","http://www.w3.org/1999/02/22-rdf-syntax-ns#") 
+	; */
+
 
 	//	d3.ns.qualify("geo:bb");
-	svg.append(":geo:g").attr("id","geo")
-    	.attr(':geo:syntax', "WSEN bounding box in decimal degrees")
-    	.attr(':geo:WEST',  WEST)
-    	.attr(':geo:SOUTH', SOUTH)
-    	.attr(':geo:EAST',  EAST)
-    	.attr(':geo:NORTH', NORTH)
-    	.attr(':geo:Title', title);
+	svg.append(":geo:g").attr(":geo:id","geo")
+		.attr(':geo:syntax', "WSEN bounding box in decimal degrees")
+		.attr(':geo:WEST',  WEST)
+		.attr(':geo:SOUTH', SOUTH)
+		.attr(':geo:EAST',  EAST)
+		.attr(':geo:NORTH', NORTH)
+		.attr(':geo:Title', title);
 	
 // Projection default
 var projection = d3.geo.mercator()
@@ -371,24 +377,55 @@ var projection = d3.geo.mercator()
 		.translate([0, 0]);
 var path = d3.geo.path()
 		.projection(projection); //  .pointRadius(4)
+
+injectPattern("svg"); //Pattern injection : disputed-in, disputed-out
+
+console.log("pattern()");
+var url1 = "https://rugger-demast.codio.io/output/"+target+"/administrative.topo.json",
+	url2 = "https://rugger-demast.codio.io/output/"+target+"/color.jpg.b64",
+	url3 = "https://rugger-demast.codio.io/output/"+target+"/trans.png.b64";
+console.log(url2);
+
+ queue()
+	.defer(d3.json, url1)
+	.defer(d3.text, url2)
+	.defer(d3.text, url3)
+	.await(makeMap); /**/
+/** /	
+var Stone = (function () {
+    var json = null;
+    $.ajax({
+        'async': false,
+        'global': false,
+        'url': url,
+        'dataType': "json",
+        'success': function (data) {
+            json = data;
+        }
+    });
+    return json;
+})(); /**/
 	
-injectPattern("#hook svg"); //Pattern injection : disputed-in, disputed-out
+/* *************************************************************** */
+/* *************************************************************** */
+/* *************************************************************** */
 
- 
-// Data (getJSON: TopoJSON)
-d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) {
-
+	// Data (getJSON: TopoJSON)
+function makeMap(error, json, img1, img2){
+		console.log("MakeMap: start");
+		//console.log("d3.json()");
 /* DATA ********************************************************** */
-    var admin_0   = topojson.feature(Stone, Stone.objects.admin_0),
-        admin_1   = topojson.feature(Stone, Stone.objects.admin_1),
-        disputed  = topojson.feature(Stone, Stone.objects.disputed),
-        places    = topojson.feature(Stone, Stone.objects.places),
-		coast     = topojson.mesh(Stone, Stone.objects.admin_0, function(a,b) { return a===b;}),
-        L0_border = topojson.mesh(Stone, Stone.objects.admin_0, function(a,b) { return a!==b;}),
-		L1_border = topojson.mesh(Stone, Stone.objects.admin_1, function(a,b) { 
+    var admin_0   = topojson.feature(json, json.objects.admin_0),
+        admin_1   = topojson.feature(json, json.objects.admin_1),
+		L1_focus  = admin_1.features.filter(function(d) { return d.properties.L0 === target; }),
+        disputed  = topojson.feature(json, json.objects.disputed),
+        places    = topojson.feature(json, json.objects.places),
+		coast     = topojson.mesh(json, json.objects.admin_0, function(a,b) { return a===b;}),
+        L0_border = topojson.mesh(json, json.objects.admin_0, function(a,b) { return a!==b;}),
+		L1_border = topojson.mesh(json, json.objects.admin_1, function(a,b) { 
 			return a !==b && a.properties.L0 === b.properties.L0 && a.properties.L0 === target;
-		}),
-		neighbors = topojson.neighbors(Stone.objects.admin_1.geometries); // coloring: full line
+		});
+		// neighbors = topojson.neighbors(Stone.objects.admin_1.geometries); // coloring: full line
 
 /* STYLES ******************************************************** */
 	var S = {};
@@ -403,7 +440,7 @@ d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) 
 
 	
 	// Projection recalculated
-	var t = getTransform(admin_0,-1,width, projection); // NEED BB. Island are tied otherwise.
+	var t = getTransform(admin_0,0,width, projection); // NEED BB. Island are tied otherwise.
 	projection
 		.scale(t.scale)
 		.translate(t.translate);
@@ -413,26 +450,26 @@ d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) 
 	var bg = svg.append("g")
 			.attr(":inkscape:groupmode","layer")
 			.attr({'id':'bg',':inkscape:label':'background'});
+	
 	bg.append("g").attr("id","water")
 		.attr("style", S.water)
-		.append("rect")
+	  .append("rect")
 		.attr("x", 0)
 		.attr("y", 0)
 		.attr("width",    width)
 		.attr("height", t.height);
-	// Oceans rasters : INACTIVE
-	getImageBase64('../output/'+target+'/image.png', function (image) {
-		bg.append("g")
-			//.attr("transform","scale(1, 1)")
-			.attr(":inkscape:groupmode","layer")
-			.attr({'id':'topography_(raster)',':inkscape:label':'topography_(raster)'})
-		.append("image")
-			.attr("class", "topography_raster")
-		  .attr("href", "data:image/png;base64," + image)
-			.attr("width", width)
-			.attr("height", t.height)
-			.style("opacity", 0.1); // replace href link by data URI, d3js + client handle the missing xlink
-	})
+
+
+	bg.append("g")
+	//.attr("transform","scale(1, 1)")
+		.attr(":inkscape:groupmode","layer")
+		.attr({'id':'topography_(raster)',':inkscape:label':'topography_(raster)'})
+	  .append("image")
+		.attr("class", "topography_raster")
+		.attr("width", width)
+		.attr("height", t.height)
+		.attr("xlink:xlink:href", "data:image/png;base64," + img1); // replace link by data URI // replace href link by data URI, d3js + client handle the missing xlink
+
 /* Polygons ****************************************************** */
 //Append L0 polygons 
 	var L0 = svg.append("g")
@@ -442,8 +479,8 @@ d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) 
         .data(admin_0.features)
       .enter().append("path")
         .attr("class", "L0")
+        .attr("name", function(d) { return d.properties.name; })
         .attr("style", function(d){ return d.properties.L0 === target? S.focus : S.land; } )
-        .attr("name", function(d) { return d.properties.id; })
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
         .attr("d", path)
 		.on("click", click);
@@ -453,16 +490,24 @@ d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) 
  		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'L1',':inkscape:label':'L1'})
 	.selectAll(".subunit")
-        .data(admin_1.features)
+        .data(L1_focus)
       .enter().append("path")
         .attr("class", function(d){ return d.properties.L0 === target? "L1": "L1 invisible"; } )
-        .attr("style", function(d){ return d.properties.L0 === target? S.focus : S.land; } )
         .attr("name", function(d) { return d.id; })
+        .attr("style", function(d){ return d.properties.L0 === target? S.focus : S.land; } )
         .attr("d", path )
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
        // .on("mouseover", )
 		.on("click", click);
-	
+
+	var hillshade = svg.append("g")
+		.attr(":inkscape:groupmode","layer")
+		.attr({'id':'hillshade_(raster)',':inkscape:label':'hillshade_(raster)'})
+	  .append("image")
+		.attr("width", width)
+		.attr("height", t.height)
+		.attr("xlink:xlink:href", "data:image/png;base64," + img2); // replace link by data URI // replace href link by data URI, d3js + client handle the missing xlink
+
 
 /* Arcs ********************************************************** */
 // Admin1-borders filtered
@@ -504,8 +549,8 @@ d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) 
 	.selectAll(".disputed")
         .data(disputed.features)
       .enter().append("path")
-        .attr("fill", function(d){ return d.properties.L0 === target? "url(#hash2_4)": "url(#hash4_2)"} )
 		.attr("name", function(d) { return d.id; })
+        .attr("fill", function(d){ return d.properties.L0 === target? "url(#hash2_4)": "url(#hash4_2)"} )
         .attr("d", path )
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
         .on("click", click);
@@ -523,8 +568,9 @@ d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) 
         .data(places.features)
       .enter().append("text")
         .attr("class", "place")
-		.attr("x", function (d) { return path.centroid(d)[0] })
-		.attr("y", function (d) { return path.centroid(d)[1] })
+		.attr("name", function(d) { return d.id; })
+		.attr("x",    function(d) { return path.centroid(d)[0] })
+		.attr("y",    function(d) { return path.centroid(d)[1] })
 		.attr("dy",".33em")
 		.text(function(d){ var s = d.properties.status;
            return s==="Admin-0 capital"? "◉": s==="Admin-1 capital"? "●" : "⚪"; // ⬤◉⍟☉⚪⚫●⚬◯★☆☆⭐ ⭑ ⭒
@@ -543,8 +589,9 @@ d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) 
         .data(places.features)
       .enter().append("text")
         .attr("class", "place-label")
+		.attr("name",   function(d) { return d.id; })
 		.attr("status", function(d){return d.properties.status})
-		.attr("style",function(d){ 
+		.attr("style",  function(d){ 
 		    var s,t;
             d.properties.status==="Admin-0 capital"? s=wp.label.xl:
             d.properties.status==="Admin-1 capital"? s=wp.label.md : s="";
@@ -555,7 +602,19 @@ d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) 
 		.attr("transform",  function(d) { return "translate(" + projection(d.geometry.coordinates) + ")"; })
         .text(function(d) { return d.geometry.coordinates[0] < EAST-(EAST-WEST)/10 ? d.id: "" } );
 
-
+/* L0 labels ***************************************************** */
+    svg.append("g")
+ 		.attr(":inkscape:groupmode","layer")
+		.attr({'id':'L0_labels',':inkscape:label':'L0_labels'})
+		.attr("style", S.L1_labels + wp.label.md)
+	.selectAll(".countries-label")
+        .data(admin_0.features)
+      .enter().append("text")
+        .attr("style", function(d){ return d.properties.L0 === target? "visibility:none;":""; })
+        .attr("name", function(d) { return d.id ;})
+		.attr("x", function (d) { return path.centroid(d)[0] })
+		.attr("y", function (d) { return path.centroid(d)[1] })
+		.text(function(d) { return d.id; });
 
 /* L1 labels ***************************************************** */
     svg.append("g")
@@ -563,21 +622,23 @@ d3.json("../output/"+target+"/administrative.topo.json", function(error, Stone) 
 		.attr({'id':'L1_labels',':inkscape:label':'L1_labels'})
 		.attr("style", S.L1_labels)
 	.selectAll(".subunit-label")
-        .data(admin_1.features)
+        .data(L1_focus)
       .enter().append("text")
         .attr("class", function(d){ return d.properties.L0 === target? "L1_label": "L1_label invisible"; } )
-        .attr("data-name", function(d) { return d.id ;})
+        .attr("name", function(d) { return d.id ;})
 		.attr("x", function (d) { return path.centroid(d)[0] })
 		.attr("y", function (d) { return path.centroid(d)[1] })
 		.text(function(d) { return d.id; });
-})
+
+	console.log("layers end")
+  }
 }//END fn.InjectMap*/
 
-,
+
 
 /* ****************************************************** */
 /* D3 helpers ****************************** */
-getTransform : function(d,padding_pc, width, projection) { 
+var getTransform = function(d,padding_pc, width, projection) { 
 	var pd =  (100-(2*padding_pc))/100 || (100-(2*5))/100; // default to .9
 	/* GEOJSON PROFILING *********************************** */
 	var b = d3.geo.path()
@@ -597,9 +658,6 @@ getTransform : function(d,padding_pc, width, projection) {
 		t.translate = [(width/2- t.scale * b.cx), (t.height/2 - t.scale * b.cy) ]; //translation
 	return t;
 }
-
-}; // end module
-
 
 /* ****************************************************** */
 /* DOWNLOAD BUTTONS MODULE ****************************** */
@@ -623,10 +681,11 @@ d3.select(selector).html("").append("button")
 			svg.selectAll("path").attr("d", path);
 		}
 	// download:
-		console.log('2'); 
+		console.log('2');
 		var e = document.createElement('script');
-		if (window.location.protocol === 'https:') { e.setAttribute('src', 'https://rawgit.com/NYTimes/svg-crowbar/gh-pages/svg-crowbar.js'); } 
-		else { e.setAttribute('src', 'http://nytimes.github.com/svg-crowbar/svg-crowbar.js'); } 
+		if (window.location.protocol === 'https:') { 
+			e.setAttribute('src', '../js/svg-crowbar.js'); } 
+		else { e.setAttribute('src', '../js/svg-crowbar.js'); }	
 		e.setAttribute('class', 'svg-crowbar'); 
 		document.body.appendChild(e); })
 	.text(" Download"); /* -- Works on Chrome. Feedback welcome for others web browsers.*/
@@ -636,7 +695,9 @@ d3.select(selector).html("").append("button")
 /* ****************************************************** */
 /* SELECT LANGUAGE MODULE ******************************* */
 // 1_wiki_translate
-
+var wikis = {"aa":"Qafár af (Afar)","ab":"Аҧсшәа (Abkhazian)","ace":"Acèh (Achinese)","af":"Afrikaans (Afrikaans)","ak":"Akan (Akan)","als":"Alemannisch (Alemannisch)","am":"አማርኛ (Amharic)","an":"aragonés (Aragonese)","ang":"Ænglisc (Old English)","ar":"العربية (Arabic)","arc":"ܐܪܡܝܐ (Aramaic)","arz":"مصرى (Egyptian Spoken Arabic)","as":"অসমীয়া (Assamese)","ast":"asturianu (Asturian)","av":"авар (Avaric)","ay":"Aymar aru (Aymara)","az":"azərbaycanca (Azerbaijani)","ba":"башҡортса (Bashkir)","bar":"Boarisch (Bavarian)","bat-smg":"žemaitėška (Samogitian)","bcl":"Bikol Central (Bikol Central)","be":"беларуская (Belarusian)","be-x-old":"беларуская (тарашкевіца)‎ (беларуская (тарашкевіца)‎)","bg":"български (Bulgarian)","bh":"भोजपुरी (भोजपुरी)","bi":"Bislama (Bislama)","bjn":"Bahasa Banjar (Banjar)","bm":"bamanankan (Bambara)","bn":"বাংলা (Bengali)","bo":"བོད་ཡིག (Tibetan)","bpy":"বিষ্ণুপ্রিয়া মণিপুরী (Bishnupuriya Manipuri)","br":"brezhoneg (Breton)","bs":"bosanski (Bosnian)","bug":"ᨅᨔ ᨕᨘᨁᨗ (Buginese)","bxr":"буряад (буряад)","ca":"català (Catalan)","cbk-zam":"Chavacano de Zamboanga (Chavacano de Zamboanga)","cdo":"Mìng-dĕ̤ng-ngṳ̄ (Min Dong Chinese)","ce":"нохчийн (Chechen)","ceb":"Cebuano (Cebuano)","ch":"Chamoru (Chamorro)","cho":"Choctaw (Choctaw)","chr":"ᏣᎳᎩ (Cherokee)","chy":"Tsetsêhestâhese (Cheyenne)","ckb":"کوردی (Sorani Kurdish)","co":"corsu (Corsican)","cr":"Nēhiyawēwin / ᓀᐦᐃᔭᐍᐏᐣ (Cree)","crh":"qırımtatarca (Crimean Turkish)","cs":"čeština (Czech)","csb":"kaszëbsczi (Kashubian)","cu":"словѣньскъ / ⰔⰎⰑⰂⰡⰐⰠⰔⰍⰟ (Church Slavic)","cv":"Чӑвашла (Chuvash)","cy":"Cymraeg (Welsh)","da":"dansk (Danish)","de":"Deutsch (German)","diq":"Zazaki (Zazaki)","dsb":"dolnoserbski (Lower Sorbian)","dv":"ދިވެހިބަސް (Divehi)","dz":"ཇོང་ཁ (Dzongkha)","ee":"eʋegbe (Ewe)","el":"Ελληνικά (Greek)","eml":"emiliàn e rumagnòl (Emiliano-Romagnolo)","en":"English (English)","eo":"Esperanto (Esperanto)","es":"español (Spanish)","et":"eesti (Estonian)","eu":"euskara (Basque)","ext":"estremeñu (Extremaduran)","fa":"فارسی (Persian)","ff":"Fulfulde (Fulah)","fi":"suomi (Finnish)","fiu-vro":"Võro (Võro)","fj":"Na Vosa Vakaviti (Fijian)","fo":"føroyskt (Faroese)","fr":"français (French)","frp":"arpetan (Franco-Provençal)","frr":"Nordfriisk (Northern Frisian)","fur":"furlan (Friulian)","fy":"Frysk (Western Frisian)","ga":"Gaeilge (Irish)","gag":"Gagauz (Gagauz)","gan":"贛語 (Gan)","gd":"Gàidhlig (Scottish Gaelic)","gl":"galego (Galician)","glk":"گیلکی (Gilaki)","gn":"Avañe`ẽ (Guarani)","got":"?￰ﾐﾌ﾿?￰ﾐﾌﾹ?￰ﾐﾌﾺ (Gothic)","gu":"ગુજરાતી (Gujarati)","gv":"Gaelg (Manx)","ha":"Hausa (Hausa)","hak":"客家語/Hak-kâ-ngî (Hakka)","haw":"Hawai`i (Hawaiian)","he":"עברית (Hebrew)","hi":"हिन्दी (Hindi)","hif":"Fiji Hindi (Fiji Hindi)","ho":"Hiri Motu (Hiri Motu)","hr":"hrvatski (Croatian)","hsb":"hornjoserbsce (Upper Sorbian)","ht":"Kreyòl ayisyen (Haitian)","hu":"magyar (Hungarian)","hy":"Հայերեն (Armenian)","hz":"Otsiherero (Herero)","ia":"interlingua (Interlingua)","id":"Bahasa Indonesia (Indonesian)","ie":"Interlingue (Interlingue)","ig":"Igbo (Igbo)","ii":"ꆇꉙ (Sichuan Yi)","ik":"Iñupiak (Inupiaq)","ilo":"Ilokano (Iloko)","io":"Ido (Ido)","is":"íslenska (Icelandic)","it":"italiano (Italian)","iu":"ᐃᓄᒃᑎᑐᑦ/inuktitut (Inuktitut)","ja":"日本語 (Japanese)","jbo":"Lojban (Lojban)","jv":"Basa Jawa (Javanese)","ka":"ქართული (Georgian)","kaa":"Qaraqalpaqsha (Kara-Kalpak)","kab":"Taqbaylit (Kabyle)","kbd":"Адыгэбзэ (Kabardian)","kg":"Kongo (Kongo)","ki":"Gĩkũyũ (Kikuyu)","kj":"Kwanyama (Kuanyama)","kk":"қазақша (Kazakh)","kl":"kalaallisut (Kalaallisut)","km":"ភាសាខ្មែរ (Khmer)","kn":"ಕನ್ನಡ (Kannada)","ko":"한국어 (Korean)","koi":"Перем Коми (Komi-Permyak)","kr":"Kanuri (Kanuri)","krc":"къарачай-малкъар (Karachay-Balkar)","ks":"कॉशुर / کٲشُر (Kashmiri)","ksh":"Ripoarisch (Colognian)","ku":"Kurdî (Kurdish)","kv":"коми (Komi)","kw":"kernowek (Cornish)","ky":"Кыргызча (Kyrgyz)","la":"Latina (Latin)","lad":"Ladino (Ladino)","lb":"Lëtzebuergesch (Luxembourgish)","lbe":"лакку (лакку)","lez":"лезги (Lezghian)","lg":"Luganda (Ganda)","li":"Limburgs (Limburgish)","lij":"Ligure (Ligurian)","lmo":"lumbaart (Lombard)","ln":"lingála (Lingala)","lo":"ລາວ (Lao)","lt":"lietuvių (Lithuanian)","ltg":"latgaļu (Latgalian)","lv":"latviešu (Latvian)","mai":"मैथिली (Maithili)","map-bms":"Basa Banyumasan (Basa Banyumasan)","mdf":"мокшень (Moksha)","mg":"Malagasy (Malagasy)","mh":"Ebon (Marshallese)","mhr":"олык марий (Eastern Mari)","mi":"Māori (Maori)","min":"Baso Minangkabau (Minangkabau)","mk":"македонски (Macedonian)","ml":"മലയാളം (Malayalam)","mn":"монгол (Mongolian)","mo":"молдовеняскэ (молдовеняскэ)","mr":"मराठी (Marathi)","mrj":"кырык мары (Hill Mari)","ms":"Bahasa Melayu (Malay)","mt":"Malti (Maltese)","mus":"Mvskoke (Creek)","mwl":"Mirandés (Mirandese)","my":"မြန်မာဘာသာ (Burmese)","myv":"эрзянь (Erzya)","mzn":"مازِرونی (Mazanderani)","na":"Dorerin Naoero (Nauru)","nah":"Nāhuatl (Nāhuatl)","nap":"Napulitano (Neapolitan)","nds":"Plattdüütsch (Low German)","nds-nl":"Nedersaksies (Low Saxon (Netherlands))","ne":"नेपाली (Nepali)","new":"नेपाल भाषा (Newari)","ng":"Oshiwambo (Ndonga)","nl":"Nederlands (Dutch)","nn":"norsk nynorsk (Norwegian Nynorsk)","no":"norsk bokmål (Norwegian (bokmål))","nov":"Novial (Novial)","nrm":"Nouormand (Nouormand)","nso":"Sesotho sa Leboa (Northern Sotho)","nv":"Diné bizaad (Navajo)","ny":"Chi-Chewa (Nyanja)","oc":"occitan (Occitan)","om":"Oromoo (Oromo)","or":"ଓଡ଼ିଆ (Oriya)","os":"Ирон (Ossetic)","pa":"ਪੰਜਾਬੀ (Punjabi)","pag":"Pangasinan (Pangasinan)","pam":"Kapampangan (Pampanga)","pap":"Papiamentu (Papiamento)","pcd":"Picard (Picard)","pdc":"Deitsch (Pennsylvania German)","pfl":"Pälzisch (Palatine German)","pi":"पालि (Pali)","pih":"Norfuk / Pitkern (Norfuk / Pitkern)","pl":"polski (Polish)","pms":"Piemontèis (Piedmontese)","pnb":"پنجابی (Western Punjabi)","pnt":"Ποντιακά (Pontic)","ps":"پښتو (Pashto)","pt":"português (Portuguese)","qu":"Runa Simi (Quechua)","rm":"rumantsch (Romansh)","rmy":"Romani (Romani)","rn":"Kirundi (Rundi)","ro":"română (Romanian)","roa-rup":"armãneashti (Aromanian)","roa-tara":"tarandíne (tarandíne)","ru":"русский (Russian)","rue":"русиньскый (Rusyn)","rw":"Kinyarwanda (Kinyarwanda)","sa":"संस्कृतम् (Sanskrit)","sah":"саха тыла (Sakha)","sc":"sardu (Sardinian)","scn":"sicilianu (Sicilian)","sco":"Scots (Scots)","sd":"سنڌي (Sindhi)","se":"sámegiella (Northern Sami)","sg":"Sängö (Sango)","sh":"srpskohrvatski / српскохрватски (Serbo-Croatian)","si":"සිංහල (Sinhala)","simple":"Simple English (Simple English)","sk":"slovenčina (Slovak)","sl":"slovenščina (Slovenian)","sm":"Gagana Samoa (Samoan)","sn":"chiShona (Shona)","so":"Soomaaliga (Somali)","sq":"shqip (Albanian)","sr":"српски / srpski (Serbian)","srn":"Sranantongo (Sranan Tongo)","ss":"SiSwati (Swati)","st":"Sesotho (Southern Sotho)","stq":"Seeltersk (Saterland Frisian)","su":"Basa Sunda (Sundanese)","sv":"svenska (Swedish)","sw":"Kiswahili (Swahili)","szl":"ślůnski (Silesian)","ta":"தமிழ் (Tamil)","te":"తెలుగు (Telugu)","tet":"tetun (Tetum)","tg":"тоҷикӣ (Tajik)","th":"ไทย (Thai)","ti":"ትግርኛ (Tigrinya)","tk":"Türkmençe (Turkmen)","tl":"Tagalog (Tagalog)","tn":"Setswana (Tswana)","to":"lea faka-Tonga (Tongan)","tpi":"Tok Pisin (Tok Pisin)","tr":"Türkçe (Turkish)","ts":"Xitsonga (Tsonga)","tt":"татарча/tatarça (Tatar)","tum":"chiTumbuka (Tumbuka)","tw":"Twi (Twi)","ty":"reo tahiti (Tahitian)","tyv":"тыва дыл (Tuvinian)","udm":"удмурт (Udmurt)","ug":"ئۇيغۇرچە / Uyghurche (Uyghur)","uk":"українська (Ukrainian)","ur":"اردو (Urdu)","uz":"oʻzbekcha (Uzbek)","ve":"Tshivenda (Venda)","vec":"vèneto (Venetian)","vep":"vepsän kel’ (Veps)","vi":"Tiếng Việt (Vietnamese)","vls":"West-Vlams (West Flemish)","vo":"Volapük (Volapük)","wa":"walon (Walloon)","war":"Winaray (Waray)","wo":"Wolof (Wolof)","wuu":"吴语 (Wu)","xal":"хальмг (Kalmyk)","xh":"isiXhosa (Xhosa)","xmf":"მარგალური (Mingrelian)","yi":"ייִדיש (Yiddish)","yo":"Yorùbá (Yoruba)","za":"Vahcuengh (Zhuang)","zea":"Zeêuws (Zeeuws)","zh":"中文 (Chinese)","zh-classical":"文言 (Classical Chinese)","zh-min-nan":"Bân-lâm-gú (Chinese (Min Nan))","zh-yue":"粵語 (Cantonese)","zu":"isiZulu (Zulu)"};
+//Source: https://meta.wikimedia.org/wiki/Special:SiteMatrix
+//Languages: 288!
 
 /* ****************************************************** */
 /* SELECT ITEM MODULE *********************************** */
