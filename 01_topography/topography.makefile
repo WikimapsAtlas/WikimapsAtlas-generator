@@ -2,6 +2,8 @@
 # inherit ITEM, WEST, NORTH, EAST, SOUTH from master.makefile or command.
 escaped_A = $(subst $e ,_,$(ITEM))
 WIDTH=1980
+#PROJECTION=EPSG:3395
+PROJECTION=EPSG:3857
 QUANTIZATION=1e4
 TOPOJSON_LOC=../node_modules/topojson/bin/topojson
 TOPOJSON_GLO=topojson
@@ -53,16 +55,10 @@ zvals: crop
 	echo $$zMax;\
 	python slice.py $$zMin $$zMax $(SLICES) > ./tmp.txt
 
-
-# zMin=1107
-# zMax=1187
-# zSlices=6
-# 1105,1110,1020,1030,1150,1170
-
 #---- Crop, resize, regeolocalise
 crop: clean
 	gdal_translate -projwin $(WEST) $(NORTH) $(EAST) $(SOUTH) ../data/noaa/ETOPO1_Ice_g_geotiff.tif cropXL.tmp.tif
-	gdalwarp -of GTiff -s_srs epsg:4326 -t_srs epsg:4326 -te $(WEST) $(SOUTH) $(EAST) $(NORTH) \
+	gdalwarp -of GTiff -s_srs epsg:4326 -t_srs $(PROJECTION) -te $(WEST) $(SOUTH) $(EAST) $(NORTH) \
 		-ts $(WIDTH) 0 cropXL.tmp.tif crop.tmp.tif
 	# ulx uly lrx lry (geodegrees)  // W N E S #todo: add name parameter
 #	convert crop.origin.tif 	-resize $(WIDTH) crop.small.tif

@@ -8,11 +8,11 @@ jsdom.env(
   "<html><body></body></html>",        // CREATE DOM HOOK:
   [ 'http://d3js.org/d3.v3.min.js',    // JS DEPENDENCIES online ...
   '../js/d3.v3.min.js',
+  '../js/b64.js',
   '../js/jquery-2.1.3.min.js', 
   '../js/topojson.v1.min.js', 
   '../js/queue.min.js', 
-  '../js/wikiatlas.js',
-  '../js/b64.js' ],                 // ... & offline
+  '../js/wikiatlas.js' ],                 // ... & offline
 
 /* COLLECT ENV.VARIABLES ******************************************* */
   function (err, window) {

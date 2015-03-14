@@ -7,7 +7,7 @@ EXPORT imgb64=nothing
 #	geo: { WEST, NORTH, EAST, SOUTH } ==> see master file's variable declaration
 #	script: { DATE, VERSION }         ==> see master file's variable declaration
 WIDTH=1980
-HEIGHT=`identify ../output/$(ITEM)/color.gis.tif | cut -f 3 -d " " | sed s/.*x//`
+#HEIGHT=`identify ../output/$(ITEM)/color.gis.tif | cut -f 3 -d " " | sed s/.*x//`
 
 #---- MAKEFILE
 output: b64

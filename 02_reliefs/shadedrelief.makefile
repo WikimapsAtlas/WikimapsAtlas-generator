@@ -4,8 +4,8 @@ SHELL=/bin/bash
 #---- DEFAULT VALUES (customizable):
 WIDTH=1980
 # 1: equirectangular, 2,3: mercator
-PROJECTION=EPSG:4326
-#PROJECTION=EPSG:3857
+#PROJECTION=EPSG:4326
+PROJECTION=EPSG:3857
 FUZZ=7
 AZ=315
 Z=5
@@ -14,7 +14,7 @@ S=111120
 #S=370400 
 #---- MAKEFILE
 #---- End here
-done: shade_trans composite regeo clean
+done: shade_trans composite regeo clean reproj2
 	mkdir -p ../output/$(ITEM)
 	cp ./*.{jpg,png,gis.*} ../output/$(ITEM)/
 
@@ -42,17 +42,24 @@ shade_trans: shade_white
 	convert whited.jpg -alpha copy -channel alpha -negate +channel trans.png 				# nice & light, +++ kept
 	convert grey2trans.tmp.png -alpha copy -channel alpha -negate +channel shadedrelief.trans.png     # ++  deleted line
 
-shade_white: shade_grey
+shade_white: shade_grey reproj2
 	convert shadedrelief.tmp.tif -fuzz $(FUZZ)% -fill "#FFFFFF" -opaque "#DDDDDD"  whited.jpg 	# lighter (0.9M) kept
 # 
 	convert shadedrelief.tmp.tif -fuzz $(FUZZ)% -transparent "#DDDDDD" grey2trans.tmp.png		# heavier (2.6M) deleted line
 
+reproj2: shade_grey
+	gdalwarp -of GTiff -s_srs EPSG:4326 -t_srs $(PROJECTION) shadedrelief-cropXL.tmp.tif shadedrelief.tmp.tif
+	gdalwarp  -ts $(WIDTH) 0  shadedrelief.tmp.tif shadedrelief2.tmp.tif
+
 shade_grey: reproj
-	gdaldem hillshade reproj.tmp.tif shadedrelief.tmp.tif -s 1 -z $(Z) -az $(AZ) -alt 60 -compute_edges  # 
+	gdaldem hillshade reproj.tmp.tif  shadedrelief-reproj.tmp.tif  -s 1    -z $(Z) -az $(AZ) -alt 60 -compute_edges  # 
+	gdaldem hillshade resized.tmp.tif shadedrelief-resized.tmp.tif -s $(S) -z $(Z) -az $(AZ) -alt 60 -compute_edges  # 
+	gdaldem hillshade cropXL.tmp.tif  shadedrelief-cropXL.tmp.tif  -s $(S) -z $(Z) -az $(AZ) -alt 60 -compute_edges  # 
 
 #---- Crop, Resize
 reproj: resize
-	gdalwarp -of GTiff -s_srs EPSG:4326 -t_srs EPSG:3857 -r bilinear resized.tmp.tif reproj.tmp.tif
+	gdalwarp -of GTiff -s_srs EPSG:4326 -t_srs $(PROJECTION) -r cubic resized.tmp.tif reproj.tmp.tif
+
 resize: crop
 #	convert shadedrelief.tmp.tif 	-resize $(WIDTH) shadedrelief.sized.tmp.tif
 	gdalwarp  -s_srs EPSG:4326 -t_srs EPSG:4326 -te $(WEST) $(SOUTH) $(EAST) $(NORTH) \

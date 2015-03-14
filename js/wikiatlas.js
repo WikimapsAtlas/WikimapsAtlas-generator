@@ -346,12 +346,13 @@ var locationMap = function(hookId, width, target, title, WEST, NORTH, EAST, SOUT
 var width  = 600 || width,
 	title_ = title.replace(/ /g, "_").replace(/(_)+/g, "_"),
 	titleId = title.replace(/[^a-zA-Z0-9]/gi, "_").replace(/(_)+/g, "_");
-var svg = d3.select(hookId).append("svg")
+var svg = d3.select(hookId).append("svg:svg")
+        .attr('version', '1.1')
 		.attr("name", title_+"_administrative_map_\(2015\)")
-		.attr("id", titleId+"_administrative_map_\(2015\)")
+		.attr("id", titleId)
 		.attr("width", width)
 		//.attr(':xmlns:xlink','').attr('xmlns:xlink','').attr('xlink','')
-		.attr(':xmlns:geo','http://www.example.com/boundingbox/')
+//		.attr(':xmlns:geo','http://www.example.com/boundingbox/')
 		.attr(':xmlns:inkscape','http://www.inkscape.org/namespaces/inkscape')
 		.attr(":xmlns:cc","http://creativecommons.org/ns#");
 	/*  var svg = d3.select(hookId).append("svg").attr("width", width)
@@ -361,15 +362,17 @@ var svg = d3.select(hookId).append("svg")
 			.attr(":xmlns:rdf","http://www.w3.org/1999/02/22-rdf-syntax-ns#") 
 	; */
 
-
+	$('svg').attr('xmlns:geo', 'http://example.com/boundingbox/');
 	//	d3.ns.qualify("geo:bb");
-	svg.append(":geo:g").attr(":geo:id","geo")
+	svg.append(':geo:g')
+//		.attr(':xmlns:geo','http://www.example.com/boundingbox/')
+		.attr(':geo:id','geo')
 		.attr(':geo:syntax', "WSEN bounding box in decimal degrees")
-		.attr(':geo:WEST',  WEST)
-		.attr(':geo:SOUTH', SOUTH)
-		.attr(':geo:EAST',  EAST)
-		.attr(':geo:NORTH', NORTH)
-		.attr(':geo:Title', title);
+		.attr(':geo:west',  WEST)
+		.attr(':geo:south', SOUTH)
+		.attr(':geo:east',  EAST)
+		.attr(':geo:north', NORTH)
+		.attr(':geo:title', title);
 	
 // Projection default
 var projection = d3.geo.mercator()
@@ -382,14 +385,15 @@ injectPattern("svg"); //Pattern injection : disputed-in, disputed-out
 
 console.log("pattern()");
 var url1 = "https://rugger-demast.codio.io/output/"+target+"/administrative.topo.json",
-	url2 = "https://rugger-demast.codio.io/output/"+target+"/color.jpg.b64",
-	url3 = "https://rugger-demast.codio.io/output/"+target+"/trans.png.b64";
-console.log(url2);
+	url2 = "https://rugger-demast.codio.io/output/"+target+"/color.jpg",
+	//url3 = "https://rugger-demast.codio.io/output/"+target+"/color.jpg.b64",
+	url4 = "https://rugger-demast.codio.io/output/"+target+"/trans.png.b64";
 
  queue()
 	.defer(d3.json, url1)
-	.defer(d3.text, url2)
-	.defer(d3.text, url3)
+	.defer(d3.uri, url2)
+	//.defer(d3.text, url3)
+	.defer(d3.text, url4)
 	.await(makeMap); /**/
 /** /	
 var Stone = (function () {
@@ -411,7 +415,7 @@ var Stone = (function () {
 /* *************************************************************** */
 
 	// Data (getJSON: TopoJSON)
-function makeMap(error, json, img1, img2){
+function makeMap(error, json, file2, file3){
 		console.log("MakeMap: start");
 		//console.log("d3.json()");
 /* DATA ********************************************************** */
@@ -463,12 +467,11 @@ function makeMap(error, json, img1, img2){
 	bg.append("g")
 	//.attr("transform","scale(1, 1)")
 		.attr(":inkscape:groupmode","layer")
-		.attr({'id':'topography_(raster)',':inkscape:label':'topography_(raster)'})
+		.attr({'id':'topography_raster',':inkscape:label':'topography_(raster)'})
 	  .append("image")
-		.attr("class", "topography_raster")
 		.attr("width", width)
 		.attr("height", t.height)
-		.attr("xlink:xlink:href", "data:image/png;base64," + img1); // replace link by data URI // replace href link by data URI, d3js + client handle the missing xlink
+		.attr("xlink:xlink:href", "data:image/jpg;base64," + file2); // replace link by data URI // replace href link by data URI, d3js + client handle the missing xlink
 
 /* Polygons ****************************************************** */
 //Append L0 polygons 
@@ -502,11 +505,11 @@ function makeMap(error, json, img1, img2){
 
 	var hillshade = svg.append("g")
 		.attr(":inkscape:groupmode","layer")
-		.attr({'id':'hillshade_(raster)',':inkscape:label':'hillshade_(raster)'})
+		.attr({'id':'hillshade_raster',':inkscape:label':'hillshade_(raster)'})
 	  .append("image")
 		.attr("width", width)
 		.attr("height", t.height)
-		.attr("xlink:xlink:href", "data:image/png;base64," + img2); // replace link by data URI // replace href link by data URI, d3js + client handle the missing xlink
+		.attr("xlink:xlink:href", "data:image/png;base64," + file3); // replace link by data URI // replace href link by data URI, d3js + client handle the missing xlink
 
 
 /* Arcs ********************************************************** */
