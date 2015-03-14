@@ -22,6 +22,8 @@ b64: clean
 	do echo $$file ; openssl base64 -in $$file -out ../output/$(ITEM)/`basename $$file`.b64; \
 	done
 
+server:
+	node ../node_modules/.bin/http-server
 clean:
 	rm -f *.svg
 #	rm -f *.json
