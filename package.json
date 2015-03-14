@@ -4,10 +4,12 @@
   "description": "Wikimaps Atlas (2014)",
   "main": "nothing here",
   "dependencies": {
-      "jsdom":"~1.0.3",
-      "d3":"~3.5.5",
-      "topojson": "~1.6.18",
-      "minimist":"~1.1.0"
+    "d3": "~3.5.5",
+    "http-server": "^0.7.5",
+    "simple-server": "^1.0.1",
+    "jsdom": "~1.0.3",
+    "minimist": "~1.1.0",
+    "topojson": "~1.6.18"
   },
   "author": "Hugo lopez and Arun Ganesh",
   "license": "BSD"

@@ -19,9 +19,10 @@ jsdom.env(
 
 console.log(typeof window.locationMap);  // => 'function'
 console.log(typeof window.getTransform); // => 'function'
+console.log(typeof window); // => 'function'
 console.log(typeof window.zemba);        // => undefined
 
-    var WEST  = process.env.WEST,     // <<============== IMPORTANT !!
+    var WEST  = process.env.WEST,     // <<============== get shell variables !
         NORTH = process.env.NORTH,
         EAST  = process.env.EAST,
         SOUTH = process.env.SOUTH,
@@ -36,7 +37,7 @@ console.log(typeof window.zemba);        // => undefined
 /* ***************************************************************** */
 /* D3js FUNCTION *************************************************** */
 
-window.locationMap("body",800, target, title, WEST, NORTH, EAST, SOUTH);
+window.locationMap("body",800, target, title, WEST, NORTH, EAST, SOUTH, true);
 
 // END svg design
 

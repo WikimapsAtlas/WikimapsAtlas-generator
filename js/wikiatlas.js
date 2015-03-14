@@ -339,7 +339,8 @@ step(); */
 /* ****************************************************** */
 /* LOCATION MAP MODULE  ********************************* */
 
-var locationMap = function(hookId, width, target, title, WEST, NORTH, EAST, SOUTH){
+var locationMap = function(hookId, width, target, title, WEST, NORTH, EAST, SOUTH, nodejs){
+	var nodejs = 0 || nodejs;
 	console.log("locationMp()");
 /* SETTINGS ******************************************************************** */
 // SVG injection:
@@ -382,18 +383,20 @@ var path = d3.geo.path()
 		.projection(projection); //  .pointRadius(4)
 
 injectPattern("svg"); //Pattern injection : disputed-in, disputed-out
-
 console.log("pattern()");
-var url1 = "../output/"+target+"/administrative.topo.json",
-	url2 = "../output/"+target+"/color.jpg.b64",
-	//url3 = "https://rugger-demast.codio.io/output/"+target+"/color.jpg",
-	url4 = "../output/"+target+"/trans.png.b64";
+
+
+// raster images urls
+var root = "../output/"+target;
+if (nodejs) { root = "http://localhost:8080/output/"+target; } 
+var url1  = root+"/administrative.topo.json", // https://rugger-demast.codio.io/output/"
+	url2 = root+"/color.jpg.b64",
+	url3 = root+"/trans.png.b64";
 
  queue()
 	.defer(d3.json, url1)
-	.defer(d3.uri, url2)
-	//.defer(d3.text, url3)
-	.defer(d3.text, url4)
+	.defer(d3.text,  url2)
+	.defer(d3.text,  url3)
 	.await(makeMap); /**/
 /** /	
 var Stone = (function () {
