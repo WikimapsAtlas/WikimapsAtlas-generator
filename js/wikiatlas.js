@@ -384,10 +384,10 @@ var path = d3.geo.path()
 injectPattern("svg"); //Pattern injection : disputed-in, disputed-out
 
 console.log("pattern()");
-var url1 = "https://rugger-demast.codio.io/output/"+target+"/administrative.topo.json",
-	url2 = "https://rugger-demast.codio.io/output/"+target+"/color.jpg",
-	//url3 = "https://rugger-demast.codio.io/output/"+target+"/color.jpg.b64",
-	url4 = "https://rugger-demast.codio.io/output/"+target+"/trans.png.b64";
+var url1 = "../output/"+target+"/administrative.topo.json",
+	url2 = "../output/"+target+"/color.jpg.b64",
+	//url3 = "https://rugger-demast.codio.io/output/"+target+"/color.jpg",
+	url4 = "../output/"+target+"/trans.png.b64";
 
  queue()
 	.defer(d3.json, url1)
