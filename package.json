@@ -6,7 +6,6 @@
   "dependencies": {
     "d3": "~3.5.5",
     "http-server": "^0.7.5",
-    "simple-server": "^1.0.1",
     "jsdom": "~1.0.3",
     "minimist": "~1.1.0",
     "topojson": "~1.6.18"

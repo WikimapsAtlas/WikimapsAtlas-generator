@@ -6,10 +6,9 @@
   "dependencies": {
     "d3": "~3.5.5",
     "http-server": "^0.7.5",
+    "simple-server": "^1.0.1",
     "jsdom": "~1.0.3",
     "minimist": "~1.1.0",
-    "node-static": "^0.7.6",
-    "simple-server": "^1.0.1",
     "topojson": "~1.6.18"
   },
   "author": "Hugo lopez and Arun Ganesh",

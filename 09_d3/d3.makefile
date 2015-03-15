@@ -14,7 +14,7 @@ output: b64
 #	WIDTH=$(WIDTH) node svgcreator.node.js 		# see inside this file for parameters' calls
 	WIDTH=$(WIDTH) node location.node.js		# see inside this file for parameters' calls
 
-b64: clean
+b64: clean server
 	for file in ../output/$(ITEM)/*.jpg; \
 	do echo $$file ; openssl base64 -in $$file -out ../output/$(ITEM)/`basename $$file`.b64; \
 	done
@@ -23,7 +23,7 @@ b64: clean
 	done
 
 server:
-	node ../node_modules/.bin/http-server
+#	node ../node_modules/.bin/http-server
 clean:
 	rm -f *.svg
 #	rm -f *.json

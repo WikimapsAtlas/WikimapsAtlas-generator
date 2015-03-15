@@ -385,7 +385,6 @@ var path = d3.geo.path()
 injectPattern("svg"); //Pattern injection : disputed-in, disputed-out
 console.log("pattern()");
 
-
 // raster images urls
 var root = "../output/"+target;
 if (nodejs) { root = "http://localhost:8080/output/"+target; } 
