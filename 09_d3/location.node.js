@@ -58,10 +58,12 @@ window.locationMap("body",800, target, title, WEST, NORTH, EAST, SOUTH, true);
         // Type: L1 locator
         var nodes = window.d3.selectAll("#L1 > *"); // SO: /29278107/
         for(var j=1;j<= nodes[0].length;j++){
-          var nodeName = window.d3.selectAll('#L1 > *:nth-child('+j+')').attr("name");
+          nodes.attr("style",null)
+          var node = window.d3.selectAll('#L1 > *:nth-child('+j+')'),
+            nodeName = node.attr("name");
+          node.attr("style", "fill:#B10000;fill-opacity:1;")
           console.log("Paint & print: "+j+", name: "+nodeName)
-          nodes.attr("style", function(i){ j===35? console.log(i,j):""; return i.id===nodeName?"fill:#B10000;fill-opacity:1;":"";})
-         fs.writeFileSync(title.replace(/ /g,"_") +',_'+ nodeName.replace(/ /g,"_")+'_locator_map_(2015).svg', svgheader + window.d3.select("body").html()) 
+          fs.writeFileSync(title.replace(/ /g,"_") +',_'+ nodeName.replace(/ /g,"_")+'_locator_map_(2015).svg', svgheader + window.d3.select("body").html()) 
          }
 /** /
         //Type: topo
