@@ -8,28 +8,30 @@ jsdom.env(
   "<html><body></body></html>",        // CREATE DOM HOOK:
   [ 'http://d3js.org/d3.v3.min.js',    // JS DEPENDENCIES online ...
   '../js/d3.v3.min.js',
-  '../js/b64.js',
-  '../js/jquery-2.1.3.min.js', 
+  '../js/jquery-2.1.3.min.js',
   '../js/topojson.v1.min.js', 
   '../js/queue.min.js', 
-  '../js/wikiatlas.js' ],                 // ... & offline
+  '../js/wikiatlas.js',
+  '../js/b64.js' ],                 // ... & offline
 
 /* COLLECT ENV.VARIABLES ******************************************* */
   function (err, window) {
 
-console.log(typeof window.locationMap);  // => 'function'
-console.log(typeof window.getTransform); // => 'function'
-console.log(typeof window); // => 'function'
-console.log(typeof window.zemba);        // => undefined
+//Check access to libraries
+console.log(typeof window.locationMap);  // => 'function' = ok
+console.log(typeof window.getTransform); // => 'function' = ok
+console.log(typeof window);              // => 'function' = ok
+console.log(typeof window.zemba);        // => undefined  = ok.
 
-    var WEST  = process.env.WEST,     // <<============== get shell variables !
+// Parameters from Shell to JS
+    var WEST  = process.env.WEST, 
         NORTH = process.env.NORTH,
         EAST  = process.env.EAST,
         SOUTH = process.env.SOUTH,
         target= process.env.ITEM,
         title = process.env.ITEM,
         width = process.env.WIDTH;
-
+// New paramater (if needed)
     var DATE  = (new Date()).toISOString().slice(0,10).replace(/-/g,""),
         VERSION = process.env.VERSION,
         COMMAND = "make -f master.makefile ...";
@@ -51,7 +53,21 @@ window.locationMap("body",800, target, title, WEST, NORTH, EAST, SOUTH, true);
         window.d3.select("svg")
             .attr(':xmlns','http://www.w3.org/2000/svg')            // if not: file does not appear to have any style information
             .attr(':xmlns:xlink','http://www.w3.org/1999/xlink');   // if not: Namespace prefix xlink for href
-        fs.writeFileSync(title.replace(/ /g,"_") + '_administrative_map_(2015).svg', svgheader + window.d3.select("body").html()) },
+        // Type: admin
+        fs.writeFileSync(title.replace(/ /g,"_") + '_administrative_map_(2015).svg', svgheader + window.d3.select("body").html()) 
+        // Type: L1 locator
+        var nodes = window.d3.selectAll("#L1 > *"); // SO: /29278107/
+        for(var j=1;j<= nodes[0].length;j++){
+          var nodeName = window.d3.selectAll('#L1 > *:nth-child('+j+')').attr("name");
+          console.log("Paint & print: "+j+", name: "+nodeName)
+          nodes.attr("style", function(i){ j===35? console.log(i,j):""; return i.id===nodeName?"fill:#B10000;fill-opacity:1;":"";})
+         fs.writeFileSync(title.replace(/ /g,"_") +',_'+ nodeName.replace(/ /g,"_")+'_locator_map_(2015).svg', svgheader + window.d3.select("body").html()) 
+         }
+/** /
+        //Type: topo
+        window.d3.select(".raster").attr(":xlink:href", "")
+/**/
+      },
       12000
   );
 

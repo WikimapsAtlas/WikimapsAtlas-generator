@@ -17,12 +17,13 @@ export VERSION=0.5
 
 #---- MAKE SCRIPT
 run:
+#node ./node_modules/.bin/http-server
 #vector relief | works
 #	$(MAKE) -C 01_topography		-f topography.makefile
 #raster relief | works
-	$(MAKE) -C 02_reliefs 			-f shadedrelief.makefile
+ #	$(MAKE) -C 02_reliefs 			-f shadedrelief.makefile
 #admin | works
-#	$(MAKE) -C 03_administrative 	-f administrative.makefile
+ #	$(MAKE) -C 03_administrative 	-f administrative.makefile
 #water | works
 #	$(MAKE) -C 04_water 			-f water.makefile
 #files grouping | todo

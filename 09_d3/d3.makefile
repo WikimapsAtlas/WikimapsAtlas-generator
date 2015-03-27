@@ -10,6 +10,10 @@ WIDTH=1980
 #HEIGHT=`identify ../output/$(ITEM)/color.gis.tif | cut -f 3 -d " " | sed s/.*x//`
 
 #---- MAKEFILE
+done: output
+	mkdir -p ../output/$(ITEM)
+	cp ./*.{svg} ../output/$(ITEM)/
+	
 output: b64
 #	WIDTH=$(WIDTH) node svgcreator.node.js 		# see inside this file for parameters' calls
 	WIDTH=$(WIDTH) node location.node.js		# see inside this file for parameters' calls

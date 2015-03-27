@@ -341,7 +341,7 @@ step(); */
 
 var locationMap = function(hookId, width, target, title, WEST, NORTH, EAST, SOUTH, nodejs){
 	var nodejs = 0 || nodejs;
-	console.log("locationMp()");
+	console.log("locationMap()");
 /* SETTINGS ******************************************************************** */
 // SVG injection:
 var width  = 600 || width,
@@ -377,7 +377,7 @@ var svg = d3.select(hookId).append("svg:svg")
 	
 // Projection default
 var projection = d3.geo.mercator()
-		.scale(150)
+		.scale(1)
 		.translate([0, 0]);
 var path = d3.geo.path()
 		.projection(projection); //  .pointRadius(4)
@@ -395,8 +395,8 @@ var url1  = root+"/administrative.topo.json", // https://rugger-demast.codio.io/
 
  queue()
 	.defer(d3.json, url1)
-	.defer(d3.text,  url2)
-	.defer(d3.text,  url3)
+	.defer(d3.text, url2)
+	.defer(d3.text, url3)
 	.await(makeMap); /**/
 /** /	
 var Stone = (function () {
@@ -495,12 +495,12 @@ function makeMap(error, json, file2, file3){
     var L1 = svg.append("g")
  		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'L1',':inkscape:label':'L1'})
+		.attr("style", S.focus)
 	.selectAll(".subunit")
         .data(L1_focus)
       .enter().append("path")
-        .attr("class", function(d){ return d.properties.L0 === target? "L1": "L1 invisible"; } )
         .attr("name", function(d) { return d.id; })
-        .attr("style", function(d){ return d.properties.L0 === target? S.focus : S.land; } )
+//        .attr("style", function(d){ return d.properties.L0 === target? S.focus : S.land; } ) // filter done in data
         .attr("d", path )
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
        // .on("mouseover", )
