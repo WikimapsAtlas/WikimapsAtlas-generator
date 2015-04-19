@@ -5,11 +5,29 @@
   "main": "nothing here",
   "dependencies": {
     "d3": "~3.5.5",
+    "forever": "^0.14.1",
     "http-server": "^0.7.5",
     "jsdom": "~1.0.3",
     "minimist": "~1.1.0",
     "topojson": "~1.6.18"
   },
-  "author": "Hugo lopez and Arun Ganesh",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/<...>/<...>.git"
+  },
+  "bugs": {
+    "url": "https://github.com/<...>/<...>/issues"
+  },
+  "author": [ 
+      "Hugo lopez <hugo.lpz@gmail.com> ", 
+      "Arun Ganesh <arun.planemad@gmail.com>"
+    ],
+  "keywords": [
+    "map",
+    "d3js"
+  ],
+  "scripts": {
+    "test": ""
+  },
   "license": "BSD"
 }

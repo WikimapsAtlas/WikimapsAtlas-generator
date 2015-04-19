@@ -29,6 +29,7 @@ var wp={};
 wp.stroke = {
 	0: "stroke:none;stroke-linejoin:round;",
 	no:"stroke:none;stroke-linejoin:round;",
+	xs:"stroke-width:0.5px;stroke-linejoin:round;",
 	sm:"stroke-width:1.0px;stroke-linejoin:round;",
 	md:"stroke-width:1.5px;stroke-linejoin:round;",
 	lg:"stroke-width:2.0px;stroke-linejoin:round;",
@@ -353,7 +354,7 @@ var svg = d3.select(hookId).append("svg:svg")
 		.attr("id", titleId)
 		.attr("width", width)
 		//.attr(':xmlns:xlink','').attr('xmlns:xlink','').attr('xlink','')
-//		.attr(':xmlns:geo','http://www.example.com/boundingbox/')
+//		.attr(':xmlns:geo','http://www.w3.org/2000/svg')
 		.attr(':xmlns:inkscape','http://www.inkscape.org/namespaces/inkscape')
 		.attr(":xmlns:cc","http://creativecommons.org/ns#");
 	/*  var svg = d3.select(hookId).append("svg").attr("width", width)
@@ -363,10 +364,10 @@ var svg = d3.select(hookId).append("svg:svg")
 			.attr(":xmlns:rdf","http://www.w3.org/1999/02/22-rdf-syntax-ns#") 
 	; */
 
-	$('svg').attr('xmlns:geo', 'http://example.com/boundingbox/');
+	$('svg').attr('xmlns:geo', 'http://www.w3.org/2000/svg');
 	//	d3.ns.qualify("geo:bb");
 	svg.append(':geo:g')
-//		.attr(':xmlns:geo','http://www.example.com/boundingbox/')
+		.attr(':xmlns:geo','http://www.w3.org/2000/svg')
 		.attr(':geo:id','geo')
 		.attr(':geo:syntax', "WSEN bounding box in decimal degrees")
 		.attr(':geo:west',  WEST)
@@ -391,12 +392,15 @@ var root = "../output/"+target;
 if (nodejs) { root = "http://localhost:8080/output/"+target; } 
 var url1  = root+"/administrative.topo.json", // https://rugger-demast.codio.io/output/"
 	url2 = root+"/color.jpg.b64",
-	url3 = root+"/trans.png.b64";
+	url3 = root+"/trans.png.b64",
+	url4  = root+"/waters.topo.json"
+;
 
  queue()
 	.defer(d3.json, url1)
 	.defer(d3.text, url2)
 	.defer(d3.text, url3)
+	.defer(d3.json, url4)
 	.await(makeMap); /**/
 /** /	
 var Stone = (function () {
@@ -418,7 +422,7 @@ var Stone = (function () {
 /* *************************************************************** */
 
 	// Data (getJSON: TopoJSON)
-function makeMap(error, json, file2, file3){
+function makeMap(error, json, file2, file3, waters){
 		console.log("MakeMap: start");
 		//console.log("d3.json()");
 /* DATA ********************************************************** */
@@ -426,6 +430,8 @@ function makeMap(error, json, file2, file3){
         admin_1   = topojson.feature(json, json.objects.admin_1),
 		L1_focus  = admin_1.features.filter(function(d) { return d.properties.L0 === target; }),
         disputed  = topojson.feature(json, json.objects.disputed),
+        rivers    = topojson.feature(waters, waters.objects.rivers),
+        lakes     = topojson.feature(waters, waters.objects.lakes),
         places    = topojson.feature(json, json.objects.places),
 		coast     = topojson.mesh(json, json.objects.admin_0, function(a,b) { return a===b;}),
         L0_border = topojson.mesh(json, json.objects.admin_0, function(a,b) { return a!==b;}),
@@ -440,6 +446,8 @@ function makeMap(error, json, file2, file3){
 		S.land  = wp.location.land + wp.stroke.no,
 		S.coast = wp.location.waterline+ wp.stroke.md,
 		S.water = wp.location.waterarea,
+		S.rivers= wp.location.waterline,
+		S.lakes = wp.location.waterline + wp.location.waterarea,
 		S.L0_border = wp.location.border + wp.stroke.md + wp.dash.xl,
 		S.L1_border = wp.location.border + wp.stroke.md + wp.dash.no,
 		S.Places_labels = wp.label.all+wp.label.admin+wp.label.sm,
@@ -506,6 +514,23 @@ function makeMap(error, json, file2, file3){
        // .on("mouseover", )
 		.on("click", click);
 
+ //Append disputed polygons 
+ var disputeds = function(){ 
+	if(disputed.features){
+    svg.append("g")
+ 		.attr(":inkscape:groupmode","layer")
+		.attr({'id':'Disputed',':inkscape:label':'Disputed'})
+	.selectAll(".disputed")
+        .data(disputed.features)
+      .enter().append("path")
+		.attr("name", function(d) { return d.id; })
+        .attr("fill", function(d){ return d.properties.L0 === target? "url(#hash2_4)": "url(#hash4_2)"} )
+        .attr("d", path )
+        //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
+        .on("click", click);
+ 	}
+ }()
+ 
 	var hillshade = svg.append("g")
 		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'hillshade_raster',':inkscape:label':'hillshade_(raster)'})
@@ -514,6 +539,37 @@ function makeMap(error, json, file2, file3){
 		.attr("height", t.height)
 		.attr("xlink:xlink:href", "data:image/png;base64," + file3); // replace link by data URI // replace href link by data URI, d3js + client handle the missing xlink
 
+ //Append rivers polygons 
+ var rivers = function(){ 
+	if(rivers.features){
+    svg.append("g")
+ 		.attr(":inkscape:groupmode","layer")
+		.attr({'id':'Rivers',':inkscape:label':'Rivers'})
+		.attr("style", S.rivers)
+	.selectAll(".rivers")
+        .data(rivers.features)
+      .enter().append("path")
+		.attr("name", function(d) { return d.properties.name; })
+		.attr("style", function(d) { return d.properties.scalerank >3? wp.stroke.xs:"null"; })
+        .attr("d", path )
+        //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
+ 	}
+ }()
+ //Append lakes polygons 
+ var lakes = function(){ 
+	if(lakes.features){
+    svg.append("g")
+ 		.attr(":inkscape:groupmode","layer")
+		.attr({'id':'Lakes',':inkscape:label':'Lakes'})
+		.attr("style", S.lakes)
+	.selectAll(".lakes")
+        .data(lakes.features)
+      .enter().append("path")
+		.attr("name", function(d) { return d.properties.name; })
+        .attr("d", path )
+        //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
+ 	}
+ }()
 
 /* Arcs ********************************************************** */
 // Admin1-borders filtered
@@ -546,22 +602,7 @@ function makeMap(error, json, file2, file3){
         .attr("style", S.coast) // css
         .attr("d", path);
 
- //Append disputed polygons 
- var disputeds = function(){ 
-	if(disputed.features){
-    svg.append("g")
- 		.attr(":inkscape:groupmode","layer")
-		.attr({'id':'Disputed',':inkscape:label':'Disputed'})
-	.selectAll(".disputed")
-        .data(disputed.features)
-      .enter().append("path")
-		.attr("name", function(d) { return d.id; })
-        .attr("fill", function(d){ return d.properties.L0 === target? "url(#hash2_4)": "url(#hash4_2)"} )
-        .attr("d", path )
-        //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
-        .on("click", click);
- 	}
- }()
+
 
 /* DOT & LABELS **************************************************** */
 // Places: dot placement ******************************************* */
