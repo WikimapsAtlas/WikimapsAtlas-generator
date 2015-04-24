@@ -1,7 +1,7 @@
 #DEFAULT VALUES (customizable):
-# inherit ITEM, WEST, NORTH, EAST, SOUTH from master.makefile or command.
-escaped_A = $(subst $e ,_,$(ITEM))
-escaped_ITEM = $(subst $e' ,\',$(escaped_A))# THIS TWO MAY BE MERGED ! $(subst $e' ,\',$(subst $e ,_,$(ITEM)) )
+# inherit NAME, WEST, NORTH, EAST, SOUTH from master.makefile or command.
+escaped_A = $(subst $e ,_,$(NAME))
+escaped_NAME = $(subst $e' ,\',$(escaped_A))# THIS TWO MAY BE MERGED ! $(subst $e' ,\',$(subst $e ,_,$(NAME)) )
 WIDTH=1980
 QUANTIZATION=1e4
 TOPOJSON_LOC=../node_modules/topojson/bin/topojson
@@ -13,8 +13,8 @@ SELECTOR_LAKES=SCALERANK > 0 #NOT WORKING with -where "$(SELECTOR_LAKES)" ??
 
 #MAKEFILE
 done: topojson
-	mkdir -p ../output/$(ITEM)
-	mv waters.topo.json -t ../output/$(ITEM)/
+	mkdir -p ../output/$(NAME)
+	mv waters.topo.json -t ../output/$(NAME)/
 
 topojson: crop
 	$(TOPOJSON_LOC) \

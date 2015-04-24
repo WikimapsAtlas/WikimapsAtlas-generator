@@ -1,11 +1,11 @@
 #---- RUN
-# make -f shadedrelief.makefile ITEM=IN WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
+# make -f shadedrelief.makefile NAME=IN WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
 SHELL=/bin/bash
 #---- DEFAULT VALUES (customizable):
 WIDTH=1980
 # 1: equirectangular, 2,3: mercator
-#PROJECTION=EPSG:4326
-PROJECTION=EPSG:3857
+PROJECTION=EPSG:4326
+#PROJECTION=EPSG:3857
 FUZZ=7
 AZ=315
 Z=5
@@ -15,8 +15,8 @@ S=111120
 #---- MAKEFILE
 #---- End here
 done: shade_trans composite regeo clean reproj2
-	mkdir -p ../output/$(ITEM)
-	cp ./*.{jpg,png,gis.*} ../output/$(ITEM)/
+	mkdir -p ../output/$(NAME)
+	mv ./*.{jpg,png,gis.*} ../output/$(NAME)/
 
 regeo: composite 
 	# More in: [[commons:User:ShareMap/Hillshade_with_ImageMagick]]
@@ -52,9 +52,10 @@ reproj2: shade_grey
 	gdalwarp  -ts $(WIDTH) 0  shadedrelief.tmp.tif shadedrelief2.tmp.tif
 
 shade_grey: reproj
-	gdaldem hillshade reproj.tmp.tif  shadedrelief-reproj.tmp.tif  -s 1    -z $(Z) -az $(AZ) -alt 60 -compute_edges  # 
-	gdaldem hillshade resized.tmp.tif shadedrelief-resized.tmp.tif -s $(S) -z $(Z) -az $(AZ) -alt 60 -compute_edges  # 
 	gdaldem hillshade cropXL.tmp.tif  shadedrelief-cropXL.tmp.tif  -s $(S) -z $(Z) -az $(AZ) -alt 60 -compute_edges  # 
+	gdaldem hillshade resized.tmp.tif shadedrelief-resized.tmp.tif -s $(S) -z $(Z) -az $(AZ) -alt 60 -compute_edges  # 
+	gdaldem hillshade reproj.tmp.tif  shadedrelief-reproj.tmp.tif  -s 1    -z $(Z) -az $(AZ) -alt 60 -compute_edges  # 
+
 
 #---- Crop, Resize
 reproj: resize

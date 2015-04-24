@@ -1,5 +1,5 @@
 #---- RUN
-# make -f master.makefile ITEM=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
+# make -f master.makefile NAME=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
 EXPORT imgb64=nothing
 
 #---- DEFAULT VALUES (customizable):
@@ -7,23 +7,23 @@ EXPORT imgb64=nothing
 #	geo: { WEST, NORTH, EAST, SOUTH } ==> see master file's variable declaration
 #	script: { DATE, VERSION }         ==> see master file's variable declaration
 WIDTH=1980
-#HEIGHT=`identify ../output/$(ITEM)/color.gis.tif | cut -f 3 -d " " | sed s/.*x//`
+#HEIGHT=`identify ../output/$(NAME)/color.gis.tif | cut -f 3 -d " " | sed s/.*x//`
 
 #---- MAKEFILE
 done: output
-	mkdir -p ../output/$(ITEM)
-	cp ./*.{svg} ../output/$(ITEM)/
+	mkdir -p ../output/$(NAME)
+	mv ./*.svg ../output/$(NAME)/
 	
 output: b64
 #	WIDTH=$(WIDTH) node svgcreator.node.js 		# see inside this file for parameters' calls
 	WIDTH=$(WIDTH) node location.node.js		# see inside this file for parameters' calls
 
 b64: clean server
-	for file in ../output/$(ITEM)/*.jpg; \
-	do echo $$file ; openssl base64 -in $$file -out ../output/$(ITEM)/`basename $$file`.b64; \
+	for file in ../output/$(NAME)/*.jpg; \
+	do echo $$file ; openssl base64 -in $$file -out ../output/$(NAME)/`basename $$file`.b64; \
 	done
-	for file in ../output/$(ITEM)/*.png; \
-	do echo $$file ; openssl base64 -in $$file -out ../output/$(ITEM)/`basename $$file`.b64; \
+	for file in ../output/$(NAME)/*.png; \
+	do echo $$file ; openssl base64 -in $$file -out ../output/$(NAME)/`basename $$file`.b64; \
 	done
 
 server:

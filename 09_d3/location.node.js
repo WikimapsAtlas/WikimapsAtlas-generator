@@ -5,7 +5,7 @@ var jsdom = require('jsdom');
 var fs    = require('fs');
 
 jsdom.env(
-  "<html><body></body></html>",        // CREATE DOM HOOK:
+  "<html><body id='hook1'></body><body id='hook2'></body></html>",        // CREATE DOM HOOK:
   [ 'http://d3js.org/d3.v3.min.js',    // JS DEPENDENCIES online ...
   '../js/d3.v3.min.js',
   '../js/jquery-2.1.3.min.js',
@@ -18,18 +18,15 @@ jsdom.env(
   function (err, window) {
 
 //Check access to libraries
-console.log(typeof window.locationMap);  // => 'function' = ok
-console.log(typeof window.getTransform); // => 'function' = ok
-console.log(typeof window);              // => 'function' = ok
-console.log(typeof window.zemba);        // => undefined  = ok.
+// console.log(typeof window.locationMap);  // => 'function' = ok
 
 // Parameters from Shell to JS
     var WEST  = process.env.WEST, 
         NORTH = process.env.NORTH,
         EAST  = process.env.EAST,
         SOUTH = process.env.SOUTH,
-        target= process.env.ITEM,
-        title = process.env.ITEM,
+        target= process.env.ISO2,
+        title = process.env.NAME,
         width = process.env.WIDTH;
 // New paramater (if needed)
     var DATE  = (new Date()).toISOString().slice(0,10).replace(/-/g,""),
@@ -39,7 +36,9 @@ console.log(typeof window.zemba);        // => undefined  = ok.
 /* ***************************************************************** */
 /* D3js FUNCTION *************************************************** */
 
-window.locationMap("body",800, target, title, WEST, NORTH, EAST, SOUTH, true);
+window.locationMap("#hook1",800, target, title, WEST, NORTH, EAST, SOUTH, true);
+// window.localisator("#hook2",400,         name, WNES.W, WNES.N, WNES.E, WNES.S);
+// window.locator("hook2",800, target, title, WEST, NORTH, EAST, SOUTH, true);
 
 // END svg design
 
@@ -50,19 +49,32 @@ window.locationMap("body",800, target, title, WEST, NORTH, EAST, SOUTH, true);
 
   setTimeout(
       function() { 
-        window.d3.select("svg")
+        window.d3.selectAll("svg")
             .attr(':xmlns','http://www.w3.org/2000/svg')            // if not: file does not appear to have any style information
             .attr(':xmlns:xlink','http://www.w3.org/1999/xlink');   // if not: Namespace prefix xlink for href
-        // Type: admin
+        // Type: L0 admin
         fs.writeFileSync(title.replace(/ /g,"_") + '_administrative_map_(2015).svg', svgheader + window.d3.select("body").html()) 
+
         // Type: L1 locator
-        var nodes = window.d3.selectAll("#L1 > *"); // SO: /29278107/
+       
+
+
+        var nodes = window.d3.selectAll("#hook1 #L1 > *"); // SO: /29278107/
         for(var j=1;j<= nodes[0].length;j++){
-          nodes.attr("style",null)
-          var node = window.d3.selectAll('#L1 > *:nth-child('+j+')'),
-            nodeName = node.attr("name");
-          node.attr("style", "fill:#B10000;fill-opacity:1;")
-          console.log("Paint & print: "+j+", name: "+nodeName)
+            window.d3.selectAll("#hook1 #L1 > *").attr("style",null);
+              var q = '#hook1 #L1 > *:nth-child('+j+')',
+              node = window.d3.selectAll(q),
+              nodeName = node.attr("name"),
+              nodeArea = node.attr("area");
+              node.attr("style", "fill:#B10000;");
+
+            window.d3.selectAll("#hook1 #L1_frames > *").attr("style","opacity:0;");
+              var q2 = '#hook1 #L1_frames > *:nth-child('+j+')',
+              m = window.d3.select("svg").attr("width")/100*5, // frame margin
+              c = nodeArea < m*m;
+              if(c){ window.d3.selectAll(q2).attr("style", "visibility:visible;opacity:1;") };
+
+          console.log("Paint & print: "+j+", name: "+nodeName+" ; area: "+nodeArea+"; .")
           fs.writeFileSync(title.replace(/ /g,"_") +',_'+ nodeName.replace(/ /g,"_")+'_locator_map_(2015).svg', svgheader + window.d3.select("body").html()) 
          }
 /** /

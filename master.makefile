@@ -1,17 +1,21 @@
 #---- RUN
-# make -f master.makefile ITEM=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 PLACES=15 SLICE=6
-# ITEM uses ISO-A2 2 letter alphabet codes to identify countries
+# make -f master.makefile NAME=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 PLACES=15 SLICE=6
+# NAME uses ISO-A2 2 letter alphabet codes to identify countries
 
 #---- DEFAULT VALUES (customizable):
 # Geo data
-export ITEM=IN
-export escaped_A = $(subst $e ,_,$(ITEM))
+export NAME=India
+export ISO2=IN
+#export escaped_A = $(subst $e ,_,$(NAME))
 export WEST=67.0
 export NORTH=37.5
 export EAST=99.0
 export SOUTH=05.0
 export WIDTH=1980
 export PROJECTION=EPSG:3395
+# 
+export PLACES=15
+export SLICE=6
 # script data
 export VERSION=0.5
 
@@ -31,3 +35,8 @@ run:
 #svg creation | works
 	$(MAKE) -C 09_d3 				-f d3.makefile
 
+###########################################################
+# TO DO
+# script: if projection X, then ogrproject=<code>, d3projection=<code>
+# 
+##########################################################

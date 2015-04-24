@@ -9,7 +9,7 @@
 
 // Function Click > Console (for fun)
 function click(a){ var name = a.properties.name || a.id ; console.log(name);}
-function dblclick(a){window.location.assign("http://en.wikipedia.org/wiki/"+a.properties.name, '_blank');}
+function dblclick(a){ window.location.assign("http://en.wikipedia.org/wiki/"+a.properties.name, '_blank');}
 
 /* MATH TOOLKIT ***************************************** */
 function parallel(φ, λ0, λ1) {
@@ -69,6 +69,7 @@ wp.poi = {
 wp.location = { 
 	no:        "fill:none;",
 	locator:   "fill:#B10000;",
+	frame :    "fill-opacity:0.3; stroke:#B10000;",
 	focus :    "fill:#FEFEE9;",
 	land  :    "fill:#E0E0E0;",
 	border:    "fill: none; stroke:#646464;",	// line_sm
@@ -91,7 +92,7 @@ var injectPattern = function(selector){
 		.append("rect")
 			.attr({ width:"2", height:"6", transform:"translate(0,0)", fill:"#FEFEE9" }); // (!) fill: wp.location.focus
 // To style shapes:
-//    .attr("fill", function(d){ return d.properties.L0 === target? "url(#hash2_4)": "url(#hash4_2)"} )
+//    .attr("fill", function(d){ return d.properties.L0 === iso_a2? "url(#hash2_4)": "url(#hash4_2)"} )
 }
 
 /* Topographic map ************************************** */
@@ -112,7 +113,7 @@ if((min< 9000) && (max >2000 && max< 9000)) { return mount }
 */
 
 /* ****************************************************** */
-/* LOCATOR MAP MODULE *********************************** */
+/* GRID MODULE ****************************************** */
 var graticule = function($D3selector,step) {
 	d3.geo.graticule().step([step, step]);
 	$D3selector.append("path")
@@ -123,13 +124,11 @@ var graticule = function($D3selector,step) {
 		.style({'stroke-width': 0.5 });
 }
 
-
 /* ****************************************************** */
 /* LOCATOR MAP MODULE *********************************** */
-var localisator = function (hookId,width, title, WEST, NORTH, EAST, SOUTH) {
+var localisator = function (hookId, width, title, id, WEST, NORTH, EAST, SOUTH) {
 /* Init ************************************************* */
-	var width  = width,
-    	height = width;
+	var height = width;
 	var lon_central = function(){ 
 		var num;
 		if(EAST<WEST){ num= -(WEST+EAST)/2+180; }
@@ -138,8 +137,8 @@ var localisator = function (hookId,width, title, WEST, NORTH, EAST, SOUTH) {
 	};
 
 	var proj = d3.geo.orthographic()
-    	.scale(1/2*width)
-    	.rotate([ lon_central(), -(NORTH+SOUTH)/2 +10 ])
+		.scale(1/2*width)
+		.rotate([ lon_central(), -(NORTH+SOUTH)/2 +10 ])
 		.translate([width / 2 , height / 2 ])
 		.clipAngle(90);
 
@@ -167,7 +166,7 @@ var localisator = function (hookId,width, title, WEST, NORTH, EAST, SOUTH) {
 
 /* SVG background *************************************** */
 // Blue circle
-	svg.append("circle")
+	var earthDisk = svg.append("circle")
 		.attr("class", "water")
 		.attr("cx", width/2)
 		.attr("cy", height/2)
@@ -194,7 +193,7 @@ var localisator = function (hookId,width, title, WEST, NORTH, EAST, SOUTH) {
 		.attr("stop-color", "#009")
 		.attr("stop-opacity", 0.3);
 	// Gradiant-circle
-	var circle = svg.append('circle') 	// append gradient to circle
+	var earthOcean = svg.append('circle') 	// append gradient to circle
 		.attr('cx', width / 2)
 		.attr('cy', height / 2)
 		.attr('r', width/2 )
@@ -215,8 +214,8 @@ d3.json("./output/world-1e3/administrative.topo.json", function(error, Stone) {
 	var country = svg.selectAll(".country")
 		.data(countries.features)
 	.enter().append("path") 
-		.attr("id", function(d){ return d.id.replace(/ |\.|'/g, "_") } )
-		.attr("name", function(d){ return d.id } )
+		.attr("id", function(d){ return d.properties.name.replace(/ |\.|'/g, "_") } )
+		.attr("name", function(d){ return d.properties.name } )
 		.attr("class", "country")
 		.attr("style","fill:#FDFBEA")
 		.attr("d", path);
@@ -248,10 +247,12 @@ d3.json("./output/world-1e3/administrative.topo.json", function(error, Stone) {
 	
 	//* Red polygon drawing
 	var redwindow = function(WEST,SOUTH,EAST,NORTH,hook) { 
-		var geoRect = {type: "Polygon", coordinates: [
-			[[WEST-5,SOUTH-5]]
-			  .concat(parallel(NORTH+5, WEST-5, EAST+5))
-			  .concat(parallel(SOUTH-5, WEST-5, EAST+5).reverse())
+		var d = 5;
+		// var d= (Math.abs(NORTH-SOUTH) + Math.abs(EAST-WEST)) / 20;
+		var geoRect = { type: "Polygon", coordinates: [
+			[[WEST-d,SOUTH-d]]
+			  .concat(parallel(NORTH+d, WEST-d, EAST+d))
+			  .concat(parallel(SOUTH-d, WEST-d, EAST+d).reverse())
 			]};
 		var area = d3.geo.path().projection(function(geoRect){return geoRect}).area(geoRect);
 		console.log(area);
@@ -263,87 +264,26 @@ d3.json("./output/world-1e3/administrative.topo.json", function(error, Stone) {
 			}
 		}
 	redwindow (WEST,SOUTH,EAST,NORTH,svg)
+	
 	var label = svg.append("text")
 		.attr("x", width / 2)
 		.attr("text-anchor","middle")
 		.text(title)
 		.attr("y", height * 57/100 );
 
-
-/* LOOP WORLD ****************************************************** */
-/*
-var step =  function() {
-	// var i=52;
-	if (++i >= n) { i = 0} ;
-	svg.transition();
-	var centroid = d3.geo.path()
-		.projection(function(d) { return d; })
-		.centroid;
-	var area = d3.geo.path()
-		.projection(function(d) { return d; })
-		.area;
-	var bounds = d3.geo.path()
-		.projection(function(d) { return d; })
-		.bounds;
- 
-	d3.transition()
-		.delay(0)
-		.duration(3000)
-		.tween("rotate", function() {	
-			label.text(countries[i].id);
-			country.style("fill", function(d, j) { return j === i ? "#B10000" : "#FDFBEA";  });
-			var point = centroid(countries[i]);
-			var surface  = area(countries[i]);
-			var bb = bounds(countries[i]);
-			console.log(countries[i].id);
-			console.log("area: "+surface+"; bb: "+ JSON.stringify(bb)+"/"+i );
-			return function(t) {
-				projection2.rotate([-point[0], -point[1]+10]); // area of interest slide 10⁰ up
-				svg.selectAll("path").attr("d", path);
-				
-				var red_rect = function(){
-					if(countries[i].id === "Fiji"){  bb[0][0]=177;bb[1][0]=-179; }
-					if(countries[i].id === "Russia"){ bb[0][0]=19.5;bb[1][0]=-169;}
-					if(countries[i].id === "New Zealand"){ bb[0][0]=165.5;bb[1][0]=-176; }
-					if( true ){ return t=
-						{type: "Polygon", coordinates: [ 
-						[[bb[0][0]-5,bb[0][1]-5]]
-						.concat(parallel(bb[1][1]+5, bb[0][0]-5, bb[1][0]+5))
-						.concat(parallel(bb[0][1]-5, bb[0][0]-5, bb[1][0]+5).reverse())
-						]}
-					}
-				}
-				
-				// draw polygon (red frame) bigger than bb:
-				if (surface <15) { // is visible
-					redwindow.datum(//LineString 
-						red_rect
-					)
-					.style({'fill': '#B10000', "opacity": 1, 'fill-opacity': 0.3})
-					.style({'stroke-width': 1, 'stroke-opacity': 1, 'stroke': '#B10000', 'stroke-linejoin': 'round' })
-					.attr("d", path);
-				} else if (surface >15 ) { // isn't visible
-					redwindow.style({'opacity': 0}) ;
-				}
-
-			};
-		}) // runs transition
-		.each("end", function(){ return step(); } );
-  };
-step(); */
-
 });
 
 };
 
 
-/* ****************************************************** */
-/* LOCATION MAP MODULE  ********************************* */
+/* **************************************************************** */
+/* LOCATION MAP MODULE  ******************************************* */
+/* **************************************************************** */
 
-var locationMap = function(hookId, width, target, title, WEST, NORTH, EAST, SOUTH, nodejs){
+var locationMap = function(hookId, width, iso_a2, title, WEST, NORTH, EAST, SOUTH, nodejs){
 	var nodejs = 0 || nodejs;
 	console.log("locationMap()");
-/* SETTINGS ******************************************************************** */
+/* SETTINGS ******************************************************* */
 // SVG injection:
 var width  = 600 || width,
 	title_ = title.replace(/ /g, "_").replace(/(_)+/g, "_"),
@@ -388,12 +328,12 @@ console.log("pattern()");
 
 
 // raster images urls
-var root = "../output/"+target;
-if (nodejs) { root = "http://localhost:8080/output/"+target; } 
-var url1  = root+"/administrative.topo.json", // https://rugger-demast.codio.io/output/"
+var root = "../output/"+title;
+if (nodejs) { root = "http://localhost:8080/output/"+title; } 
+var url1 = root+"/administrative.topo.json", // https://rugger-demast.codio.io/output/"
 	url2 = root+"/color.jpg.b64",
 	url3 = root+"/trans.png.b64",
-	url4  = root+"/waters.topo.json"
+	url4 = root+"/waters.topo.json"
 ;
 
  queue()
@@ -401,21 +341,7 @@ var url1  = root+"/administrative.topo.json", // https://rugger-demast.codio.io/
 	.defer(d3.text, url2)
 	.defer(d3.text, url3)
 	.defer(d3.json, url4)
-	.await(makeMap); /**/
-/** /	
-var Stone = (function () {
-    var json = null;
-    $.ajax({
-        'async': false,
-        'global': false,
-        'url': url,
-        'dataType': "json",
-        'success': function (data) {
-            json = data;
-        }
-    });
-    return json;
-})(); /**/
+	.await(makeMap); 
 	
 /* *************************************************************** */
 /* *************************************************************** */
@@ -428,7 +354,7 @@ function makeMap(error, json, file2, file3, waters){
 /* DATA ********************************************************** */
     var admin_0   = topojson.feature(json, json.objects.admin_0),
         admin_1   = topojson.feature(json, json.objects.admin_1),
-		L1_focus  = admin_1.features.filter(function(d) { return d.properties.L0 === target; }),
+		L1_focus  = admin_1.features.filter(function(d) { return d.properties.L0 === iso_a2; }),
         disputed  = topojson.feature(json, json.objects.disputed),
         rivers    = topojson.feature(waters, waters.objects.rivers),
         lakes     = topojson.feature(waters, waters.objects.lakes),
@@ -436,7 +362,7 @@ function makeMap(error, json, file2, file3, waters){
 		coast     = topojson.mesh(json, json.objects.admin_0, function(a,b) { return a===b;}),
         L0_border = topojson.mesh(json, json.objects.admin_0, function(a,b) { return a!==b;}),
 		L1_border = topojson.mesh(json, json.objects.admin_1, function(a,b) { 
-			return a !==b && a.properties.L0 === b.properties.L0 && a.properties.L0 === target;
+			return a !==b && a.properties.L0 === b.properties.L0 && a.properties.L0 === iso_a2;
 		});
 		// neighbors = topojson.neighbors(Stone.objects.admin_1.geometries); // coloring: full line
 
@@ -444,6 +370,7 @@ function makeMap(error, json, file2, file3, waters){
 	var S = {};
   		S.focus = wp.location.focus+ wp.stroke.no,
 		S.land  = wp.location.land + wp.stroke.no,
+		S.frame = wp.location.locator + wp.location.frame + wp.stroke.md,
 		S.coast = wp.location.waterline+ wp.stroke.md,
 		S.water = wp.location.waterarea,
 		S.rivers= wp.location.waterline,
@@ -482,7 +409,7 @@ function makeMap(error, json, file2, file3, waters){
 	  .append("image")
 		.attr("width", width)
 		.attr("height", t.height)
-		.attr("xlink:xlink:href", "data:image/jpg;base64," + file2); // replace link by data URI // replace href link by data URI, d3js + client handle the missing xlink
+		.attr("xlink:xlink:href", "data:image/jpeg;base64," + file2); // replace link by data URI // replace href link by data URI, d3js + client handle the missing xlink
 
 /* Polygons ****************************************************** */
 //Append L0 polygons 
@@ -494,11 +421,17 @@ function makeMap(error, json, file2, file3, waters){
       .enter().append("path")
         .attr("class", "L0")
         .attr("name", function(d) { return d.properties.name; })
-        .attr("style", function(d){ return d.properties.L0 === target? S.focus : S.land; } )
+        .attr("style", function(d){ return d.properties.L0 === iso_a2? S.focus : S.land; } )
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
         .attr("d", path)
 		.on("click", click);
  
+/* in: Selector ; out: path centroid, bb, and or augmented bb.
+*/
+var frame = function (d,width,pc){ 
+
+	};
+
 //Append L1 polygons 
     var L1 = svg.append("g")
  		.attr(":inkscape:groupmode","layer")
@@ -507,13 +440,34 @@ function makeMap(error, json, file2, file3, waters){
 	.selectAll(".subunit")
         .data(L1_focus)
       .enter().append("path")
-        .attr("name", function(d) { return d.id; })
-//        .attr("style", function(d){ return d.properties.L0 === target? S.focus : S.land; } ) // filter done in data
+        .attr("name", function(d) { return d.properties.name; })
+//        .attr("style", function(d){ return d.properties.L0 === iso_a2? S.focus : S.land; } ) // filter done in data
         .attr("d", path )
+		.attr("bounds", function(d){ var bb = path.bounds(d), o = {'left':bb[0][0],'top':bb[0][1],'right':bb[1][0],'bottom':bb[1][1]};return JSON.stringify(o);} )
+		.attr("area", function(d){ return path.area(d);} )
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
        // .on("mouseover", )
 		.on("click", click);
 
+	var rect = function(d){ 
+		var bb = path.bounds(d), m = (width/100)*5,
+			l = bb[0][0]-m, t = bb[0][1]-m, r = bb[1][0]+m, b = bb[1][1]+m;  
+        var o = "M "+l+','+b+' '+r+','+b+' '+r+','+t+' '+l+','+t+' Z';
+        // if (path.area(d) > m*m) { o = null; }
+		return o; // http://jsfiddle.net/jwrmwxzt/6/
+	};
+	
+	var L1_frames = svg.append("g")
+		.attr(":inkscape:groupmode","layer")
+		.attr({'id':'L1_frames',':inkscape:label':'L1_frames'})
+		.attr("style", S.frame)
+	.selectAll("path")
+        .data(L1_focus)
+      .enter().append("path")
+		.attr("style","opacity:0;")
+		.attr("d", function(d){ return rect(d); } );
+
+	
  //Append disputed polygons 
  var disputeds = function(){ 
 	if(disputed.features){
@@ -523,8 +477,8 @@ function makeMap(error, json, file2, file3, waters){
 	.selectAll(".disputed")
         .data(disputed.features)
       .enter().append("path")
-		.attr("name", function(d) { return d.id; })
-        .attr("fill", function(d){ return d.properties.L0 === target? "url(#hash2_4)": "url(#hash4_2)"} )
+		.attr("name", function(d) { return d.properties.name; })
+        .attr("fill", function(d){ return d.properties.L0 === iso_a2? "url(#hash2_4)": "url(#hash4_2)"} )
         .attr("d", path )
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
         .on("click", click);
@@ -545,12 +499,12 @@ function makeMap(error, json, file2, file3, waters){
     svg.append("g")
  		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'Rivers',':inkscape:label':'Rivers'})
-		.attr("style", S.rivers)
+		.attr("style", S.rivers + wp.stroke.xs)
 	.selectAll(".rivers")
         .data(rivers.features)
       .enter().append("path")
 		.attr("name", function(d) { return d.properties.name; })
-		.attr("style", function(d) { return d.properties.scalerank >3? wp.stroke.xs:"null"; })
+		.attr("style", function(d) { return d.properties.scalerank >3? null: S.rivers+wp.stroke.sm; })
         .attr("d", path )
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
  	}
@@ -615,7 +569,7 @@ function makeMap(error, json, file2, file3, waters){
         .data(places.features)
       .enter().append("text")
         .attr("class", "place")
-		.attr("name", function(d) { return d.id; })
+		.attr("name", function(d) { return d.properties.name; })
 		.attr("x",    function(d) { return path.centroid(d)[0] })
 		.attr("y",    function(d) { return path.centroid(d)[1] })
 		.attr("dy",".33em")
@@ -636,7 +590,7 @@ function makeMap(error, json, file2, file3, waters){
         .data(places.features)
       .enter().append("text")
         .attr("class", "place-label")
-		.attr("name",   function(d) { return d.id; })
+		.attr("name",   function(d) { return d.properties.name; })
 		.attr("status", function(d){return d.properties.status})
 		.attr("style",  function(d){ 
 		    var s,t;
@@ -647,7 +601,7 @@ function makeMap(error, json, file2, file3, waters){
 		})
         .attr({"dy":".33em","x":function(d) { return d.geometry.coordinates[0] < EAST-(EAST-WEST)/10 ? 8 : -8; } }) // avoid dot overlap
 		.attr("transform",  function(d) { return "translate(" + projection(d.geometry.coordinates) + ")"; })
-        .text(function(d) { return d.geometry.coordinates[0] < EAST-(EAST-WEST)/10 ? d.id: "" } );
+        .text(function(d) { return d.geometry.coordinates[0] < EAST-(EAST-WEST)/10 ? d.properties.name: "" } );
 
 /* L0 labels ***************************************************** */
     svg.append("g")
@@ -657,11 +611,11 @@ function makeMap(error, json, file2, file3, waters){
 	.selectAll(".countries-label")
         .data(admin_0.features)
       .enter().append("text")
-        .attr("style", function(d){ return d.properties.L0 === target? "visibility:none;":""; })
-        .attr("name", function(d) { return d.id ;})
+        .attr("style", function(d){ return d.properties.L0 === iso_a2? "visibility:none;":""; })
+        .attr("name", function(d) { return d.properties.name ;})
 		.attr("x", function (d) { return path.centroid(d)[0] })
 		.attr("y", function (d) { return path.centroid(d)[1] })
-		.text(function(d) { return d.id; });
+		.text(function(d) { return d.properties.name; });
 
 /* L1 labels ***************************************************** */
     svg.append("g")
@@ -671,11 +625,11 @@ function makeMap(error, json, file2, file3, waters){
 	.selectAll(".subunit-label")
         .data(L1_focus)
       .enter().append("text")
-        .attr("class", function(d){ return d.properties.L0 === target? "L1_label": "L1_label invisible"; } )
-        .attr("name", function(d) { return d.id ;})
+        .attr("class", function(d){ return d.properties.L0 === iso_a2? "L1_label": "L1_label invisible"; } )
+        .attr("name", function(d) { return d.properties.name ;})
 		.attr("x", function (d) { return path.centroid(d)[0] })
 		.attr("y", function (d) { return path.centroid(d)[1] })
-		.text(function(d) { return d.id; });
+		.text(function(d) { return d.properties.name; });
 
 	console.log("layers end")
   }

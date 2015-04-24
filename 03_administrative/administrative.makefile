@@ -1,55 +1,62 @@
 #DEFAULT VALUES (customizable):
-# inherit ITEM, WEST, NORTH, EAST, SOUTH from master.makefile or command.
-#make -f ./administrative.makefile ITEM= WEST=-180 NORTH=90 EAST=180 SOUTH=-90 QUANTIZATION=1e5 PLACES=60
-escaped_A = $(subst $e ,_,$(ITEM))
-escaped_ITEM = $(subst $e' ,\',$(escaped_A))# THIS TWO MAY BE MERGED ! $(subst $e' ,\',$(subst $e ,_,$(ITEM)) )
+# inherit NAME, WEST, NORTH, EAST, SOUTH from master.makefile or command.
+#make -f ./administrative.makefile NAME= WEST=-180 NORTH=90 EAST=180 SOUTH=-90 QUANTIZATION=1e5 PLACES=60
+escaped_A = $(subst $e ,_,$(NAME))
+escaped_NAME = $(subst $e' ,\',$(escaped_A))# THIS TWO MAY BE MERGED ! $(subst $e' ,\',$(subst $e ,_,$(NAME)) )
 QUANTIZATION=1e4
 TOPOJSON_LOC=../node_modules/topojson/bin/topojson
 # Admin layer:
 PLACES=15
-SELECTOR_L1=admin IN ('$(ITEM)')
+SELECTOR_L1=admin IN ('$(NAME)')
 SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places ORDER BY POP_MAX DESC LIMIT '$(PLACES)'
 ## Some past selector:
-#SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE iso_a2 = '$(ITEM)' ORDER BY POP_MAX DESC LIMIT 50
-#SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE ADM0NAME = '$(ITEM)' AND POP_MAX > '2000000'
-#SELECTOR_PLACES=SELECT TOP 30 POP_MAX * FROM ne_10m_populated_places WHERE ADM0NAME = '$(ITEM)'
-#make -f ./administrative.makefile ITEM= WEST=-180 NORTH=90 EAST=180 SOUTH=-90 QUANTIZATION=1e3 PLACES=60
+#SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE iso_a2 = '$(NAME)' ORDER BY POP_MAX DESC LIMIT 50
+#SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE ADM0NAME = '$(NAME)' AND POP_MAX > '2000000'
+#SELECTOR_PLACES=SELECT TOP 30 POP_MAX * FROM ne_10m_populated_places WHERE ADM0NAME = '$(NAME)'
+#make -f ./administrative.makefile NAME= WEST=-180 NORTH=90 EAST=180 SOUTH=-90 QUANTIZATION=1e3 PLACES=60
 
 
 #MAKEFILE
 done: topojson
-	mkdir -p ../output/$(ITEM)
-	mv administrative.topo.json admin_0.topo.json admin_1.topo.json disputed.topo.json places.topo.json -t ../output/$(ITEM)/
+	mkdir -p ../output/$(NAME)
+	mv administrative.topo.json admin_0.topo.json admin_1.topo.json disputed.topo.json places.topo.json -t ../output/$(NAME)/
 
-topojson: crop admin_0 admin_1 disputed places 
+topojson: crop admin_0 admin_1 disputed places
 	$(TOPOJSON_LOC) \
-		--id-property name \
 		--bbox \
-		-p code=code \
+		--id-property none \
+		-p name=name \
 		-p L0=L0 \
+		-p L0_3=L0_3 \
 		-p L1=L1 \
+		-p L0_name=L0_name \
+		-p L1_name=L1_name \
 		-p note=note \
 		-p status=status \
 		-p pop=pop \
+		--spherical \
 		-q $(QUANTIZATION) \
+        --simplify-proportion 0.9 \
 		--filter=small \
 		-o administrative.topo.json \
 		-- admin_0=admin_0.topo.json admin_1=admin_1.topo.json disputed=disputed.topo.json places=places.topo.json
 
 ##########################################################
 ## NOTE on .shp attributes titles's CASE/case (2015.01) ##
-## UPPER : places.shp 									##
-## lower : admin_0.shp 									##
-## lower : 1_states_provinces_shp 						##
-## lower : disputed_areas.shp 							##
+## UPPER : places.shp 									## SOV_A3
+## lower : admin_0.shp 									## sov_a3
+## lower : 1_states_provinces_shp 						## sr_sov_a3
+## lower : disputed_areas.shp 							## sov_a3
+## Rule: code, then name                                ##
 ## Syntax: -p newattributename=inputshpattrbutename  #####
 
 admin_0: crop
 	$(TOPOJSON_LOC) \
 		--bbox \
-		--id-property name \
-		-p name=name \
-		-p code=iso_a2 \
+		--id-property none \
+		-p L0=iso_a2 \
+			-p L0_3=sov_a3 \
+		-p name=sovereignt \
 		-q $(QUANTIZATION) \
 		--filter=small \
 		-o admin_0.topo.json \
@@ -57,10 +64,12 @@ admin_0: crop
 admin_1: crop
 	$(TOPOJSON_LOC) \
 		--bbox \
-		--id-property name \
+		--id-property none \
+		-p L0=iso_a2 \
+			-p L0_3=sr_sov_a3 \
+		-p L1=code_hasc \
+		-p L0_name=admin \
 		-p name=name \
-		-p code=hasc \
-		-p L0=admin \
 		-q $(QUANTIZATION) \
 		--filter=small \
 		-o admin_1.topo.json \
@@ -69,8 +78,10 @@ disputed: crop
 	$(TOPOJSON_LOC) \
 		--bbox \
 		--id-property none \
+		-p L0=iso_a2 \
+			-p L0_3=sov_a3 \
+		-p L0_name=sovereignt \
 		-p name=brk_name \
-		-p L0=sovereignt \
 		-p note=note_brk \
 		-q $(QUANTIZATION) \
 		--filter=small \
@@ -79,11 +90,12 @@ disputed: crop
 places: crop
 	$(TOPOJSON_LOC) \
 		--bbox \
-		--id-property NAME \
+		--id-property none \
+		-p L0=ISO_A2 \
+			-p L0_3=SOV_A3 \
+		-p L0_name=SOV0NAME \
+		-p L1_name=ADM1NAME \
 		-p name=NAME \
-		-p code=ISO_A2 \
-		-p L0=SOV0NAME \
-		-p L1=ADM1NAME \
 		-p status=FEATURECLA \
 		-p pop=POP_MAX \
 		-q $(QUANTIZATION) \
@@ -92,7 +104,7 @@ places: crop
 		-- places=places.shp
 
 #geojson_filters: crop
-##	ogr2ogr -f GeoJSON -where "iso_a2 = ('$(ITEM)')" \
+##	ogr2ogr -f GeoJSON -where "iso_a2 = ('$(NAME)')" \
 #		admin_1.geo.json \
 #		../data/natural_earth_vector/10m_cultural/ne_10m_admin_1_states_provinces_shp.shp
 # or "iso_a2 = 'AT' AND SCALERANK < 20" , see also sr_adm0_a3

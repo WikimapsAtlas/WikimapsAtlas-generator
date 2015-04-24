@@ -1,6 +1,6 @@
 #DEFAULT VALUES (customizable):
-# inherit ITEM, WEST, NORTH, EAST, SOUTH from master.makefile or command.
-escaped_A = $(subst $e ,_,$(ITEM))
+# inherit NAME, WEST, NORTH, EAST, SOUTH from master.makefile or command.
+escaped_A = $(subst $e ,_,$(NAME))
 WIDTH=1980
 #PROJECTION=EPSG:3395
 PROJECTION=EPSG:3857
@@ -15,8 +15,8 @@ SHELL=/bin/bash
 
 #MAKEFILE
 done: topojson
-	mkdir -p ../output/$(ITEM)
-	mv levels.topo.json levels.tmp.geo.json -t ../output/$(ITEM)/
+	mkdir -p ../output/$(NAME)
+	mv levels.topo.json levels.tmp.geo.json -t ../output/$(NAME)/
 
 topojson: geojsonize
 	$(TOPOJSON_LOC) --id-property none -q $(QUANTIZATION) --simplify-proportion=0.5 -p name=elev -o levels.topo.json -- levels.tmp.geo.json

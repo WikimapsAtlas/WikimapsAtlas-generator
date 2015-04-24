@@ -15,7 +15,7 @@ jsdom.env(
         NORTH = process.env.NORTH,
         EAST  = process.env.EAST,
         SOUTH = process.env.SOUTH,
-        ITEM  = process.env.ITEM,
+        NAME  = process.env.NAME,
         WIDTH = process.env.WIDTH;
 
     var DATE  = (new Date()).toISOString().slice(0,10).replace(/-/g,""),
@@ -43,7 +43,7 @@ jsdom.env(
 /* METADATA ******************************************************** */
 // http://stackoverflow.com/questions/26821677/
 var geotag = '<dcterms:spatial xsi:type="dcterms:Box">'
-	+'name='+ITEM+"_"+width+';'
+	+'name='+NAME+"_"+width+';'
 	+'northlimit='+NORTH+';'
 	+'eastlimit='+EAST+';'
 	+'southlimit='+SOUTH+';'
@@ -60,7 +60,7 @@ var geotag = '<dcterms:spatial xsi:type="dcterms:Box">'
         .attr("author", "Hugo Lopez, Arun Ganesh")
 	.attr("twitter", "@Wikiatlas")
         .attr("license", "CC-by-sa-4.0")
-        .attr("title", ITEM)
+        .attr("title", NAME)
 	.html(geotag);
     svg.append("scriptdata")
         .attr("name", "WikiAtlas script")
@@ -105,10 +105,7 @@ addBaseRaster('./img/color.jpg.b64');
 /* SVG PRINT ******************************************************* */
     var svgheader = '<?xml version="1.0" encoding="utf-8"?>'
 	+'<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
-setTimeout(
-    fs.writeFileSync('test.svg', svgheader + window.d3.select("body").html()),
-    5000
-);
+    fs.writeFileSync('test.svg', svgheader + window.d3.select("body").html());
     // console.log(window.d3.select("body").html());
  }
 // END (D3JS) * * * * * * * * * * * * * * * * * * * * * * * *
