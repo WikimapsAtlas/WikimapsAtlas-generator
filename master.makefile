@@ -12,12 +12,14 @@ export NORTH=37.5
 export EAST=99.0
 export SOUTH=05.0
 export WIDTH=1980
-export PROJECTION=EPSG:3395
-# 
+# Pseudo-Mercator|GoogleMaps|OSM=EPSG:3857 (m)
+# World Mercator=EPSG:3395  (m)
+# WGS84-WGS84=EPSG:4326 (⁰)
+export PROJECTION=EPSG:4326 
 export PLACES=15
 export SLICE=6
 # script data
-export VERSION=0.5
+export VERSION=0.8
 
 #---- MAKE SCRIPT
 run:
@@ -27,13 +29,13 @@ run:
 #raster relief | works
 	$(MAKE) -C 02_reliefs 			-f shadedrelief.makefile
 #admin | works
-	$(MAKE) -C 03_administrative 	-f administrative.makefile
+ #	$(MAKE) -C 03_administrative 	-f administrative.makefile
 #water | works
-	$(MAKE) -C 04_water 			-f water.makefile
+ #	$(MAKE) -C 04_water 			-f water.makefile
 #files grouping | todo
 #	$(MAKE) -C 07_move 				-f merge.makefile
 #svg creation | works
-	$(MAKE) -C 09_d3 				-f d3.makefile
+ #	$(MAKE) -C 09_d3 				-f d3.makefile
 
 ###########################################################
 # TO DO

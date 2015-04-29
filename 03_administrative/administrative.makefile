@@ -80,6 +80,7 @@ disputed: crop
 		--id-property none \
 		-p L0=iso_a2 \
 			-p L0_3=sov_a3 \
+		-p L1=code_hasc \
 		-p L0_name=sovereignt \
 		-p name=brk_name \
 		-p note=note_brk \

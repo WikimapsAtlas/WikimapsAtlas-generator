@@ -1,5 +1,16 @@
 blog.commands.cheatheet:
-This file gather (or should) all the commands and only the commands used by the Wikimaps_Atlas' make-modules.
+This file gather the commands and only the commands used by the Wikimaps_Atlas' make-modules.
+
+
+=============================================================
+SERVER ======================================================
+
+http-server: http-server is a simple, zero-configuration command-line http server. 
+	node ./node_modules/.bin/http-server
+
+forever + http-server: http-server is a simple, zero-configuration command-line http server. 
+	node ./node_modules/.bin/forever ./node_modules/.bin/http-server
+
 
 =============================================================
 MAKEFILES ===================================================
@@ -41,7 +52,7 @@ man GDALDEM: gdaldem Tools to analyze and visualize DEMs. (since GDAL 1.7.0)
 	-s scale:
 		ratio of vertical units to horizontal. If the horizontal unit of the source DEM is degrees (e.g Lat/Long WGS84 projection) and vertial unites are in meters use scale=111120, if the vertical units are in feets use scale=370400
 	-az azimuth:
-		azimuth of the light, in degrees. 0 if it comes from the top of the raster, 90 from the east, ... The default value, 315, should rarely be changed as it is the value generally used to generate shaded maps.
+		azimuth of the light, in degrees. 0 if it comes from the top of the raster, 90 from the east, ... The default value, 315 (aka 10:30am), should rarely be changed as it is the value generally used to generate shaded maps.
 	-alt altitude:
 		altitude of the light, in degrees. 90 if the light comes from above the DEM, 0 if it is raking light.
 
@@ -73,7 +84,7 @@ man gdal_translate ---- gdal_translate converts raster data between different fo
 		(GDAL >= 1.8.0) Force (re)computation of statistics.
 	-a_ullr ulx uly lrx lry
 		Assign/override the georeferenced bounds of the output file.
-	-co (http://www.gdal.org/frmt_gtiff.html):
+	-co (http://www.gdal.org/frmt_gtiff.html). Compressiong may be important:  input.tiff:5.0MB, o.png:1.6MB, o.jpg:239KB
 		COMPRESS=[JPEG/LZW/PACKBITS/DEFLATE/CCITTRLE/CCITTFAX3/CCITTFAX4/NONE]
 		PHOTOMETRIC=[MINISBLACK/MINISWHITE/RGB/CMYK/YCBCR/CIELAB/ICCLAB/ITULAB]
 		ALPHA=[YES/NON-PREMULTIPLIED/PREMULTIPLIED/UNSPECIFIED]: This is necessary if you want to produce a greyscale TIFF file with an alpha band (for instance).

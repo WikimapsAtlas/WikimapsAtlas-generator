@@ -2,8 +2,7 @@
 # inherit NAME, WEST, NORTH, EAST, SOUTH from master.makefile or command.
 escaped_A = $(subst $e ,_,$(NAME))
 WIDTH=1980
-#PROJECTION=EPSG:3395
-PROJECTION=EPSG:3857
+PROJECTION=EPSG:3395
 QUANTIZATION=1e4
 TOPOJSON_LOC=../node_modules/topojson/bin/topojson
 TOPOJSON_GLO=topojson
@@ -27,21 +26,21 @@ geojsonize: merge
 
 merge: polygonize_slices zvals
 #	ogr2ogr levels.tmp.shp 					level0001.tmp.shp
-	Slices=( $$(cat ./tmp.txt) ); \
+	Slices=( $$(cat ./slices.tmp.txt) ); \
 	for i in "$${Slices[@]}"; do \
 		echo $$i ;\
 		ogr2ogr -update -append levels.tmp.shp level$${i}.tmp.shp; \
 	done
 
 polygonize_slices: raster_slice zvals
-	Slices=( $$(cat ./tmp.txt) ); \
+	Slices=( $$(cat ./slices.tmp.txt) ); \
 	for i in "$${Slices[@]}"; do \
 		echo $$i ;\
 		gdal_polygonize.py level$${i}.tmp.tif -f "ESRI Shapefile" level$${i}.tmp.shp level_$${i} elev ;\
 	done;
 
 raster_slice: crop zvals
-	Slices=( $$(cat ./tmp.txt) ); \
+	Slices=( $$(cat ./slices.tmp.txt) ); \
 	for i in "$${Slices[@]}"; do \
 		echo $$i ;\
 		gdal_calc.py -A crop.tmp.tif --outfile=level$$i.tmp.tif --calc="$$i*(A>$$i)" 	--NoDataValue=0;\
@@ -53,7 +52,7 @@ zvals: crop
 	zMax=$$(gdalinfo cropXL.tmp.tif 2>&1 | sed -ne 's/.*z#actual_range=//p'| tr -d ' ' | cut -d "," -f 2);\
 	echo $$zMin;\
 	echo $$zMax;\
-	python slice.py $$zMin $$zMax $(SLICES) > ./tmp.txt
+	python ../script/slice.py $$zMin $$zMax $(SLICES) > ./slices.tmp.txt
 
 #---- Crop, resize, regeolocalise
 crop: clean

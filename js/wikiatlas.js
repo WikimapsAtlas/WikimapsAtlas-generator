@@ -420,6 +420,7 @@ function makeMap(error, json, file2, file3, waters){
         .data(admin_0.features)
       .enter().append("path")
         .attr("class", "L0")
+        .attr("code", function(d) { return d.properties.L0; })
         .attr("name", function(d) { return d.properties.name; })
         .attr("style", function(d){ return d.properties.L0 === iso_a2? S.focus : S.land; } )
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
@@ -440,13 +441,14 @@ var frame = function (d,width,pc){
 	.selectAll(".subunit")
         .data(L1_focus)
       .enter().append("path")
+        .attr("code", function(d) { return d.properties.L1; })
         .attr("name", function(d) { return d.properties.name; })
 //        .attr("style", function(d){ return d.properties.L0 === iso_a2? S.focus : S.land; } ) // filter done in data
-        .attr("d", path )
 		.attr("bounds", function(d){ var bb = path.bounds(d), o = {'left':bb[0][0],'top':bb[0][1],'right':bb[1][0],'bottom':bb[1][1]};return JSON.stringify(o);} )
 		.attr("area", function(d){ return path.area(d);} )
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
-       // .on("mouseover", )
+        .attr("d", path )
+		// .on("mouseover", )
 		.on("click", click);
 
 	var rect = function(d){ 
