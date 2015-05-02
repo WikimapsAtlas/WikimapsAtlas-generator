@@ -11,7 +11,7 @@ export WEST=67.0
 export NORTH=37.5
 export EAST=99.0
 export SOUTH=05.0
-export WIDTH=1980
+export WIDTH=1280
 # Pseudo-Mercator|GoogleMaps|OSM=EPSG:3857 (m)
 # World Mercator=EPSG:3395  (m)
 # WGS84-WGS84=EPSG:4326 (⁰)
@@ -25,9 +25,9 @@ export VERSION=0.8
 run:
 #	node ./node_modules/.bin/forever ./node_modules/.bin/http-server
 #vector relief | works
-	$(MAKE) -C 01_topography		-f topography.makefile
+#	$(MAKE) -C 01_topography		-f topography.makefile
 #raster relief | works
-#	$(MAKE) -C 02_reliefs 			-f shadedrelief.makefile
+	$(MAKE) -C 02_reliefs 			-f shadedrelief.makefile
 #admin | works
  #	$(MAKE) -C 03_administrative 	-f administrative.makefile
 #water | works
