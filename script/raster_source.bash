@@ -4,14 +4,16 @@ NORTH=$2
 EAST=$3
 SOUTH=$4
 # ------------------------------------------------------------------ #
-rm ./tmp/* ./tmp/.*
+rm ./tmp/*
 mkdir -p ./tmp/
 # ------------------------------------------------------------------ #
 if [[ ${AREA_SIZE}>0.015 ]]; then 
+	echo "Source: 1km"
 	gdal_translate -projwin $WEST $NORTH $EAST $SOUTH ../data/noaa/ETOPO1_Ice_g_geotiff.tif crop_xl.tmp.tif 
 fi 
 # ------------------------------------------------------------------ #
 if [[ ${AREA_SIZE}<=0.015 && ${AREA_SIZE} > 0.0015  ]]; then 
+	echo "Source: 250m"
 	files=(`ls ../data/cgiar-csi_250/ | grep .tif$`) 
 	for i in "${!files[@]}"
 	do 
@@ -22,6 +24,7 @@ if [[ ${AREA_SIZE}<=0.015 && ${AREA_SIZE} > 0.0015  ]]; then
 fi
 # ------------------------------------------------------------------ #
 if [[ ${AREA_SIZE}<=0.0015 ]]; then 
+	echo "Source: 90m"
 	files=(`ls ../data/cgiar-csi_90/ | grep .tif$`) 
 	for i in "${!files[@]}"
 	do 
