@@ -1,8 +1,8 @@
 {
   "name": "wikiatlas",
   "version": "0.0.1",
-  "description": "Wikimaps Atlas (2014)",
-  "main": "nothing here",
+  "description": "Wikimaps Atlas (2015)",
+  "main": "Wikimaps Atlas (2015) is a piece of code to output nice web-friendly maps, administrative and physical. It installs relevant GIS resources, software dependencies, then can be ran on demand for a target area. See README.md for the API.",
   "dependencies": {
     "d3": "~3.5.5",
     "forever": "^0.14.1",
@@ -27,7 +27,8 @@
     "d3js"
   ],
   "scripts": {
-    "test": ""
+    "install": "make -f install.makefile",
+    "data": "make -f data.makefile"
   },
   "license": "BSD"
 }
