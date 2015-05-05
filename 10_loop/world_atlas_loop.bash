@@ -1,5 +1,5 @@
 #!/bin/bash
-# runs: bash ./10_loop/looping.bash ./10_loop/commands.txt
+# runs: bash ./10_loop/world_atlas_loop.bash ./10_loop/commands.txt
 file=$1
 while IFS= read -r line;
 do
