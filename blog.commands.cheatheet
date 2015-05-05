@@ -23,6 +23,8 @@ man MAKEFILE: make - GNU make utility to maintain groups of programs
 	.PHONY: make tasks do their job systematically without checking if the output files exist and is recent or not.
 	@
 		run command silently.
+	$@ 
+		value of the current task's name.
 
 
 =============================================================
@@ -72,7 +74,7 @@ man GDAL_calc.py        --/!\def of --calc & --noDataValue to recheck online.
 	--oufile=file.ext
 		output file.
 	--calc="y*(A>x)"
-		for each point of A>x, point value set to y.
+		for each point of A>x is true (true=1), point value set to y*1.
 	--NoDataValue=x
 		for each point without value, assign value=x.
 
@@ -84,15 +86,16 @@ man gdal_translate ---- gdal_translate converts raster data between different fo
 		(GDAL >= 1.8.0) Force (re)computation of statistics.
 	-a_ullr ulx uly lrx lry
 		Assign/override the georeferenced bounds of the output file.
-	-co (http://www.gdal.org/frmt_gtiff.html). Compressiong may be important:  input.tiff:5.0MB, o.png:1.6MB, o.jpg:239KB
+	-co (http://www.gdal.org/frmt_gtiff.html). Compression may be important:  input.tiff:5.0MB, o.png:1.6MB, o.jpg:239KB
 		COMPRESS=[JPEG/LZW/PACKBITS/DEFLATE/CCITTRLE/CCITTFAX3/CCITTFAX4/NONE]
 		PHOTOMETRIC=[MINISBLACK/MINISWHITE/RGB/CMYK/YCBCR/CIELAB/ICCLAB/ITULAB]
-		ALPHA=[YES/NON-PREMULTIPLIED/PREMULTIPLIED/UNSPECIFIED]: This is necessary if you want to produce a greyscale TIFF file with an alpha band (for instance).
-
+		ALPHA=[YES/NON-PREMULTIPLIED/PREMULTIPLIED/UNSPECIFIED]: This is necessary if you want to produce a greyscale TIFF file with an alpha band in -b 2, for instance.
+		Frequent compression settings : JPEG + YCBCR for colored ; JPEG + RGB for grey scales ; LZW + ALPHA=YES for greyscales with transparency.
 
 =============================================================
 IMAGE PROCESSING ============================================
-
+Note: Use gdal for process in the field of GIS files whenever possible. See gdal_calc & co.
+Using Convert, it destroys GIS metadata which frequently must be restored.
 
 =============================================================
 UTILITIES : =================================================
@@ -106,11 +109,16 @@ man SED: sed - stream editor for filtering and transforming text.
 
 
 man UNZIP: unzip ---- list, test and extract compressed files in a ZIP archive 
-	$unzip -n ../data/file.zip '*.tif' # from inside file.zip, extract the *.tif only.
-	-n 
-		never overwrite existing files.  If a output file already exists, skip the extraction of the input file without prompting. 
+	$unzip -n ../data/file.zip '*.tif' -d './tmp/' # from inside file.zip, extract the *.tif only.
+	-n 		never overwrite existing files.  If a output file already exists, skip the extraction of the input file without prompting. 
+	'...'
+		(regex) filters files within the rar, extract matches
 	-d
 		extract to target directory.
+man UNRAR: extract files from rar archives
+	$unrar e -o- './dir/file.rar' '*.tif' ./dir/
+	e 		Extract files to current directory.
+	-o-		Do not overwrite existing files.
 
 man TOUCH: touch - change file timestamps
 	$touch file.png
