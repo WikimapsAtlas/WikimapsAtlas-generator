@@ -27,7 +27,7 @@ run:
 #vector relief | works
 #	$(MAKE) -C 01_topography		-f topography.makefile
 #raster relief | works
-	$(MAKE) -C 02_reliefs 			-f shadedrelief.makefile
+	$(MAKE) -C 02_reliefs 			-f hillshades.makefile
 #admin | works
  #	$(MAKE) -C 03_administrative 	-f administrative.makefile
 #water | works
