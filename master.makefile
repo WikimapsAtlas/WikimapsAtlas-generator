@@ -25,13 +25,13 @@ export VERSION=0.8
 run:
 #	node ./node_modules/.bin/forever ./node_modules/.bin/http-server
 #vector relief | works
-#	$(MAKE) -C 01_topography		-f topography.makefile
+	$(MAKE) -C 01_topography		-f topography.makefile
 #raster relief | works
-	$(MAKE) -C 02_reliefs 			-f hillshades.makefile
+	$(MAKE) -C 02_hillshade 		-f hillshade.makefile
 #admin | works
- #	$(MAKE) -C 03_administrative 	-f administrative.makefile
+	$(MAKE) -C 03_administrative 	-f administrative.makefile
 #water | works
- #	$(MAKE) -C 04_water 			-f water.makefile
+	$(MAKE) -C 04_water 			-f water.makefile
 #files grouping | todo
 #	$(MAKE) -C 07_move 				-f merge.makefile
 #svg creation | works
