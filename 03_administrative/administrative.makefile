@@ -19,7 +19,8 @@ SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places ORDER BY POP_MAX DESC LIMI
 #MAKEFILE
 done: topojson
 	mkdir -p ../output/$(NAME)
-	mv administrative.topo.json admin_0.topo.json admin_1.topo.json disputed.topo.json places.topo.json -t ../output/$(NAME)/
+	mv *.topo.json -t ../output/$(NAME)/
+	rm -f *.tmp.*
 
 topojson: crop admin_0 admin_1 disputed places
 	$(TOPOJSON_LOC) \
@@ -60,7 +61,7 @@ admin_0: crop
 		-q $(QUANTIZATION) \
 		--filter=small \
 		-o admin_0.topo.json \
-		-- admin_0=crop_L0.shp
+		-- admin_0=crop_L0.tmp.shp
 admin_1: crop
 	$(TOPOJSON_LOC) \
 		--bbox \
@@ -73,7 +74,7 @@ admin_1: crop
 		-q $(QUANTIZATION) \
 		--filter=small \
 		-o admin_1.topo.json \
-		-- admin_1=crop_L1.shp
+		-- admin_1=crop_L1.tmp.shp
 disputed: crop
 	$(TOPOJSON_LOC) \
 		--bbox \
@@ -87,7 +88,7 @@ disputed: crop
 		-q $(QUANTIZATION) \
 		--filter=small \
 		-o disputed.topo.json \
-		-- disputed=crop_disputed.shp
+		-- disputed=crop_disputed.tmp.shp
 places: crop
 	$(TOPOJSON_LOC) \
 		--bbox \
@@ -102,7 +103,7 @@ places: crop
 		-q $(QUANTIZATION) \
 		--filter=small \
 		-o places.topo.json \
-		-- places=places.shp
+		-- places=places.tmp.shp
 
 #geojson_filters: crop
 ##	ogr2ogr -f GeoJSON -where "iso_a2 = ('$(NAME)')" \
@@ -113,14 +114,14 @@ places: crop
 
 crop: clean
 	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) \
-		./crop_L0.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_0_countries.shp
+		./crop_L0.tmp.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_0_countries.shp
 	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) \
-		./crop_L1.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_1_states_provinces_shp.shp
+		./crop_L1.tmp.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_1_states_provinces_shp.shp
 	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) \
-		./crop_disputed.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_0_disputed_areas.shp
+		./crop_disputed.tmp.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_0_disputed_areas.shp
 	ogr2ogr -spat $(WEST) $(NORTH) $(EAST) $(SOUTH) \
 		-sql "$(SELECTOR_PLACES)" -dialect SQLITE \
-		./places.shp ../data/natural_earth_vector/10m_cultural/ne_10m_populated_places.shp
+		./places.tmp.shp ../data/natural_earth_vector/10m_cultural/ne_10m_populated_places.shp
 clean:
 	rm -f *.json
 	rm -f *.dbf
