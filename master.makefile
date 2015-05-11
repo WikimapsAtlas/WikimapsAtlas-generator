@@ -14,19 +14,21 @@ export SOUTH=05.0
 export WIDTH=1280
 # Pseudo-Mercator|GoogleMaps|OSM=EPSG:3857 (m)
 # World Mercator=EPSG:3395  (m)
-# WGS84-WGS84=EPSG:4326 (⁰)
-export PROJECTION=EPSG:4326 
+# WGS84-WGS84=EPSG:4326 (⁰)  -------- GIS raw default
+export PROJECTION=EPSG:3395
 export PLACES=15
 export SLICE=6
 # script data
 export VERSION=0.8
 
 #---- MAKE SCRIPT
+
 end: topography hillshade administrative water d3
-#	node ./node_modules/.bin/forever ./node_modules/.bin/http-server
+server:
+#	node ./node_modules/.bin/forever ./node_modules/.bin/http-server &
 topography: 
 	#works
-	$(MAKE) -C 01_topography		-f topography.makefile topojson
+	$(MAKE) -C 01_topography		-f topography.makefile
 hillshade:
 	#works
 	$(MAKE) -C 02_hillshade 		-f hillshade.makefile
