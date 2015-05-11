@@ -3,7 +3,7 @@
 # See also: [[commons:User:ShareMap/Hillshade_with_ImageMagick]]
 SHELL=/bin/bash
 #---- DEFAULT VALUES (customizable):
-WIDTH=1280
+WIDTH=2000
 PROJECTION=EPSG:3395
 #---- Vectorization
 QUANTIZATION=1e4
@@ -20,7 +20,7 @@ S=111120
 done: shade_trans shade_topojson
 	mkdir -p ../output/$(NAME)
 	mv ./*.{gis.*,*.json} -t ../output/$(NAME)/
-	rm *.tmp.*
+	rm -f *.tmp.*
 
 #---- NON-GIS COMPOSITES (Not needed!)
 composite: background_colors shade_trans
@@ -29,17 +29,20 @@ composite: background_colors shade_trans
 
 #------------------------------------------------------------------ #
 shade_topojson: shade_slices_vector
-	$(TOPOJSON_LOC) --id-property none -q $(QUANTIZATION) -s `expr $(AREA_SIZE) / 1000000` -o shades.topo.json -- shade_50=./shade/1.tmp.shp shade_100=./shade/2.tmp.shp shade_150=./shade/3.tmp.shp shade_200=./shade/4.tmp.shp
+	$(TOPOJSON_LOC) --id-property none \
+		-q $(QUANTIZATION) \
+		--simplify-proportion=0.25 \
+		-o hillshades.topo.json \
+		-- shade_70=./shade/1.tmp.shp shade_140=./shade/2.tmp.shp shade_200=./shade/3.tmp.shp
 shade_slices_vector: shade_slices_raster
-	for i in 1 2 3 4; do \
-		gdal_polygonize.py ./shade/$${i}.tmp.tif -f "ESRI Shapefile" ./shade/$$i.tmp.shp shade_$${i} shade ;\
+	for i in 1 2 3; do \
+		gdal_polygonize.py ./shade/$${i}.tmp.tif -f "ESRI Shapefile" ./shade/$${i}.tmp.shp shade_$${i} shade ;\
 	done
 shade_slices_raster: resize
 	mkdir -p ./shade/
-	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./shade/1.tmp.tif --calc="50*(A<50)"   --NoDataValue=0
-	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./shade/2.tmp.tif --calc="100*(A<100)" --NoDataValue=0
-	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./shade/3.tmp.tif --calc="150*(A<150)" --NoDataValue=0
-	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./shade/4.tmp.tif --calc="200*(A<200)" --NoDataValue=0
+	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./shade/1.tmp.tif --calc="70*(A<70)"   --NoDataValue=0
+	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./shade/2.tmp.tif --calc="140*(A<140)" --NoDataValue=0
+	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./shade/3.tmp.tif --calc="200*(A<200)" --NoDataValue=0
 
 # Layer: transparent hillshade ------------------------------------ #
 shade_trans: resize
@@ -49,6 +52,10 @@ shade_trans: resize
 	gdalwarp -of GTiff -s_srs EPSG:4326 -t_srs $(PROJECTION) ./trans.tmp.vrt ./trans.gis.tmp.vrt   # reproj
 #	gdal_translate 					-co ALPHA=YES ./trans.gis.tmp.vrt ./trans_nocompress.gis.tif
 	gdal_translate -co COMPRESS=LZW -co ALPHA=YES ./trans.gis.tmp.vrt ./trans.gis.tif
+
+slope: crop
+	gdaldem slope crop_xs.tmp.tif slope.tmp.tif
+	gdaldem color-relief -co compress=lzw slope.tmp.tif slope.txt slope.gis.tif
 
 #---- Crop, Resize
 resize: shading crop
@@ -60,7 +67,10 @@ shading: crop reproj
 	gdaldem hillshade crop_xl.tmp.tif hillshades_A.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) +  1` -alt 60 -compute_edges
 	gdaldem hillshade crop_xl.tmp.tif hillshades_B.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) + 40` -alt 60 -compute_edges
 	gdaldem hillshade crop_xl.tmp.tif hillshades_C.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) - 40` -alt 60 -compute_edges
-	gdal_calc.py -A hillshades_A.tmp.tif -B hillshades_B.tmp.tif -C hillshades_C.tmp.tif --outfile=./hillshades_xl.tmp.tif --calc="(A*(A<=B)*(A<=C)+ B*(B<A)*(B<=C)+ C*(C<A)*(C<B))"
+	gdal_calc.py -A hillshades_A.tmp.tif -B hillshades_B.tmp.tif -C hillshades_C.tmp.tif \
+		--outfile=./hillshades_xl.tmp.tif --calc="(A*(A<=B)*(A<=C)+ B*(B<A)*(B<=C)+ C*(C<A)*(C<B))"
+	gdal_calc.py -A hillshades_A.tmp.tif -B hillshades_B.tmp.tif -C hillshades_C.tmp.tif \
+		--outfile=./hillshades_xl_multiply.tmp.tif --calc="A*B*C/255/255"
 
 reproj: crop                 
 #	reproj can go here
