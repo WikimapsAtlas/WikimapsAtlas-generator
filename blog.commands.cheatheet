@@ -25,16 +25,25 @@ man MAKEFILE: make - GNU make utility to maintain groups of programs
 		run command silently.
 	$@ 
 		value of the current task's name.
-
+	myvar=something
+		Assign "something" to variable `myvar`. Called via `$(myvar)`.
+	$$
+		Escaped $, to avoid conflit with makefile variables.
 
 =============================================================
 GIS TOOLS ===================================================
 
-man OGR2OGR:
-	-clipsrc:
+man OGR2OGR ---- converts simple features data between file formats
+	-clipsrc [xmin ymin xmax ymax]|WKT|datasource|spat_extent:
+           (starting with GDAL 1.7.0) clip geometries to the specified bounding box (expressed in source SRS), WKT geometry (POLYGON or
+           MULTIPOLYGON), from a datasource or to the spatial extent of the -spat option if you use the spat_extent keyword. When specifying
+           a datasource, you will generally want to use it in combination of the -clipsrclayer, -clipsrcwhere or -clipsrcsql options
 	-sql <selector> -dialect SQLITE:
-	-spat:
-man TOPOJSON:
+	-spat xmin ymin xmax ymax:
+           spatial query extents. Only features whose geometry intersects the extents will be selected. The geometries will not be clipped
+           unless -clipsrc is specified
+
+man TOPOJSON ---- 
 	-p, properties : https://github.com/mbostock/topojson/wiki/Command-Line-Reference#properties
 	-q, --quantization, --no-quantization:
 		maximum number of differentiable points along either dimension
@@ -47,7 +56,7 @@ man TOPOJSON:
 	--height:
 		scale and translate to fit a viewport of the specified height
 
-man GDALDEM: gdaldem Tools to analyze and visualize DEMs. (since GDAL 1.7.0)
+man GDALDEM ----  gdaldem Tools to analyze and visualize DEMs. (since GDAL 1.7.0)
 > hillshade: to generate a shaded relief map from any GDAL-supported elevation raster
 	-z zFactor:
 		vertical exaggeration used to pre-multiply the elevations
@@ -59,26 +68,37 @@ man GDALDEM: gdaldem Tools to analyze and visualize DEMs. (since GDAL 1.7.0)
 		altitude of the light, in degrees. 90 if the light comes from above the DEM, 0 if it is raking light.
 
 > color-relief : to generate a color relief map from any GDAL-supported elevation raster
-	$ 	gdaldem color-relief input.tif color_table.txt output.tif
+	$ gdaldem color-relief input.tif color_table.txt output.tif
 	# Color tiff depending on color_relief.txt file. Color_table.txt syntax: elevation R G B. 
 	# Elevation as: floating point value, `nv` keyword, or percentage.
 	# 0% being the minimum value found in the raster, 100% the maximum value.
 
-man GDAL_polygonize (topography)
-	
+man GDAL_polygonize ---- produces a polygon feature layer from a raster
+	raster_file
+		The source raster file from which polygons are derived.
+	-b band:
+		The band on raster_file to build the polygons from.
+	-f ogr_format
+		Select the output format of the file to be created. Default is GML.
+	out_file
+		The destination vector file to which the polygons will be written.
+	layer
+		The name of the layer created to hold the polygon features.
+	fieldname
+		The name of the field to create (defaults to "DN").
 
-man GDAL_calc.py        --/!\def of --calc & --noDataValue to recheck online.
+man GDAL_calc.py ---- Command line raster calculator with numpy syntax                                               --/!\def of --calc & --noDataValue to recheck online.
 	$	gdal_calc.py -A crop.tif --outfile=level0050.tif --calc="50*(A>50)" --NoDataValue=0
 	-A
 		input file.
 	--oufile=file.ext
 		output file.
 	--calc="y*(A>x)"
-		for each point of A>x is true (true=1), point value set to y*1.
+		for each point of A>x is true (true=1), point value set to y*1. Allows conditional calculation depending on a Boolean's truthyness.
 	--NoDataValue=x
 		for each point without value, assign value=x.
 
-man gdal_translate ---- gdal_translate converts raster data between different formats.
+man GDAL_translate ---- gdal_translate converts raster data between different formats.
 	$gdal_translate -projwin $(WEST) $(NORTH) $(EAST) $(SOUTH) world.tif crop.tif
 	-projwin ulx uly lrx lry:
 		Selects a subwindow from the source image for copying, using corners given in georeferenced decimal coordinates.
@@ -94,19 +114,18 @@ man gdal_translate ---- gdal_translate converts raster data between different fo
 
 =============================================================
 IMAGE PROCESSING ============================================
-Note: Use gdal for process in the field of GIS files whenever possible. See gdal_calc & co.
-Using Convert, it destroys GIS metadata which frequently must be restored.
+Note: Use `gdal` for process in the field of GIS files whenever possible. See gdal_calc & co.
+Using `convert` destroys GIS metadata which frequently must be restored.
 
 =============================================================
 UTILITIES : =================================================
 
-man SED: sed - stream editor for filtering and transforming text.
+man SED: sed ---- stream editor for filtering and transforming text.
 	$sed -ne 's/pattern_before_match *:,//p' #print match within the current line.
 	's/regexp/replacement/'
-		Attempt to match regexp against the pattern space. If successful, replace  that portion matched with replacement. The replacement may contain the special character & to refer to that portion of the pattern space which matched, and the special escapes \1 through \9 to refer to the corresponding matching sub-expressions in the regexp.
+		Attempt to match regexp against the pattern space. If successful, replace that portion matched with replacement. The replacement may contain the special character & to refer to that portion of the pattern space which matched, and the special escapes \1 through \9 to refer to the corresponding matching sub-expressions (back-references) in the regexp.
 	p
 		Print the current pattern space.
-
 
 man UNZIP: unzip ---- list, test and extract compressed files in a ZIP archive 
 	$unzip -n ../data/file.zip '*.tif' -d './tmp/' # from inside file.zip, extract the *.tif only.
@@ -120,7 +139,7 @@ man UNRAR: extract files from rar archives
 	e 		Extract files to current directory.
 	-o-		Do not overwrite existing files.
 
-man TOUCH: touch - change file timestamps
+man TOUCH: touch ---- change file timestamps
 	$touch file.png
 
 man CURL: curl - transfer a URL
@@ -133,7 +152,7 @@ man CURL: curl - transfer a URL
 		Continue/Resume a previous file transfer at  the  given  offset.
 		Use "-C -" to tell curl to automatically find out  where/how  to resume  the  transfer. It then uses the given output/input files to figure that out.
 
-man MKDIR: mkdir - make directories
+man MKDIR: mkdir ---- make directories
 	$mkdir -p ../data/ ../data/ETOPO1 			#create 2 dirs
 	-p, --parents
 		no error if existing, make parent directories as needed
