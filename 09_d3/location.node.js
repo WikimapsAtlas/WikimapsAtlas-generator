@@ -62,17 +62,17 @@ window.locationMap("#hook1",800, target, title, WEST, NORTH, EAST, SOUTH, true);
         var nodes = window.d3.selectAll("#hook1 #L1 > *"); // SO: /29278107/
         for(var j=1;j<= nodes[0].length;j++){
             window.d3.selectAll("#hook1 #L1 > *").attr("style",null);
-              var q = '#hook1 #L1 > *:nth-child('+j+')',
-              node = window.d3.selectAll(q),
+              var selector1 = '#hook1 #L1 > *:nth-child('+j+')',
+              node = window.d3.selectAll(selector1),
               nodeName = node.attr("name"),
               nodeArea = node.attr("area");
               node.attr("style", "fill:#B10000;");
 
             window.d3.selectAll("#hook1 #L1_frames > *").attr("style","opacity:0;");
-              var q2 = '#hook1 #L1_frames > *:nth-child('+j+')',
+              var selector2 = '#hook1 #L1_frames > *:nth-child('+j+')',
               m = window.d3.select("svg").attr("width")/100*5, // frame margin
               c = nodeArea < m*m;
-              if(c){ window.d3.selectAll(q2).attr("style", "visibility:visible;opacity:1;") };
+              if(c){ window.d3.selectAll(selector2).attr("style", "visibility:visible;opacity:1;") };
 
           console.log("Paint & print: "+j+", name: "+nodeName+" ; area: "+nodeArea+"; .")
           fs.writeFileSync(title.replace(/ /g,"_") +',_'+ nodeName.replace(/ /g,"_")+'_locator_map_(2015).svg', svgheader + window.d3.select("body").html()) 
