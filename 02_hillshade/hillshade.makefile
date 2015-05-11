@@ -19,7 +19,7 @@ S=111120
 #---- End here
 done: shade_trans shade_topojson
 	mkdir -p ../output/$(NAME)
-	mv ./*.{gis.*,*.json} -t ../output/$(NAME)/
+	mv ./*.{gis.tif,*.json} -t ../output/$(NAME)/
 	rm -f *.tmp.*
 
 #---- NON-GIS COMPOSITES (Not needed!)
