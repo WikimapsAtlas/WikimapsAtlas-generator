@@ -17,10 +17,10 @@ S=111120
 SHELL=/bin/bash
 
 #MAKEFILE
-done: topojson
+end:  background_colors topojson
 	mkdir -p ../output/$(NAME)
-	mv elevations.topo.json -t ../output/$(NAME)/
-#	rm -f *.tmp.*
+	mv ./*.{gis.tif,*.json} -t ../output/$(NAME)/
+	rm -f *.tmp.*
 
 topojson: vector_slices
 	$(TOPOJSON_LOC) --id-property none \
@@ -51,8 +51,8 @@ zvals: resize
 #--- Background : Color
 background_colors: resize
 	gdaldem color-relief crop_xs.tmp.tif color_relief-wikimaps.txt color.tmp.tif				# GIS file
-	gdalwarp -s_srs EPSG:4326 -t_srs $(PROJECTION) ./color.tmp.tif ./color.tmp.gis.tif			# reproj
-	gdal_translate -co COMPRESS=JPEG -co PHOTOMETRIC=YCBCR ./color.tmp.gis.tif ./color.gis.tif	# compress
+	gdalwarp -s_srs EPSG:4326 -t_srs $(PROJECTION) ./color.tmp.tif ./color_reproj.tmp.tif			# reproj
+	gdal_translate -co COMPRESS=JPEG -co PHOTOMETRIC=YCBCR ./color_reproj.tmp.tif ./color.gis.tif	# compress
 
 #---- Crop, Resize
 resize: crop
