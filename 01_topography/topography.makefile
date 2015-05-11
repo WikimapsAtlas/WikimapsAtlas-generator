@@ -2,7 +2,7 @@
 # inherit NAME, WEST, NORTH, EAST, SOUTH from master.makefile or command.
 escaped_A = $(subst $e ,_,$(NAME))
 #---- DEFAULT VALUES (customizable):
-WIDTH=1280
+WIDTH=2000
 PROJECTION=EPSG:3395
 #---- Vectorization
 QUANTIZATION=1e4
@@ -19,29 +19,26 @@ SHELL=/bin/bash
 #MAKEFILE
 done: topojson
 	mkdir -p ../output/$(NAME)
-	mv levels.topo.json -t ../output/$(NAME)/
-	rm -f *.tmp.*
+	mv elevations.topo.json -t ../output/$(NAME)/
+#	rm -f *.tmp.*
 
-topojson: merge
-	$(TOPOJSON_LOC) --id-property none -q $(QUANTIZATION) --simplify-proportion=0.5 -p name=elev  -o levels.topo.json -- levels*.tmp.shp
+topojson: vector_slices
+	$(TOPOJSON_LOC) --id-property none \
+		-q $(QUANTIZATION) \
+		--simplify-proportion=0.25 \
+		-o elevations.topo.json --  \
+		`ls elevation[^a-zA-Z]*.tmp.shp|sort -k1.10n | sed 's/\(elevation\([^a-zA-Z]*\).tmp.shp\)/elevation_\2=\1/' | tr '\n' ' '`
 
-merge: polygonize_slices zvals
-#	ogr2ogr levels.tmp.shp 					level0001.tmp.shp
+vector_slices: raster_slices
 	Slices=( $$(cat ./slices.tmp.txt) ); \
 	for i in "$${Slices[@]}"; do \
-		ogr2ogr -update -append levels.tmp.shp level$${i}.tmp.shp; \
-	done
-
-polygonize_slices: raster_slice
-	Slices=( $$(cat ./slices.tmp.txt) ); \
-	for i in "$${Slices[@]}"; do \
-		gdal_polygonize.py level$${i}.tmp.tif -f "ESRI Shapefile" level$${i}.tmp.shp level_$${i} elev ;\
+		gdal_polygonize.py elevation$${i}.tmp.tif -f "ESRI Shapefile" elevation$${i}.tmp.shp elevation_$${i} elev ;\
 	done;
 
-raster_slice: crop zvals
+raster_slices: crop zvals
 	Slices=( $$(cat ./slices.tmp.txt) ); \
 	for i in "$${Slices[@]}"; do \
-		gdal_calc.py -A crop_xl.tmp.tif --outfile=level$$i.tmp.tif --calc="$$i*(A>$$i)+1" --NoDataValue=0;\
+		gdal_calc.py -A crop_xl.tmp.tif --outfile=elevation$${i}.tmp.tif --calc="($${i}+1)*(A>$${i})" --NoDataValue=0; \
 	done
 
 #---- LOWEST-TOPEST
