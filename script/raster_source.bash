@@ -1,3 +1,4 @@
+#!/bin/bash
 # bash ./script.bash param1 param2
 WEST=$1
 NORTH=$2
