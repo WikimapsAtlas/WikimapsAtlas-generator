@@ -7,9 +7,11 @@ files/
 **/academic/
 **/test*
 **/test/
-
+temp/
+09_d3/*.svg
 
 # Files (globes)
+*~
 *.zip
 *.rar
 *.shp
