@@ -22,20 +22,26 @@ export SLICE=6
 export VERSION=0.8
 
 #---- MAKE SCRIPT
-run:
+end: topography hillshade administrative water d3
 #	node ./node_modules/.bin/forever ./node_modules/.bin/http-server
-#vector relief | works
-	$(MAKE) -C 01_topography		-f topography.makefile
-#raster relief | works
+topography: 
+	#works
+	$(MAKE) -C 01_topography		-f topography.makefile topojson
+hillshade:
+	#works
 	$(MAKE) -C 02_hillshade 		-f hillshade.makefile
-#admin | works
+administrative:
+	#works
 	$(MAKE) -C 03_administrative 	-f administrative.makefile
-#water | works
+water:
+	#works
 	$(MAKE) -C 04_water 			-f water.makefile
-#files grouping | todo
+grouping:
+	# to do (?)
 #	$(MAKE) -C 07_move 				-f merge.makefile
-#svg creation | works
- #	$(MAKE) -C 09_d3 				-f d3.makefile
+d3:
+	#works
+	$(MAKE) -C 09_d3 				-f d3.makefile
 
 ###########################################################
 # TO DO
