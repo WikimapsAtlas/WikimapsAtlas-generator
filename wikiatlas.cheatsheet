@@ -8,7 +8,7 @@ SERVER ======================================================
 http-server: http-server is a simple, zero-configuration command-line http server. 
 	node ./node_modules/.bin/http-server
 
-forever + http-server: http-server is a simple, zero-configuration command-line http server. 
+forever with http-server: http-server is a simple, zero-configuration command-line http server. 
 	node ./node_modules/.bin/forever ./node_modules/.bin/http-server
 
 
@@ -35,13 +35,10 @@ GIS TOOLS ===================================================
 
 man OGR2OGR ---- converts simple features data between file formats
 	-clipsrc [xmin ymin xmax ymax]|WKT|datasource|spat_extent:
-           (starting with GDAL 1.7.0) clip geometries to the specified bounding box (expressed in source SRS), WKT geometry (POLYGON or
-           MULTIPOLYGON), from a datasource or to the spatial extent of the -spat option if you use the spat_extent keyword. When specifying
-           a datasource, you will generally want to use it in combination of the -clipsrclayer, -clipsrcwhere or -clipsrcsql options
+		(starting with GDAL 1.7.0) clip geometries to the specified bounding box (expressed in source SRS), WKT geometry (POLYGON or MULTIPOLYGON), from a datasource or to the spatial extent of the -spat option if you use the spat_extent keyword. When specifying a datasource, you will generally want to use it in combination of the -clipsrclayer, -clipsrcwhere or -clipsrcsql options
 	-sql <selector> -dialect SQLITE:
 	-spat xmin ymin xmax ymax:
-           spatial query extents. Only features whose geometry intersects the extents will be selected. The geometries will not be clipped
-           unless -clipsrc is specified
+		spatial query extents. Only features whose geometry intersects the extents will be selected. The geometries will not be clipped unless -clipsrc is specified
 
 man TOPOJSON ---- 
 	-p, properties : https://github.com/mbostock/topojson/wiki/Command-Line-Reference#properties
@@ -73,7 +70,7 @@ man GDALDEM ----  gdaldem Tools to analyze and visualize DEMs. (since GDAL 1.7.0
 	# Elevation as: floating point value, `nv` keyword, or percentage.
 	# 0% being the minimum value found in the raster, 100% the maximum value.
 
-man GDAL_polygonize ---- produces a polygon feature layer from a raster
+man GDAL_polygonize.py ---- produces a polygon feature layer from a raster
 	raster_file
 		The source raster file from which polygons are derived.
 	-b band:
@@ -87,7 +84,7 @@ man GDAL_polygonize ---- produces a polygon feature layer from a raster
 	fieldname
 		The name of the field to create (defaults to "DN").
 
-man GDAL_calc.py ---- Command line raster calculator with numpy syntax                                               --/!\def of --calc & --noDataValue to recheck online.
+man GDAL_calc.py ---- Command line raster calculator with numpy syntax												   --/!\def of --calc & --noDataValue to recheck online.
 	$	gdal_calc.py -A crop.tif --outfile=level0050.tif --calc="50*(A>50)" --NoDataValue=0
 	-A
 		input file.
@@ -98,7 +95,7 @@ man GDAL_calc.py ---- Command line raster calculator with numpy syntax          
 	--NoDataValue=x
 		for each point without value, assign value=x.
 
-man GDAL_translate ---- gdal_translate converts raster data between different formats.
+man GDAL_translate.py ---- gdal_translate converts raster data between different formats.
 	$gdal_translate -projwin $(WEST) $(NORTH) $(EAST) $(SOUTH) world.tif crop.tif
 	-projwin ulx uly lrx lry:
 		Selects a subwindow from the source image for copying, using corners given in georeferenced decimal coordinates.
@@ -160,8 +157,8 @@ man MKDIR: mkdir ---- make directories
 
 man RM: rm ---- remove files or directories
 	$rm -f *.png    #removes all *.png
-    -f, --force
-        ignore nonexistent files and arguments, never prompt
+	-f, --force
+		ignore nonexistent files and arguments, never prompt
 	-r, -R, --recursive
 		<EXTREMLY DANGEROUS. @HUMANS: GET 1 MINUTE BREAK BEFORE EACH USE:> remove directories and their contents recursively. 
 
