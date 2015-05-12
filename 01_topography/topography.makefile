@@ -43,8 +43,8 @@ raster_slices: crop zvals
 
 #---- LOWEST-TOPEST
 zvals: resize
-	zMin=$$(gdalinfo ./crop_xl.tmp.tif 2>&1 | sed -ne 's/.*z#actual_range=//p'| tr -d ' ' | cut -d "," -f 1 );\
-	zMax=$$(gdalinfo ./crop_xl.tmp.tif 2>&1 | sed -ne 's/.*z#actual_range=//p'| tr -d ' ' | cut -d "," -f 2);\
+	zMin=$$(gdalinfo -mm ./crop_xl.tmp.tif | sed -ne 's/.*Computed Min\/Max=//p'| tr -d ' ' | cut -d "," -f 1 | cut -d . -f 1);\
+	zMax=$$(gdalinfo -mm ./crop_xl.tmp.tif | sed -ne 's/.*Computed Min\/Max=//p'| tr -d ' ' | cut -d "," -f 2 | cut -d . -f 1);\
 	echo Altidutes range: $$zMin $$zMax ;\
 	python ../script/slice.py $$zMin $$zMax $(SLICES) > ./slices.tmp.txt
 
