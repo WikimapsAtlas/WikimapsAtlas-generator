@@ -38,7 +38,7 @@ vector_slices: raster_slices
 raster_slices: crop zvals
 	Slices=( $$(cat ./slices.tmp.txt) ); \
 	for i in "$${Slices[@]}"; do \
-		gdal_calc.py -A crop_xl.tmp.tif --outfile=elevation$${i}.tmp.tif --calc="($${i}+1)*(A>$${i})" --NoDataValue=0; \
+		gdal_calc.py -A crop_xs.tmp.tif --outfile=elevation$${i}.tmp.tif --calc="($${i}+1)*(A>$${i})" --NoDataValue=-15000; \
 	done
 
 #---- LOWEST-TOPEST
@@ -50,7 +50,15 @@ zvals: resize
 
 #--- Background : Color
 background_colors: resize
-	gdaldem color-relief crop_xs.tmp.tif color_relief-wikimaps.txt color.tmp.tif				# GIS file
+	gdal_calc.py -A crop_xs.tmp.tif       --outfile=crop_xs_land.tmp.tif --calc="A*(A>=0)-1*(A<0)" --NoDataValue=-1 # gdallocationinfo ./crop_xs_land.tmp.tif -valonly 10 1800   > -1 (as by --calc="")
+	gdal_calc.py -A crop_xs_etopo.tmp.tif --outfile=crop_xs_sea.tmp.tif  --calc="A*(A<0)+1*(A>=0)" --NoDataValue=1 # gdallocationinfo ./crop_xs_sea.tmp.tif  -valonly 10 1800   > -4567
+	gdaldem color-relief crop_xs_land.tmp.tif color_relief-wikimaps_land.txt crop_xs_land_color.tmp.vrt 	# gdallocationinfo ./color_land.tmp.vrt   -valonly 10 1800   > null: 0,0,0 (due to color ramp)
+	gdaldem color-relief crop_xs_sea.tmp.tif  color_relief-wikimaps_sea.txt  crop_xs_sea_color.tmp.vrt  	# gdallocationinfo ./color_sea.tmp.vrt    -valonly 10 1800   > val : 22,59,94 (due to color ramp)
+	gdalwarp  crop_xs_land_color.tmp.vrt crop_xs_land_color.tmp.tif		# tif get 3 bands (RGB) 						# 
+	gdalwarp  crop_xs_sea_color.tmp.vrt  crop_xs_sea_color.tmp.tif		# tif get bands (RGB)  						#
+	#merge attempts
+	gdal_merge.py -o color.tmp.tif -n 0 crop_xs_land_color.tmp.tif crop_xs_sea_color.tmp.tif
+#	gdaldem color-relief crop_xs.tmp.tif color_relief-wikimaps_pc.txt color.tmp.tif					# GIS file
 	gdalwarp -s_srs EPSG:4326 -t_srs $(PROJECTION) ./color.tmp.tif ./color_reproj.tmp.tif			# reproj
 	gdal_translate -co COMPRESS=JPEG -co PHOTOMETRIC=YCBCR ./color_reproj.tmp.tif ./color.gis.tif	# compress
 
