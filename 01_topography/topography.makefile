@@ -71,7 +71,7 @@ reproj: crop
 #	gdalwarp -of GTiff -s_srs EPSG:4326 -t_srs $(PROJECTION) -r cubic crop_xl.tmp.tif reproj.tmp.tif # -s_srs EPSG:4326
 crop: clean
 	# depending on $(AREA_SIZE), then crop from etopo or srtm
-	bash ../script/raster_source.bash $(WEST) $(NORTH) $(EAST) $(SOUTH)
+	bash ../script/get_raster_source.bash $(WEST) $(NORTH) $(EAST) $(SOUTH)
 #	gdalinfo -mm crop.tmp.tif
 
 clean:
