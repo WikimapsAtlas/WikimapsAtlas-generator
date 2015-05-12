@@ -1,0 +1,4 @@
+100%	216	242	254	light_blue
+80%	113	171	216	middleblue
+0%	0	32	64	darkblue
+nv	0	0	0	novalues

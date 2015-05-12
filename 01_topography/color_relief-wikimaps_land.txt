@@ -1,0 +1,7 @@
+65535	255	255	255
+95%	255	255	255	white--
+35%	170	135	83	brown--
+10%	239	235	192	yellow--
+3%	148	191	139	green--
+0	172	208	165	light_green
+nv	216	242	254	novalues(lightblue)
