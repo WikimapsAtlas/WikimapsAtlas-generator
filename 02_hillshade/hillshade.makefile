@@ -46,8 +46,8 @@ shade_slices_raster: resize
 
 # Layer: transparent hillshade ------------------------------------ #
 shade_trans: resize
-	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./color.tmp.tif   --calc="255*(A>200) + A*(A<=200)" 		# filter out whites above X , set grey to 255.
-	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./opacity.tmp.tif --calc="1*(A>200)   + (256-A)*(A<=200)" 	# filter out whites above X , set opacity to 1. Else, invert opacity.
+	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./color.tmp.tif   --calc="255*(A>200) + 1*(A<=200)" 		# filter out whites above X , set grey to 255.
+	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./opacity.tmp.tif --calc="1*(A>200)   + (256-A)*(A<=200)" 	# filter out whites above X , set opacity to 1/255. Else, invert opacity.
 	gdalbuildvrt -separate ./trans.tmp.vrt ./color.tmp.tif ./opacity.tmp.tif
 	gdalwarp -of GTiff -s_srs EPSG:4326 -t_srs $(PROJECTION) ./trans.tmp.vrt ./trans.gis.tmp.vrt   # reproj
 #	gdal_translate 					-co ALPHA=YES ./trans.gis.tmp.vrt ./trans_nocompress.gis.tif
