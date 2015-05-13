@@ -78,7 +78,7 @@ reproj: crop
 
 crop: clean
 	# depending on AREA_SIZE, then crop from etopo or srtm :
-	bash ../script/raster_source.bash $(WEST) $(NORTH) $(EAST) $(SOUTH)
+	bash ../script/get_raster_source.bash $(WEST) $(NORTH) $(EAST) $(SOUTH)
 
 .PHONY: clean
 
