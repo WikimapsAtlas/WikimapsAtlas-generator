@@ -66,7 +66,7 @@ background_colors: resize
 resize: crop
 	echo "Resize various raw raster for speed"
 	gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts $(WIDTH) 0 crop_xl.tmp.tif crop_xs.tmp.tif
-	gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts `expr $(WIDTH) \* 2` 0 crop_xl.tmp.tif crop_sm.tmp.tif
+	# gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts `expr $(WIDTH) \* 2` 0 crop_xl.tmp.tif crop_sm.tmp.tif
 	gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts $(WIDTH) 0 crop_xl_etopo.tmp.tif crop_xs_etopo.tmp.tif
 
 reproj: crop                 
