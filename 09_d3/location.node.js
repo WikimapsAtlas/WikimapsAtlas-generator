@@ -5,7 +5,7 @@ var jsdom = require('jsdom');
 var fs    = require('fs');
 
 jsdom.env(
-  "<html><body id='hook1'></body><body id='hook2'></body></html>",        // CREATE DOM HOOK:
+  "<html><body><div id='hook1'></div><div id='hook2'></div></body></html>",        // CREATE DOM HOOK:
   [ 'http://d3js.org/d3.v3.min.js',    // JS DEPENDENCIES online ...
   '../js/d3.v3.min.js',
   '../js/jquery-2.1.3.min.js',
@@ -25,20 +25,19 @@ jsdom.env(
         NORTH = process.env.NORTH,
         EAST  = process.env.EAST,
         SOUTH = process.env.SOUTH,
-        target= process.env.ISO2,
-        title = process.env.NAME,
+        iso2= process.env.ISO2,
+        name = process.env.NAME,
+        name_ = name.replace(/ /g,"_"),
         width = process.env.WIDTH;
 // New paramater (if needed)
-    var DATE  = (new Date()).toISOString().slice(0,10).replace(/-/g,""),
-        VERSION = process.env.VERSION,
-        COMMAND = "make -f master.makefile ...";
+    var DATE  = (new Date()).toISOString().slice(0,10).replace(/-/g,"."),
+        VERSION = process.env.VERSION;
 
 /* ***************************************************************** */
 /* D3js FUNCTION *************************************************** */
-
-window.locationMap("#hook1",800, target, title, WEST, NORTH, EAST, SOUTH, true);
-// window.localisator("#hook2",400,         name, WNES.W, WNES.N, WNES.E, WNES.S);
-// window.locator("hook2",800, target, title, WEST, NORTH, EAST, SOUTH, true);
+var mapType={ rich_background: true, base_administrative:true, base_topography:false, borders: true, labels:true };
+window.locationMap("#hook1",800, iso2, name, WEST, NORTH, EAST, SOUTH, true, mapType);
+console.log("Admin map, done: "+ new Date() );
 
 // END svg design
 
@@ -48,43 +47,61 @@ window.locationMap("#hook1",800, target, title, WEST, NORTH, EAST, SOUTH, true);
   +'<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n';
 
   setTimeout(
-      function() { 
-        window.d3.selectAll("svg")
-            .attr(':xmlns','http://www.w3.org/2000/svg')            // if not: file does not appear to have any style information
-            .attr(':xmlns:xlink','http://www.w3.org/1999/xlink');   // if not: Namespace prefix xlink for href
-        // Type: L0 admin
-        fs.writeFileSync(title.replace(/ /g,"_") + '_administrative_map_(2015).svg', svgheader + window.d3.select("body").html()) 
-
-        // Type: L1 locator
-       
+    function() { 
+      window.d3.selectAll("svg")
+          .attr(':xmlns','http://www.w3.org/2000/svg')            // if not: file does not appear to have any style information
+          .attr(':xmlns:xlink','http://www.w3.org/1999/xlink');   // if not: Namespace prefix xlink for href
 
 
-        var nodes = window.d3.selectAll("#hook1 #L1 > *"); // SO: /29278107/
-        for(var j=1;j<= nodes[0].length;j++){
-            window.d3.selectAll("#hook1 #L1 > *").attr("style",null);
-              var selector1 = '#hook1 #L1 > *:nth-child('+j+')',
-              node = window.d3.selectAll(selector1),
-              nodeName = node.attr("name"),
-              nodeArea = node.attr("area");
-              node.attr("style", "fill:#B10000;");
+var loopOnL1 = function(hook,name,type) {
+      var nodes = window.d3.selectAll(hook+" #L1 > *")[0].length, // SO: /29278107/
+        m = window.d3.select(hook+" svg").attr("width")/100*5, // frame margin
+        mSqr = m*m;
+      for(var j=1;j<= nodes;j++){
+          window.d3.selectAll(hook+" #L1 > *").attr("style","opacity:0;");
+            var selector1 = hook+' #L1 > *:nth-child('+j+')',
+            node = window.d3.selectAll(selector1),
+            nodeName = node.attr("name").replace(/ /g,"_"),
+            nodeArea = node.attr("area");
+            node.attr("style", "fill:#B10000;opacity:1;");            
+          window.d3.selectAll(hook+" #L1_frames > *").attr("style","opacity:0;");
+            var selector2 = hook+' #L1_frames > *:nth-child('+j+')',_
+            c = nodeArea < mSqr;
+            if(c){ window.d3.selectAll(selector2).attr("style", "visibility:visible;opacity:1;") };
 
-            window.d3.selectAll("#hook1 #L1_frames > *").attr("style","opacity:0;");
-              var selector2 = '#hook1 #L1_frames > *:nth-child('+j+')',
-              m = window.d3.select("svg").attr("width")/100*5, // frame margin
-              c = nodeArea < m*m;
-              if(c){ window.d3.selectAll(selector2).attr("style", "visibility:visible;opacity:1;") };
+        console.log("Printing: "+j+" ; name: "+nodeName+" ; area: "+nodeArea+" .")
+        var filename = name_+',_'+nodeName+type;
+        fs.writeFileSync(filename, svgheader + window.d3.select(hook).html()) 
+      }
+}
+var hook = "#hook1"
+// Type: L0 admin
+fs.writeFileSync(name_+'_location_map,_relief_(2015)-en.svg', svgheader + window.d3.select(hook).html())  // <Country>_location_map,_relief_(2015)-en.svg
+console.log("Admin map, printed: "+ new Date() );
 
-          console.log("Paint & print: "+j+", name: "+nodeName+" ; area: "+nodeArea+"; .")
-          fs.writeFileSync(title.replace(/ /g,"_") +',_'+ nodeName.replace(/ /g,"_")+'_locator_map_(2015).svg', svgheader + window.d3.select("body").html()) 
-         }
-/** /
-        //Type: topo
-        window.d3.select(".raster").attr(":xlink:href", "")
-/**/
-      },
-      12000
+loopOnL1('#hook1',name_,'_locator_relief_map_(2015)-en.svg');                                             // <Country>,_<Province>_locator_map,_relief_(2015)-en.svg
+console.log("Admin map, printed: "+ new Date() );
+
+window.d3.selectAll("#hook1 #Relief_raster").remove();
+window.d3.selectAll("#hook1 #Hillshade_raster").remove();
+loopOnL1('#hook1',name_,'_locator_map_(2015)-en.svg');                                                     // <Country>,_<Province>_locator_map,_blue_(2015)-en.svg
+
+window.d3.selectAll("#hook1 #L0_labels").remove();
+window.d3.selectAll("#hook1 #L1_labels").remove();
+window.d3.selectAll("#hook1 #Places").remove();
+window.d3.selectAll("#hook1 #Places_labels").remove();
+fs.writeFileSync(name_+'_location_map,_blue_blank_(2015).svg', svgheader + window.d3.select(hook).html())  // <Country>_location_map,_blue_blank_(2015).svg
+
+    },4000
   );
 
  }
 // END (D3JS) * * * * * * * * * * * * * * * * * * * * * * * *
 );
+
+/*
+
+
+
+
+*/

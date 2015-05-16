@@ -7,16 +7,17 @@ EXPORT imgb64=nothing
 #	geo: { WEST, NORTH, EAST, SOUTH } ==> see master file's variable declaration
 #	script: { DATE, VERSION }         ==> see master file's variable declaration
 WIDTH=1980
-#HEIGHT=`identify ../output/$(NAME)/color.gis.tif | cut -f 3 -d " " | sed s/.*x//`
 
 #---- MAKEFILE
-done: output
+done: location topographic
 	mkdir -p ../output/$(NAME)
 	mv ./*.svg ../output/$(NAME)/
 	
-output: b64
-#	WIDTH=$(WIDTH) node svgcreator.node.js 		# see inside this file for parameters' calls
-	WIDTH=$(WIDTH) node location.node.js		# see inside this file for parameters' calls
+topographic: b64
+	WIDTH=$(WIDTH) node topographic.node.js		# see inside this file for parameters' calls
+
+location: b64
+#	WIDTH=$(WIDTH) node location.node.js		# see inside this file for parameters' calls
 
 b64: clean server
 	convert ../output/$(NAME)/trans.gis.tif ../output/$(NAME)/trans.png 

@@ -2,7 +2,7 @@ NOTE : PROJECT & DOCUMENTATION ARE ONGOING.
 `<section title> (xx%)` EXPRESS THE SECTION'S DEGREE OF COMPLETION.
 
 # WikimapsAtlas
-Wikimaps Atlas makefiles and Single Page Applications takes the power of GIS to the hands of common webdevs, graphists, scientists, journalists and online readers.  Excessively heavy GIS sources are processed into geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG optimized for screens display. Shapes and groups of shapes keep key metadatas allowing rich data binding while the graphic side keep up to the solid and elegant Wikipedia Map Conventions (cf references). You output maps of any large area.
+Wikimaps D3js Atlas makefiles and Single Page Applications takes the power of GIS to the hands of common webdevs, graphists, scientists, journalists and online readers.  Excessively heavy GIS sources are processed into geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG optimized for screens display. Shapes and groups of shapes keep key metadatas allowing rich data binding while the graphic side keep up to the solid and elegant Wikipedia Map Conventions (cf references). You output maps of any large area.
 
 ![ORGANIGRAM][1]
 

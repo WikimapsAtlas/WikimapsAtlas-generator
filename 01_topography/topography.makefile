@@ -38,7 +38,7 @@ vector_slices: raster_slices
 raster_slices: crop zvals
 	Slices=( $$(cat ./slices.tmp.txt) ); \
 	for i in "$${Slices[@]}"; do \
-		gdal_calc.py -A crop_xs.tmp.tif --outfile=elevation$${i}.tmp.tif --calc="($${i}+1)*(A>$${i})" --NoDataValue=-15000; \
+		gdal_calc.py -A crop_xs.tmp.tif --outfile=elevation$${i}.tmp.tif --calc="($${i}+1)*(A>$${i})" --NoDataValue=0; \
 	done
 
 #---- LOWEST-TOPEST

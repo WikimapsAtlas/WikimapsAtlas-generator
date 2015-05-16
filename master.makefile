@@ -25,7 +25,7 @@ export VERSION=0.8
 
 end: topography hillshade administrative water d3
 server:
-#	node ./node_modules/.bin/forever ./node_modules/.bin/http-server &
+	node ./node_modules/.bin/forever ./node_modules/.bin/http-server --cors &
 topography: 
 	#works
 	$(MAKE) -C 01_topography		-f topography.makefile

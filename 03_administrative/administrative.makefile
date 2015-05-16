@@ -8,12 +8,12 @@ TOPOJSON_LOC=../node_modules/topojson/bin/topojson
 # Admin layer:
 PLACES=15
 SELECTOR_L1=admin IN ('$(NAME)')
-SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places ORDER BY POP_MAX DESC LIMIT '$(PLACES)'
-## Some past selector:
-#SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE iso_a2 = '$(NAME)' ORDER BY POP_MAX DESC LIMIT 50
+SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places ORDER BY POP_MAX DESC LIMIT $(PLACES)
+SELECTOR_CAPITALS=SELECT * FROM ne_10m_populated_places WHERE FEATURECLA = 'Admin-0 capital'
+## Some past selector: 
+#SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE iso_a2 = '$(ISO2)' ORDER BY POP_MAX DESC LIMIT 50
 #SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE ADM0NAME = '$(NAME)' AND POP_MAX > '2000000'
 #SELECTOR_PLACES=SELECT TOP 30 POP_MAX * FROM ne_10m_populated_places WHERE ADM0NAME = '$(NAME)'
-#make -f ./administrative.makefile NAME= WEST=-180 NORTH=90 EAST=180 SOUTH=-90 QUANTIZATION=1e3 PLACES=60
 
 
 #MAKEFILE
@@ -122,6 +122,10 @@ crop: clean
 	ogr2ogr -spat $(WEST) $(NORTH) $(EAST) $(SOUTH) \
 		-sql "$(SELECTOR_PLACES)" -dialect SQLITE \
 		./places.tmp.shp ../data/natural_earth_vector/10m_cultural/ne_10m_populated_places.shp
+	ogr2ogr -spat $(WEST) $(NORTH) $(EAST) $(SOUTH) \
+		-sql "$(SELECTOR_CAPITALS)" -dialect SQLITE \
+		./places_cap.tmp.shp ../data/natural_earth_vector/10m_cultural/ne_10m_populated_places.shp
+	ogr2ogr -update -append places.tmp.shp places_cap.tmp.shp
 clean:
 	rm -f *.json
 	rm -f *.dbf
