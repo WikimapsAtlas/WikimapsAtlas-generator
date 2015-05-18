@@ -9,6 +9,7 @@ and you get out :
 <img src="http://i.stack.imgur.com/kaJH3.png" width="300" float="center">
 <img src="http://i.stack.imgur.com/1Q3p0.jpg" width="300" float="center">
 <img src="http://i.stack.imgur.com/mPZUd.png" width="300" float="center">
+<img src="http://i.stack.imgur.com/Vc0qK.png" width="300" float="center">
 
 as well as constitutives components (raster, topojson) and derivated variations (jpg, png, svg).
 
