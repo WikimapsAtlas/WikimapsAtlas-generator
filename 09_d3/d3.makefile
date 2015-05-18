@@ -1,23 +1,18 @@
 #---- RUN
-# make -f master.makefile NAME=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
-EXPORT imgb64=nothing
-
+# make -f master.makefile d3 NAME=India ISO2=IN WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
 #---- DEFAULT VALUES (customizable):
-# Some variables are defined by master.makefile & called by svgcreator.node.js 
-#	geo: { WEST, NORTH, EAST, SOUTH } ==> see master file's variable declaration
-#	script: { DATE, VERSION }         ==> see master file's variable declaration
-WIDTH=1980
+WIDTH=1280
 
 #---- MAKEFILE
 done: location topographic
 	mkdir -p ../output/$(NAME)
-	mv ./*.svg ../output/$(NAME)/
+	mv ./*{.svg,.tpl} ../output/$(NAME)/
 	
 topographic: b64
 	WIDTH=$(WIDTH) node topographic.node.js		# see inside this file for parameters' calls
 
 location: b64
-#	WIDTH=$(WIDTH) node location.node.js		# see inside this file for parameters' calls
+	WIDTH=$(WIDTH) node location.node.js		# see inside this file for parameters' calls
 
 b64: clean server
 	convert ../output/$(NAME)/trans.gis.tif ../output/$(NAME)/trans.png 
