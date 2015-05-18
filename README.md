@@ -1,15 +1,18 @@
-NOTE : PROJECT & DOCUMENTATION ARE ONGOING. 
-`<section title> (xx%)` EXPRESS THE SECTION'S DEGREE OF COMPLETION.
+# Wikimaps-D3js Atlas
+**Wikimaps-D3js Atlas** takes the power of GIS to the hands of web developpers, graphists, journalists and online readers. A single command let you process super heavy GIS sources such administrative NaturalEarth shapefiles and topographic SRTM rasters into light geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG files optimized for screens display. XML shapes and groups of shapes keep the most relevant data-attributes (name, iso_2, hasc code, population- allowing rich data binding while the graphic aspect keeps up to modern web expectations. We believe our topojson and svg files to be the finest available online due to the smart selection and presence of these data attributes easing **data biding**.
 
-# WikimapsAtlas
-Wikimaps D3js Atlas makefiles and Single Page Applications takes the power of GIS to the hands of common webdevs, graphists, scientists, journalists and online readers.  Excessively heavy GIS sources are processed into geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG optimized for screens display. Shapes and groups of shapes keep key metadatas allowing rich data binding while the graphic side keep up to the solid and elegant Wikipedia Map Conventions (cf references). You output maps of any large area.
+Runs `make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280` and you get out :
 
-![ORGANIGRAM][1]
+![enter image description here][1]
+![enter image description here][2]
 
-[1]: http://i.stack.imgur.com/Vc0qK.png
+[1]: http://i.stack.imgur.com/kaJH3.png
+[2]: http://i.stack.imgur.com/mPZUd.png
+
+as well as constitutives components (raster, topojson) and derivated variations (jpg, png, svg).
 
 ## Installation (100%)
-We will install gdal, nodejs, npm's modules topojson and jsdom, as well as NaturalEarth and SRTM GIS data.
+Under the hood are `gdal`, `nodejs`'s modules `topojson` and `jsdom`, and `d3js`.
 
 **On Linux Ubuntu**, run the following:
 ```shell
@@ -17,101 +20,59 @@ sudo apt-get install git make  # tools needed for install
 git clone https://github.com/WikimapsAtlas/make-modules.git  #get code
 cd ./make-modules
 make -f ./install.makefile     # install needed tools
-make -f ./data.makefile        # install default data (recommanded)
+make -f ./data.makefile        # install default data (recommanded, may take up to few hours)
 git clone https://github.com/WikimapsAtlas/node_modules.git  # get nodejs modules
 ```
 
-**On OS X** use [Homebrew](http://mxcl.github.io/homebrew/)'s `brew install <program>`. (Are you on Mac ? We need Mac users feedbacks and welcome a brew version of our linux installation process!).
+**On OS X** use [Homebrew](http://mxcl.github.io/homebrew/)'s `brew install <program>`. (Are you on Mac ? Help us to write this section.).
 
-**Help needed?** Please report issues or ideas [to us](https://github.com/WikimapsAtlas/make-modules/issues).
 
 ## Projections and dimensions (100%)
 **Per default**, output files have the following characteristics:
 * WGS 84 lat/long reference system
-* Non-projected or Mercator projected, *cartesian* coordinates
-* *Simplified* and *scaled* to best fit a width of **1980px**
+* .shp and .tif are either Non-projected or Mercator projected, with *cartesian* coordinates
+* .topo.json are non-projected,
+* .svg have Mercator projection done via d3js (see `./js/wikiatlas.js`)
+* *Simplified* and *scaled* to best fit the width (default: **1280px**)
 
-**Reprojection** is possible by editing at several points. As these modules are serverside, we recommand to reproject ([list of projections](http://spatialreference.org/ref/epsg/)) early on, before or at the top of the crop task:
+Custom projection is possible but not yet implemented. See [issue 1](https://github.com/WikimapsAtlas/make-modules/issues/1).
+
+## Run
+Wikimaps Atlas is usually run via the `master.makefile`, which pass variables to sub-module makefiles generating suit of cropped shp, rasters images, topojson and svgs. Modules can be ran independently as well.
+
+**Master:** When run, the `master.makefile` runs other layer-specialized sub-makefiles. These sub-makefiles process GIS sources, output topoJSON file(s) which `nodejs`, `jsdom`, and `D3js` convert into stand alone SVGs stored in the `./output` folder. Sub-makefiles could also be run separatedly.
+
+**Topography & reliefs:** When run, the `topography.makefile` download the raster GIS DEM sources, process them (unzip, crop, slice, polygonize, merge), to output an elegant topographic stack of polygons, topojson and WP styled SVG files.
+
+**Administrative:** When run, the `administrative.makefile` processes the administrative L0 (countries), L1 (subunits), disputed areas and cities (places) GIS sources via unzip, crop, filter, to output elegant topojson and WP styled SVG files.
+
+**Hillshade relief:** When run, the `hillshade.makefile` process SRTM sources via crop, hillshading relief, resize, color relief, to output elegant shaded relief png/jpg (current) and topojson/svg.
+
+**D3 svg generator:** When run, the `d3.makefile` queries the previously generated jpg, png, and topojson in order to create D3js svg visualisation, then printed into stand alone `.svg` files.
+
 ```bash
-# using ogr2ogr 
-ogr2ogr -f 'ESRI Shapefile' -t_srs 'EPSG:...' output.shp input.shp
-# then crop vector files via ogr2ogr -clipsrc, raster files via gdal_translate -projwin.
+# master
+make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280
+# 1. topography raster & vector
+make -f master.makefile topography NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 SLICES=8
+# 2. hillshade module
+make -f master.makefile hillshade  NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 SLICES=8
+# 3. administrative module
+make -f master.makefile administrative NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 SELECTOR_L1="admin IN ('INDIA')"
+# 4. water module
+make -f master.makefile water NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 SELECTOR_L1="admin IN ('INDIA')"
+# 5. d3 module (depend on 1,2,3,4)
+node ./node_modules/.bin/forever ./node_modules/.bin/http-server --cors &
+make -f master.makefile d3    NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0
 ```
-
-Within the nodejs module, D3js codes should be keep projection-agnostic, something such: 
-```javascript
-var path = d3.geo.path()
-    .projection(null);
-```
-For more, see [Reproject shp/topojson : ways to reproject my data and comparative manual?](http://stackoverflow.com/questions/23086493/)
-
-## Use
-Wikimaps Atlas is usually run using the `master.makefile`, which pass variables to sub-module makefiles generating a full suit of topojson and svgs. Modules can be ran independently as well.
-
-### Master (100%)
-**Action:** When run, the `master.makefile` runs other layer-specialized sub-makefiles. These sub-makefiles download process the GIS sources, output topoJSON file(s) which `nodejs`, `jsdom`, and `D3js` codes can convert into stand alone SVGs. Command:
-```bash
-    make -f master.makefile ITEM=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 WIDTH=1800
-```
-Sub-makefiles could also be run separatedly.
-
-### Administrative  (100%)
-
-**Action:** When run, the `administrative.makefile` download administrative L0 (countries), L1 (subunits), and cities (places) GIS sources, process them (unzip, crop, filter), to output an elegant composite stack of your target L1 district upon L0 backgrounds, as topojson and WP styled SVG files. Direct command :
-
-    make -f administrative.makefile ITEM=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 SELECTOR_L1="admin IN ('INDIA')"
-
-### Topography (100%)
-**Action:** When run, the `topography.makefile` download the raster GIS DEM sources, process them (unzip, crop, slice, polygonize, merge), to output an elegant topographic stack of polygons, topojson and WP styled SVG files. Direct command :
-
-    make -f topography.makefile ITEM=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 SLICES=8
-
-### Shaded relief (100%)
-**Action:** When run, the `shadedrelief.makefile` download the raster GIS DEM sources, process them (unzip, crop, shaded relief, resize, colorize), to output several elegant shaded relief png/jpg (current) or topojson/svg (planned). Needs WNES. Direct command :
-
-    make -f shadedrelief.makefile ITEM=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 SLICES=8
-
-For similar data and similar px dimensions, file sizes are `.tif`:5.0MB, `.png`:1.6MB, `.jpg`:239KB. Also, whenever possible and relevant, we use the lighter format.
-
-## Ouput
-Generated files are built with a strict structure. Polygons have meaningful `id` allowing easy **data biding**. By default, we propose a serie of layer combinations into refined, data binding friendly svgs maps.
-
-### Basic elements (80%)
-* administrative.topo.json, containing:
- * `admin_0` (countries)
- * `admin_1` (subdivisions of the target country)
- * `places` (cities with population above a given number):
-* topographic: 
- * levels.geo.json
- * levels.topo.json
-* 2 hillshades:
- * hillshade_grey (GIS tif)
- * hillshade_trans (png)
-* 1 color-relief (wikipedia style):
- * color+hillshade_000pc (GIS tif)
-* 1 composite:
- * color+hillshade_multiply (jpg)
-
-### Refined svg (30%)
-We mirror best practices refined by Wikipedia cartographers over the past 8 years.
-* Administrative
- * {ITEM}_administrative_location_map.svg -- without labels
- * {ITEM}_administrative_location_map-en.svg -- with English labels
-* Waters
- * {ITEM}_rivers_location_map.topojson
-* Topography (vector)
- * {ITEM}_topography_location_map.svg
-* Shaded relief:
- * {ITEM}_shaded_relief_map-transparent.png
- * {ITEM}_shaded_relief_map-white.jpg
- * {ITEM}_shaded_relief_map-wikimaps.jpg (wp colored relief)
-* Localisator:
- * {ITEM}_globe_localisator.svg
 
 ## API
 This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagick) APIs. Elements are ordered by order of apparition, from master, to administrative, to shaded relief, to topography.
 
-* **ITEM**: name of the target/central geographic item, according to Natural Earth spelling.
+Commonly used:
+
+* **NAME**: name of the target/central geographic item, according to Natural Earth spelling.
+* **ISO2**: iso_2 of the target/central geographic item.
 * **WEST**: Westernmost longitude value of the bounding box. 
  * *range*: `[180.0,-180.0]`.
 * **NORTH**: Northernmost latitude value of the bounding box.
@@ -123,13 +84,17 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 * **WIDTH**: width of the final SVG and associated bitmaps (tif, png). The EIGHT is calculated from `WNES` values and the `WIDTH`.
  * *default*: `1980` (px), 
  * *range*: `>0`.
- * **PROJECTION**: code of the projection used.
-  * *default*: `epsg:4326` (equirectangular).
-  * *major alternatives*: `epsg:3857` (mercator, requires `S=370400`)
-* **SELECTOR_L1**: selects and keeps L1 administrative areas via SQL query.
- * *default*: `"admin IN ('India')"`
+ * **SLICES**: number of elevation levels above sea level.
+ * *default*: `8`,
+ * *range* : > `2` (!).
+
+Advanced use:
+
+* **PROJECTION**: code of the projection used ([list of projections](http://spatialreference.org/ref/epsg/)). Only affects rasters `.shp` & `.tif` outputs.
+ * *default*: `epsg:4326` (equirectangular).
+ * *major alternatives*: `epsg:3857` (mercator, requires `S=370400`)
 * **SELECTOR_PLACES**: selects and keeps placess (towns and cities) via SQL query.
- * *default*, 30 biggest places: `ADM0NAME = '$(ITEM)' AND ORDER BY POP_MAX DESC LIMIT 30`
+ * *default*, 15 biggest places: `ADM0NAME = '$(ITEM)' AND ORDER BY POP_MAX DESC LIMIT 15` together with all countries capitals.
  * *alternative*, places with population above 2M : `ADM0NAME = '$(ITEM)' AND POP_MAX > 2000000`
 * **QUANTIZATION**: maximum number of differentiable points along either x and y dimensions
  * *default*: `1e4`, 
@@ -145,33 +110,76 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 * **ALT**:  altitude of the light, in degrees. 90 if the light comes from above the DEM, 0 if it is raking light.
  * *default*: `60`,
  * *range*: `[0-90]`.
-* **FUZZ** (fuzzy selection): colors within this distance of grey 50% are considered equal it and processed.
- * *default*: `7`,
- * *range*: `[0-100]`.
 * **SHADOW**: opacity of the hillshade upon color-relief
- * *range*: `[0-100]`.
-<!-- Topography: -->
-* **SLICES**: number of elevation levels above sea level.
- * *default*: `8`,
- * *range* : > `2` (!). 
+ * *range*: `[0-100]`
 
 **Note:** 
  * if the input GIS raster is in feet, then `s` scale should be edited. See `man gdal`.
  * you must have data in the right folder, with correct name, and with correct attributes, as called by the makefiles.
 
+
+## Ouput
+Generated files are moved into `./output/<NAME>/`.
+
+### Attributes (100%)
+Whenever available, these elements are transmitted to the final topojsons : 
+* `name`: item's English name (for all: countries, provinces, disputed, cities, rivers)
+* `L0`: item's country iso2 codes (for countries, provinces, disputed, cities), 
+* `L0_3`: item's iso3 codes (for countries, provinces, disputed, cities), 
+* `L1`: item's province hasc code (for provinces, disputed), [\*](https://github.com/WikimapsAtlas/make-modules/issues/3)
+* `L0_name`: item's country name (for provinces, disputed, cities), 
+* `L1_name`: item's province name (for cities),
+* `note`: "claimed by, controlled by" (for disputed areas)
+* `status`: item's status (for cities), 
+* `pop`: population (for cities), 
+* `scalerank`: river scalerank. 
+
+### Constitutive elements (100%)
+* 2 topographic reliefs:
+  * 1 `elevations.topo.json`: n slices in vector format to represent signicative elevations of exponential altitude (ex: 0,50,200,500,2000, 5000m). 
+  * 1 `color.jpg` : raster relief with two relative coloramps for landmass and sea. (default: Mercator)
+* 2 hillshades:
+ * `trans.png`: a transparent hillshade, see [How to create transparent hillshade?](http://gis.stackexchange.com/questions/144535/how-to-create-transparent-hillshade/144700#144700).  (default: Mercator)
+ * `hillshades.topo.json`: vector version of the previous.
+* 1 `administrative.topo.json` containing the layers:
+ * `admin_0`: countries
+ * `admin_1`: subdivisions of the target country
+ * `disputed`: disputed area within the range of the query
+ * `places`: cities with population above a given number
+* 1 `waters.topo.json`: major rivers of the area.
+
+
+### End products (30%)
+We mirror best practices refined by Wikipedia cartographers over the past 8 years.
+* Administrative
+ * {ITEM}_administrative_location_map.svg -- without labels
+ * {ITEM}_administrative_location_map-en.svg -- with English labels
+* Topography (vector)
+ * {ITEM}_topography_location_map.svg
+* Shaded relief:
+ * {ITEM}_shaded_relief_map-transparent.png
+ * {ITEM}_shaded_relief_map-white.jpg
+ * {ITEM}_shaded_relief_map-wikimaps.jpg (wp colored relief)
+* Localisator:
+ * {ITEM}_globe_localisator.svg
+
 ## Gallery of Examples
 
-* {HAND OF SCREENSHOT EXAMPLE HERE}
+<img src="http://i.stack.imgur.com/1Q3p0.jpg" width="48">
+
+[[http://i.stack.imgur.com/1Q3p0.jpg|width=48]
+
+![enter image description here][4]
+
+[4]: http://i.stack.imgur.com/1Q3p0.jpg
 
 ## Manuals of reference
 
 * [OGR2ORG documentation](http://www.gdal.org/ogr2ogr.html)
 * [ImageMagick/Command-Line Options](http://www.imagemagick.org/script/command-line-options.php)  —— on raster image processing
 * Mike Bostock's tutorial [Let's MAKE a Map](http://bost.ocks.org/mike/map/)
-* [TopoJSON](https://github.com/mbostock/topojson/wiki)
- * [TopoJSON > API](https://github.com/mbostock/topojson/wiki/API-Reference)
- * [TopoJSON > Command Line Reference](https://github.com/mbostock/topojson/wiki/Command-Line-Reference)
- * [Topojson > External properties](https://github.com/mbostock/topojson/wiki/Command-Line-Reference#external-properties) —— to bind data to your topojson.
+* [TopoJSON](https://github.com/mbostock/topojson/wiki) > [API](https://github.com/mbostock/topojson/wiki/API-Reference), [Command Line Reference](https://github.com/mbostock/topojson/wiki/Command-Line-Reference)
+, [How to bind data to your topojson?](https://github.com/mbostock/topojson/wiki/Command-Line-Reference#external-properties)
 * [D3 > API](https://github.com/mbostock/d3/wiki/API-Reference)
 * [D3.geo > API](https://github.com/mbostock/d3/wiki/Geo)
 
@@ -184,17 +192,20 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 * [Wikipedia:MAP/Guidelines](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Maps/Conventions) 
 
 
-## Thanks
-**Authors:** 
-* [Hugo Lopez](http://twitter.com/hugo_lz) —— project design, prototyping, refining. Technologies: gdal, ogr2ogr, imagemagick, topojson, nodejs, jsdom, d3js.
-* [Arun Ganesh](http://twitter.com/planemad) —— project scaling up, automation. Technologies: gdal, ogr2ogr, topojson, d3js, QuantumGIS, PostgreSQL.
-* [Edouard Lopez](http://twitter.com/edouard_lopez) —— software engineering suppervision. Technologies: make, bash, git, js.
+## Help
+Report issues or ideas [on github](https://github.com/WikimapsAtlas/make-modules/issues).
 
-**Our supports:** 
-Individuals: cartographers from the French, German, and English Wikipedias, Yuvipanda, Siko Bouterse.
 
-Organisations : Wikimedia Fundation's [Individual Engagement Grant](http://meta.wikimedia.org/wiki/Grants:IEG/Wikimaps_Atlas), Wikimedia-CH, Wikimedia-FR.
+## Authorship
+
+* **Authors:** [Hugo Lopez](http://twitter.com/hugo_lz) —— project design, prototyping, refining. Technologies: gdal, ogr2ogr, imagemagick, topojson, nodejs, jsdom, d3js.
+* **Assistant:** [Arun Ganesh](http://twitter.com/planemad) —— project scaling up, automation. Technologies: gdal, ogr2ogr, topojson, d3js, QuantumGIS, PostgreSQL.
+* **Help:** [Edouard Lopez](http://twitter.com/edouard_lopez) —— software engineering suppervision. Technologies: make, bash, git, js.
+
+**Supports:** 
+* Individuals: cartographers from the French, German, and English Wikipedias, Yuvipanda, Siko Bouterse.
+* Organisations : Wikimedia Fundation's [Individual Engagement Grant](http://meta.wikimedia.org/wiki/Grants:IEG/Wikimaps_Atlas), Wikimedia-CH, Wikimedia-FR.
 
 ## Licence (100%)
 
-Copyright 2014 [MIT License](./LICENSE) — LOPEZ Hugo, GANESH Arun, LOPEZ Edouard.
+Copyright 2014 [MIT License](./LICENSE) CC-by-sa-3.0 — LOPEZ Hugo (Yug), for the Wikimedia Foundation.
