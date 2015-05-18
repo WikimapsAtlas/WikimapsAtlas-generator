@@ -1,20 +1,16 @@
-#DEFAULT VALUES (customizable):
-# inherit NAME, WEST, NORTH, EAST, SOUTH from master.makefile or command.
-#make -f ./administrative.makefile NAME= WEST=-180 NORTH=90 EAST=180 SOUTH=-90 QUANTIZATION=1e5 PLACES=60
-escaped_A = $(subst $e ,_,$(NAME))
-escaped_NAME = $(subst $e' ,\',$(escaped_A))# THIS TWO MAY BE MERGED ! $(subst $e' ,\',$(subst $e ,_,$(NAME)) )
-QUANTIZATION=1e4
+#---- RUN
+# make -f master.makefile administrative NAME=India ISO2=IN WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 QUANTIZATION=1e5 PLACES=60
+#---- DEFAULT VALUES (customizable):
+#---- Topojson
 TOPOJSON_LOC=../node_modules/topojson/bin/topojson
-# Admin layer:
+QUANTIZATION=1e4
+#---- Administrative layer:
 PLACES=15
-SELECTOR_L1=admin IN ('$(NAME)')
 SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places ORDER BY POP_MAX DESC LIMIT $(PLACES)
 SELECTOR_CAPITALS=SELECT * FROM ne_10m_populated_places WHERE FEATURECLA = 'Admin-0 capital'
-## Some past selector: 
-#SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE iso_a2 = '$(ISO2)' ORDER BY POP_MAX DESC LIMIT 50
-#SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE ADM0NAME = '$(NAME)' AND POP_MAX > '2000000'
+#---- Some former selectors: 
+#SELECTOR_PLACES=SELECT * FROM ne_10m_populated_places WHERE iso_a2 = '$(ISO2)' AND POP_MAX > '2000000' ORDER BY POP_MAX DESC LIMIT 15
 #SELECTOR_PLACES=SELECT TOP 30 POP_MAX * FROM ne_10m_populated_places WHERE ADM0NAME = '$(NAME)'
-
 
 #MAKEFILE
 done: topojson
@@ -104,6 +100,7 @@ places: crop
 		--filter=small \
 		-o places.topo.json \
 		-- places=places.tmp.shp
+		# places lack L1 code !!!!
 
 #geojson_filters: crop
 ##	ogr2ogr -f GeoJSON -where "iso_a2 = ('$(NAME)')" \
