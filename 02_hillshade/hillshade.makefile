@@ -1,15 +1,14 @@
 #---- RUN
-# make -f hillshades.makefile NAME=IN WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
+# make -f hillshades.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0
 # See also: [[commons:User:ShareMap/Hillshade_with_ImageMagick]]
 SHELL=/bin/bash
 #---- DEFAULT VALUES (customizable):
-WIDTH=2000
+WIDTH=1280
 PROJECTION=EPSG:3395
 #---- Vectorization
-QUANTIZATION=1e4
 TOPOJSON_LOC=../node_modules/topojson/bin/topojson
+QUANTIZATION=1e4
 #---- Hillshade
-FUZZ=7
 AZ=315
 Z=5
 S=111120
@@ -64,13 +63,13 @@ resize: shading crop
 shading: crop reproj
 # must shade before resize. See http://gis.stackexchange.com/a/137290/19460
 	# composite hillshades: 
-	gdaldem hillshade crop_xl.tmp.tif hillshades_A.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) +  1` -alt 60 -compute_edges
-	gdaldem hillshade crop_xl.tmp.tif hillshades_B.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) + 40` -alt 60 -compute_edges
-	gdaldem hillshade crop_xl.tmp.tif hillshades_C.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) - 40` -alt 60 -compute_edges
+	gdaldem hillshade crop_xs.tmp.tif hillshades_A.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) +  1` -alt 60 -compute_edges
+	gdaldem hillshade crop_xs.tmp.tif hillshades_B.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) + 40` -alt 60 -compute_edges
+	gdaldem hillshade crop_xs.tmp.tif hillshades_C.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) - 40` -alt 60 -compute_edges
 	gdal_calc.py -A hillshades_A.tmp.tif -B hillshades_B.tmp.tif -C hillshades_C.tmp.tif \
-		--outfile=./hillshades_xl.tmp.tif --calc="(A*(A<=B)*(A<=C)+ B*(B<A)*(B<=C)+ C*(C<A)*(C<B))"
+		--outfile=./hillshades_xs.tmp.tif --calc="(A*(A<=B)*(A<=C)+ B*(B<A)*(B<=C)+ C*(C<A)*(C<B))"
 	gdal_calc.py -A hillshades_A.tmp.tif -B hillshades_B.tmp.tif -C hillshades_C.tmp.tif \
-		--outfile=./hillshades_xl_multiply.tmp.tif --calc="A*B*C/255/255"
+		--outfile=./hillshades_xs_multiply.tmp.tif --calc="(A*B*C)^(1/3)"
 
 reproj: crop                 
 #	reproj can go here
