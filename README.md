@@ -1,13 +1,14 @@
 # Wikimaps-D3js Atlas
 **Wikimaps-D3js Atlas** takes the power of GIS to the hands of web developpers, graphists, journalists and online readers. A single command let you process super heavy GIS sources such administrative NaturalEarth shapefiles and topographic SRTM rasters into light geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG files optimized for screens display. XML shapes and groups of shapes keep the most relevant data-attributes (name, iso_2, hasc code, population- allowing rich data binding while the graphic aspect keeps up to modern web expectations. We believe our topojson and svg files to be the finest available online due to the smart selection and presence of these data attributes easing **data biding**.
 
-Runs `make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280` and you get out :
 
-![enter image description here][1]
-![enter image description here][2]
+## Gallery of Examples
+`make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280`
+and you get out :
 
-[1]: http://i.stack.imgur.com/kaJH3.png
-[2]: http://i.stack.imgur.com/mPZUd.png
+<img src="http://i.stack.imgur.com/kaJH3.png" width="200" float="center">
+<img src="http://i.stack.imgur.com/1Q3p0.jpg" width="200" float="center">
+<img src="http://i.stack.imgur.com/mPZUd.png" width="200" float="center">
 
 as well as constitutives components (raster, topojson) and derivated variations (jpg, png, svg).
 
@@ -163,15 +164,6 @@ We mirror best practices refined by Wikipedia cartographers over the past 8 year
 * Localisator:
  * {ITEM}_globe_localisator.svg
 
-## Gallery of Examples
-
-<img src="http://i.stack.imgur.com/1Q3p0.jpg" width="48">
-
-[[http://i.stack.imgur.com/1Q3p0.jpg|width=48px]]
-
-![enter image description here][4]
-
-[4]: http://i.stack.imgur.com/1Q3p0.jpg
 
 ## Manuals of reference
 
