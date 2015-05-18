@@ -24,8 +24,6 @@ export VERSION=0.8
 #---- MAKE SCRIPT
 
 end: topography hillshade administrative water d3
-server:
-	node ./node_modules/.bin/forever ./node_modules/.bin/http-server --cors &
 topography: 
 	#works
 	$(MAKE) -C 01_topography		-f topography.makefile
@@ -41,9 +39,11 @@ water:
 grouping:
 	# to do (?)
 #	$(MAKE) -C 07_move 				-f merge.makefile
-d3:
+d3: server
 	#works
 	$(MAKE) -C 09_d3 				-f d3.makefile
+server:
+	node ./node_modules/.bin/forever ./node_modules/.bin/http-server --cors &
 
 ###########################################################
 # TO DO
