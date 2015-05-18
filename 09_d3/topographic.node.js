@@ -71,7 +71,7 @@ var loopOnL1 = function(hook,name,type) {
 
         console.log("Printing: "+j+" ; name: "+nodeName+" ; area: "+nodeArea+" .")
         var filename = name_+',_'+nodeName+type;
-        fs.writeFileSync(filename, svgheader + window.d3.select(hook).html()) 
+        fs.writeFileSync(filename, svgheader + window.d3.select(hook).html()); 
       }
 }
 var hook = "#hook1";
@@ -82,7 +82,7 @@ window.d3.selectAll("#hook1 #L1").attr("style","opacity:0.6;");
 window.d3.selectAll("#hook1 #L1 > *").attr("style","opacity:0;");
 
 // Type: L0 admin
-fs.writeFileSync(name_+'_admin-topographic_(2015)-en.svg', svgheader + window.d3.select(hook).html())                 //1 <Country>_location_map,_admin-topographic_(2015)-en.svg
+fs.writeFileSync(name_+'_admin-topographic_(2015)-en.svg', svgheader + window.d3.select(hook).html());                 //1 <Country>_location_map,_admin-topographic_(2015)-en.svg
 console.log("Admin map, printed: "+ new Date() );
 
 loopOnL1('#hook1',name_,'_locator_map,_admin-topographic_(2015)-en.svg');                                             //n <Country>,_<Province>_locator_map,_admin-topographic_(2015)-en.svg
@@ -99,11 +99,11 @@ window.d3.selectAll("#hook1 #Places_labels").remove();
 fs.writeFileSync(name_+'_location_map,_admin-topographic_blank_(2015).svg', svgheader + window.d3.select(hook).html())  //1 <Country>_location_map,_admin-topographic_blank_(2015).svg
 
 
-fs.writeFileSync(name_+'_location_map,_topographic_blank_(2015).svg', svgheader + window.d3.select(hook).html())        //1 <Country>_location_map,_topographic_blank_(2015).svg
+fs.writeFileSync(name_+'_location_map,_topographic_blank_(2015).svg', svgheader + window.d3.select(hook).html());        //1 <Country>_location_map,_topographic_blank_(2015).svg
 
 window.d3.selectAll("#hook1 #Disputed").remove();
 window.d3.selectAll("#hook1 #L1").remove();
-fs.writeFileSync(name_+'_location_map,_topographic_blank_(2015).svg', svgheader + window.d3.select(hook).html())        //1 <Country>_location_map,_topographic_blank_(2015).svg
+fs.writeFileSync(name_+'_location_map,_topographic_blank_(2015).svg', svgheader + window.d3.select(hook).html());        //1 <Country>_location_map,_topographic_blank_(2015).svg
     },4000
   );
 
