@@ -167,7 +167,7 @@ We mirror best practices refined by Wikipedia cartographers over the past 8 year
 
 <img src="http://i.stack.imgur.com/1Q3p0.jpg" width="48">
 
-[[http://i.stack.imgur.com/1Q3p0.jpg|width=48]
+[[http://i.stack.imgur.com/1Q3p0.jpg|width=48px]]
 
 ![enter image description here][4]
 
