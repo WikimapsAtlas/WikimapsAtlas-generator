@@ -6,9 +6,9 @@
 `make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280`
 and you get out :
 
-<img src="http://i.stack.imgur.com/kaJH3.png" width="200" float="center">
-<img src="http://i.stack.imgur.com/1Q3p0.jpg" width="200" float="center">
-<img src="http://i.stack.imgur.com/mPZUd.png" width="200" float="center">
+<img src="http://i.stack.imgur.com/kaJH3.png" width="300" float="center">
+<img src="http://i.stack.imgur.com/1Q3p0.jpg" width="300" float="center">
+<img src="http://i.stack.imgur.com/mPZUd.png" width="300" float="center">
 
 as well as constitutives components (raster, topojson) and derivated variations (jpg, png, svg).
 
@@ -85,7 +85,7 @@ Commonly used:
 * **WIDTH**: width of the final SVG and associated bitmaps (tif, png). The EIGHT is calculated from `WNES` values and the `WIDTH`.
  * *default*: `1980` (px), 
  * *range*: `>0`.
- * **SLICES**: number of elevation levels above sea level.
+* **SLICES**: number of elevation levels above sea level.
  * *default*: `8`,
  * *range* : > `2` (!).
 
