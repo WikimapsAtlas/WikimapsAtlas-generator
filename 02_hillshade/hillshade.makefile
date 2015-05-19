@@ -9,6 +9,7 @@ PROJECTION=EPSG:3395
 TOPOJSON_LOC=../node_modules/topojson/bin/topojson
 QUANTIZATION=1e4
 #---- Hillshade
+FUZZ=7
 AZ=315
 Z=5
 S=111120
@@ -48,7 +49,7 @@ shade_trans: resize
 	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./color.tmp.tif   --calc="255*(A>200) + 1*(A<=200)" 		# filter out whites above X , set grey to 255.
 	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./opacity.tmp.tif --calc="1*(A>200)   + (256-A)*(A<=200)" 	# filter out whites above X , set opacity to 1/255. Else, invert opacity.
 	gdalbuildvrt -separate ./trans.tmp.vrt ./color.tmp.tif ./opacity.tmp.tif
-	gdalwarp -of GTiff -s_srs EPSG:4326 -t_srs $(PROJECTION) ./trans.tmp.vrt ./trans.gis.tmp.vrt   # reproj
+	gdalwarp -of GTiff ./trans.tmp.vrt ./trans.gis.tmp.vrt   # reproj
 #	gdal_translate 					-co ALPHA=YES ./trans.gis.tmp.vrt ./trans_nocompress.gis.tif
 	gdal_translate -co COMPRESS=LZW -co ALPHA=YES ./trans.gis.tmp.vrt ./trans.gis.tif
 
@@ -58,18 +59,19 @@ slope: crop
 
 #---- Crop, Resize
 resize: shading crop
-	gdalwarp -of GTiff -ts $(WIDTH) 0 hillshades_xl.tmp.tif hillshades.tmp.tif
+	gdalwarp -of GTiff -s_srs EPSG:4326 -t_srs $(PROJECTION) hillshades_xl.tmp.tif hillshades_reproj.tmp.tif
+	gdalwarp -of GTiff -ts $(WIDTH) 0 hillshades_reproj.tmp.tif hillshades.tmp.tif
 
 shading: crop reproj
 # must shade before resize. See http://gis.stackexchange.com/a/137290/19460
 	# composite hillshades: 
-	gdaldem hillshade crop_xs.tmp.tif hillshades_A.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) +  1` -alt 60 -compute_edges
-	gdaldem hillshade crop_xs.tmp.tif hillshades_B.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) + 40` -alt 60 -compute_edges
-	gdaldem hillshade crop_xs.tmp.tif hillshades_C.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) - 40` -alt 60 -compute_edges
+	gdaldem hillshade crop_xl.tmp.tif hillshades_A.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) +  1` -alt 60 -compute_edges
+	gdaldem hillshade crop_xl.tmp.tif hillshades_B.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) + 40` -alt 60 -compute_edges
+	gdaldem hillshade crop_xl.tmp.tif hillshades_C.tmp.tif -s $(S) -z $(Z) -az `expr $(AZ) - 40` -alt 60 -compute_edges
 	gdal_calc.py -A hillshades_A.tmp.tif -B hillshades_B.tmp.tif -C hillshades_C.tmp.tif \
-		--outfile=./hillshades_xs.tmp.tif --calc="(A*(A<=B)*(A<=C)+ B*(B<A)*(B<=C)+ C*(C<A)*(C<B))"
+		--outfile=./hillshades_xl.tmp.tif --calc="(A*(A<=B)*(A<=C)+ B*(B<A)*(B<=C)+ C*(C<A)*(C<B))"
 	gdal_calc.py -A hillshades_A.tmp.tif -B hillshades_B.tmp.tif -C hillshades_C.tmp.tif \
-		--outfile=./hillshades_xs_multiply.tmp.tif --calc="(A*B*C)^(1/3)"
+		--outfile=./hillshades_xl_multiply.tmp.tif --calc="(A*B*C)^(1/3)"
 
 reproj: crop                 
 #	reproj can go here
