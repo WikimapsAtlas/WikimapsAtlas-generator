@@ -1,6 +1,7 @@
 # Wikimaps-D3js Atlas
-**Wikimaps-D3js Atlas** takes the power of GIS to the hands of web developpers, graphists, journalists and online readers. A single command let you process super heavy GIS sources such administrative NaturalEarth shapefiles and topographic SRTM rasters into light geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG files optimized for screens display. XML shapes and groups of shapes keep the most relevant data-attributes (name, iso_2, hasc code, population- allowing rich data binding while the graphic aspect keeps up to modern web expectations. We believe our topojson and svg files to be the finest available online due to the smart selection and presence of these data attributes easing **data biding**.
+**Wikimaps-D3js Atlas** takes the power of GIS to the hands of web developpers, graphists, journalists and online readers. A single command let you process super heavy GIS sources such open source administrative [NaturalEarth][a] shapefiles and topographic ETOPO/SRTM tifs into light geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG files optimized for screens display. XML shapes and groups of shapes keep the most relevant data-attributes (name, iso_2, hasc code, population- allowing rich data binding while the graphic aspect keeps up to modern web expectations. We believe our topojson and svg files to be the finest available online due to the smart selection and presence of these data attributes easing **data biding**.
 
+[a]: http://www.naturalearthdata.com/features/
 
 ## Gallery of Examples
 `make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280`
@@ -12,6 +13,12 @@ and you get out :
 <img src="http://i.stack.imgur.com/Vc0qK.png" width="300" float="center">
 
 as well as constitutives components (raster, topojson) and derivated variations (jpg, png, svg).
+
+You can produce atlas-type maps for all major countries by running :
+
+    bash ./script/world_atlas_generator.bash  # may take a dozen of hours !
+
+You can custom the overall style by editing `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
 
 ## Installation (100%)
 Under the hood are `gdal`, `nodejs`'s modules `topojson` and `jsdom`, and `d3js`.
@@ -42,15 +49,17 @@ Custom projection is possible but not yet implemented. See [issue 1](https://git
 ## Run
 Wikimaps Atlas is usually run via the `master.makefile`, which pass variables to sub-module makefiles generating suit of cropped shp, rasters images, topojson and svgs. Modules can be ran independently as well.
 
-**Master:** When run, the `master.makefile` runs other layer-specialized sub-makefiles. These sub-makefiles process GIS sources, output topoJSON file(s) which `nodejs`, `jsdom`, and `D3js` convert into stand alone SVGs stored in the `./output` folder. Sub-makefiles could also be run separatedly.
+**Master:** When run, the `master.makefile` runs other layer-specialized sub-makefiles. These sub-makefiles process GIS sources, output topoJSON file(s) which `nodejs`, `jsdom`, and `D3js` convert into stand alone SVGs stored in the `./output` folder.
 
 **Topography & reliefs:** When run, the `topography.makefile` download the raster GIS DEM sources, process them (unzip, crop, slice, polygonize, merge), to output an elegant topographic stack of polygons, topojson and WP styled SVG files.
 
-**Administrative:** When run, the `administrative.makefile` processes the administrative L0 (countries), L1 (subunits), disputed areas and cities (places) GIS sources via unzip, crop, filter, to output elegant topojson and WP styled SVG files.
-
 **Hillshade relief:** When run, the `hillshade.makefile` process SRTM sources via crop, hillshading relief, resize, color relief, to output elegant shaded relief png/jpg (current) and topojson/svg.
 
-**D3 svg generator:** When run, the `d3.makefile` queries the previously generated jpg, png, and topojson in order to create D3js svg visualisation, then printed into stand alone `.svg` files.
+**Administrative:** When run, the `administrative.makefile` processes the administrative L0 (countries), L1 (subunits), disputed areas and cities (places) GIS sources via unzip, crop, filter, to output elegant topojson files.
+
+**Water:** When run, the `water.makefile` processes the rivers and lakes GIS sources via unzip and crop, to output elegant topojson files.
+
+**D3 (svg generator):** When run, the `d3.makefile` queries the previously generated jpg, png, and topojson in order to create D3js svg visualisations, then printed into stand alone `.svg` files.
 
 ```bash
 # master
@@ -191,7 +200,7 @@ Report issues or ideas [on github](https://github.com/WikimapsAtlas/make-modules
 ## Authorship
 
 * **Authors:** [Hugo Lopez](http://twitter.com/hugo_lz) —— project design, prototyping, refining. Technologies: gdal, ogr2ogr, imagemagick, topojson, nodejs, jsdom, d3js.
-* **Assistant:** [Arun Ganesh](http://twitter.com/planemad) —— project scaling up, automation. Technologies: gdal, ogr2ogr, topojson, d3js, QuantumGIS, PostgreSQL.
+* **Help:** [Arun Ganesh](http://twitter.com/planemad) —— project scaling up, automation. Technologies: gdal, ogr2ogr, topojson, d3js, QuantumGIS, PostgreSQL.
 * **Help:** [Edouard Lopez](http://twitter.com/edouard_lopez) —— software engineering suppervision. Technologies: make, bash, git, js.
 
 **Supports:** 
