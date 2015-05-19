@@ -39,6 +39,12 @@ var mapType={ rich_background: true, base_administrative:true, base_topography:f
 window.locationMap("#hook1",800, iso2, name, WEST, NORTH, EAST, SOUTH, true, mapType);
 console.log("Admin map, done: "+ new Date() );
 
+var content = '{{wikimaps_topic|west='+WEST+'|=north'+NORTH+'|south='+SOUTH+'|east='+EAST+'|name='+name+'|version=2015/05}}';
+fs.writeFileSync('meta_commons.tpl', content);
+
+window.localisator("#hook2", 600, name, name, WEST, NORTH, EAST, SOUTH);
+console.log("Globe map, done: "+ new Date() );
+
 // END svg design
 
 /* ***************************************************************** */
@@ -52,6 +58,8 @@ console.log("Admin map, done: "+ new Date() );
           .attr(':xmlns','http://www.w3.org/2000/svg')            // if not: file does not appear to have any style information
           .attr(':xmlns:xlink','http://www.w3.org/1999/xlink');   // if not: Namespace prefix xlink for href
 
+	fs.writeFileSync(name_+"-orthographic_(2015).svg", svgheader + window.d3.select("#hook2").html())
+	window.d3.select("#hook2").remove();
 
 var loopOnL1 = function(hook,name,type) {
       var nodes = window.d3.selectAll(hook+" #L1 > *")[0].length, // SO: /29278107/
@@ -79,12 +87,12 @@ var hook = "#hook1"
 fs.writeFileSync(name_+'_location_map,_relief_(2015)-en.svg', svgheader + window.d3.select(hook).html())  // <Country>_location_map,_relief_(2015)-en.svg
 console.log("Admin map, printed: "+ new Date() );
 
-loopOnL1('#hook1',name_,'_locator_relief_map_(2015)-en.svg');                                             // <Country>,_<Province>_locator_map,_relief_(2015)-en.svg
+loopOnL1('#hook1',name_,'_locator_map,_relief_(2015)-en.svg');                                             // <Country>,_<Province>_locator_map,_relief_(2015)-en.svg
 console.log("Admin map, printed: "+ new Date() );
 
 window.d3.selectAll("#hook1 #Relief_raster").remove();
 window.d3.selectAll("#hook1 #Hillshade_raster").remove();
-loopOnL1('#hook1',name_,'_locator_map_(2015)-en.svg');                                                     // <Country>,_<Province>_locator_map,_blue_(2015)-en.svg
+loopOnL1('#hook1',name_,'_locator_map,_blue_(2015)-en.svg');                                                     // <Country>,_<Province>_locator_map,_blue_(2015)-en.svg
 
 window.d3.selectAll("#hook1 #L0_labels").remove();
 window.d3.selectAll("#hook1 #L1_labels").remove();
