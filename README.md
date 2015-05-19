@@ -1,9 +1,15 @@
 # Wikimaps-D3js Atlas
 **Wikimaps-D3js Atlas** takes the power of GIS to the hands of web developpers, graphists, journalists and online readers. A single command let you process super heavy GIS sources such open source administrative [NaturalEarth][a] shapefiles and topographic ETOPO/SRTM tifs into light geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG files optimized for screens display. XML shapes and groups of shapes keep the most relevant data-attributes (name, iso_2, hasc code, population- allowing rich data binding while the graphic aspect keeps up to modern web expectations. We believe our topojson and svg files to be the finest available online due to the smart selection and presence of these data attributes easing **data biding**.
 
+You can produce atlas-type maps for all major countries by running :
+
+    bash ./script/world_atlas_generator.bash  # may take a dozen of hours !
+
+You can custom the overall style by editing `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
+
 [a]: http://www.naturalearthdata.com/features/
 
-## Gallery of Examples
+## Examples
 `make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280`
 and you get out :
 
@@ -14,13 +20,7 @@ and you get out :
 
 as well as constitutives components (raster, topojson) and derivated variations (jpg, png, svg).
 
-You can produce atlas-type maps for all major countries by running :
-
-    bash ./script/world_atlas_generator.bash  # may take a dozen of hours !
-
-You can custom the overall style by editing `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
-
-## Installation (100%)
+## Install (100%)
 Under the hood are `gdal`, `nodejs`'s modules `topojson` and `jsdom`, and `d3js`.
 
 **On Linux Ubuntu**, run the following:
@@ -160,21 +160,18 @@ Whenever available, these elements are transmitted to the final topojsons :
 
 
 ### End products (30%)
-We mirror best practices refined by Wikipedia cartographers over the past 8 years.
+We mirror best practices refined by Wikipedia's cartographers over the past 8 years.
 * Administrative
- * {ITEM}_administrative_location_map.svg -- without labels
- * {ITEM}_administrative_location_map-en.svg -- with English labels
+ * {ITEM}_ -- without labels
+ * {ITEM}_ -- with English labels
 * Topography (vector)
- * {ITEM}_topography_location_map.svg
+ * {ITEM}_
 * Shaded relief:
- * {ITEM}_shaded_relief_map-transparent.png
- * {ITEM}_shaded_relief_map-white.jpg
- * {ITEM}_shaded_relief_map-wikimaps.jpg (wp colored relief)
+ * {ITEM}_
 * Localisator:
- * {ITEM}_globe_localisator.svg
+ * {ITEM}_
 
-
-## Manuals of reference
+## Reference
 
 * [OGR2ORG documentation](http://www.gdal.org/ogr2ogr.html)
 * [ImageMagick/Command-Line Options](http://www.imagemagick.org/script/command-line-options.php)  —— on raster image processing
@@ -199,7 +196,7 @@ Report issues or ideas [on github](https://github.com/WikimapsAtlas/make-modules
 
 ## Authorship
 
-* **Authors:** [Hugo Lopez](http://twitter.com/hugo_lz) —— project design, prototyping, refining. Technologies: gdal, ogr2ogr, imagemagick, topojson, nodejs, jsdom, d3js.
+* **Authors:** [Hugo Lopez](http://twitter.com/hugo_lz) —— project design, prototyping, refining. Technologies: git, gdal, ogr2ogr, imagemagick, topojson, nodejs / npm, jsdom, d3js.
 * **Help:** [Arun Ganesh](http://twitter.com/planemad) —— project scaling up, automation. Technologies: gdal, ogr2ogr, topojson, d3js, QuantumGIS, PostgreSQL.
 * **Help:** [Edouard Lopez](http://twitter.com/edouard_lopez) —— software engineering suppervision. Technologies: make, bash, git, js.
 
