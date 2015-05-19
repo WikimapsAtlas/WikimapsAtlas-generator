@@ -64,7 +64,6 @@ make -f master.makefile administrative NAME=India ISO2=IN WEST=67.0 NORTH=37.5 E
 # 4. water module
 make -f master.makefile water NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 SELECTOR_L1="admin IN ('INDIA')"
 # 5. d3 module (depend on 1,2,3,4)
-node ./node_modules/.bin/forever ./node_modules/.bin/http-server --cors &
 make -f master.makefile d3    NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0
 ```
 
@@ -74,7 +73,7 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 Commonly used:
 
 * **NAME**: name of the target/central geographic item, according to Natural Earth spelling.
-* **ISO2**: iso_2 of the target/central geographic item.
+* **ISO2**: iso_2 of the target/central geographic item. While L1 provinces of the target area are in `administrative.topo.json` files, this parameter is used to filter the ones to visualize via d3js. 
 * **WEST**: Westernmost longitude value of the bounding box. 
  * *range*: `[180.0,-180.0]`.
 * **NORTH**: Northernmost latitude value of the bounding box.
