@@ -1,5 +1,6 @@
 # Wikimaps-D3js Atlas
-**Wikimaps-D3js Atlas** takes the power of GIS to the hands of web developpers, graphists, journalists and online readers. A single command let you process super heavy GIS sources such open source administrative [NaturalEarth][a] shapefiles and topographic ETOPO/SRTM tifs into light geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG files optimized for screens display. XML shapes and groups of shapes keep the most relevant data-attributes (name, iso_2, hasc code, population- allowing rich data binding while the graphic aspect keeps up to modern web expectations. We believe our topojson and svg files to be the finest available online due to the smart selection and presence of these data attributes easing **data biding**.
+**Wikimaps-D3js Atlas** -- A command line utility and js library to generate raster, topojson and svg files and atlases.
+ikimaps-D3js Atlas takes the power of GIS to the hands of web developpers, graphists, journalists and online readers. A single command let you process super heavy GIS sources such open source administrative [NaturalEarth][a] shapefiles and topographic ETOPO/SRTM tifs into light geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG files optimized for screens display. XML shapes and groups of shapes keep the most relevant data-attributes (name, iso_2, hasc code, population [and others][b]) allowing rich data binding while the graphic aspect keeps up to modern expectations. We believe our topojson and svg files to be the finest available online due to the smart selection and presence of these data attributes easing **data biding**.
 
 You can produce atlas-type maps for all major countries by running :
 
@@ -8,6 +9,7 @@ You can produce atlas-type maps for all major countries by running :
 You can custom the overall style by editing `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
 
 [a]: http://www.naturalearthdata.com/features/
+[b]: https://github.com/WikimapsAtlas/make-modules#attributes
 
 ## Examples
 `make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280`
@@ -21,7 +23,7 @@ and you get out :
 as well as constitutives components (raster, topojson) and derivated variations (jpg, png, svg).
 
 ## Install (100%)
-Under the hood are `gdal`, `nodejs`'s modules `topojson` and `jsdom`, and `d3js`.
+You will need `gdal`, `nodejs`, `topojson`, `jsdom` and `d3js`.
 
 **On Linux Ubuntu**, run the following:
 ```shell
