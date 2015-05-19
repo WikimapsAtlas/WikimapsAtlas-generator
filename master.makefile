@@ -1,6 +1,5 @@
 #---- RUN
-# make -f master.makefile NAME=India WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 PLACES=15 SLICE=6
-# NAME uses ISO-A2 2 letter alphabet codes to identify countries
+# make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 PLACES=15 SLICE=6
 
 #---- DEFAULT VALUES (customizable):
 # Geo data
@@ -44,9 +43,3 @@ d3: server
 	$(MAKE) -C 09_d3 				-f d3.makefile
 server:
 	node ./node_modules/.bin/forever ./node_modules/.bin/http-server --cors &
-
-###########################################################
-# TO DO
-# script: if projection X, then ogrproject=<code>, d3projection=<code>
-# 
-##########################################################
