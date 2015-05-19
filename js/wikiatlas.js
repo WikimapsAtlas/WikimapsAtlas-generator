@@ -16,7 +16,10 @@ function click(a){
 		.html('(<a href="http://en.wikipedia.org/wiki/'+name+'">wiki</a>) '+name);
 }
 function dblclick(a){ window.location.assign("http://en.wikipedia.org/wiki/"+a.properties.name, '_blank');}
-
+function urlToData(name_,nodejs){
+	var root;
+	return root = nodejs? "http://localhost:8080/output/"+name_ : "../output/"+name_;
+}	
 /* Math helpers ************************************************** */
 function parallel(φ, λ0, λ1) {
   if (λ0 > λ1) λ1 += 360;
@@ -218,19 +221,17 @@ var graticule = function($D3selector,step) {
 
 /* ****************************************************** */
 /* LOCATOR MAP MODULE *********************************** */
-var localisator = function (hookId, width, title, id, WEST, NORTH, EAST, SOUTH) {
+var localisator = function (hookId, width, title, id, WEST, NORTH, EAST, SOUTH, nodejs) {
 /* Init ************************************************* */
 	var height = width;
 	var lon_central = function(){ 
-		var num;
-		if(EAST<WEST){ num= -(WEST+EAST)/2+180; }
-		else{ num= -(WEST+EAST)/2; }
+		var num= EAST>WEST? -(WEST+EAST)/2 : -(WEST+EAST)/2+180;
 		return num;
-	};
+	}();
 
 	var proj = d3.geo.orthographic()
 		.scale(1/2*width)
-		.rotate([ lon_central(), -(NORTH+SOUTH)/2 +10 ])
+		.rotate([ lon_central, -(NORTH+SOUTH)/2 +10 ])
 		.translate([width / 2 , height / 2 ])
 		.clipAngle(90);
 
@@ -252,7 +253,7 @@ var localisator = function (hookId, width, title, id, WEST, NORTH, EAST, SOUTH) 
 			svg.selectAll("path").attr("d", path);
 			}))
 		.on("dblclick", function() {
-			proj.rotate([ lon_central(), -(NORTH+SOUTH)/2 +10 ]);
+			proj.rotate([ lon_central, -(NORTH+SOUTH)/2 +10 ]);
 			svg.selectAll("path").attr("d", path);
 		});
 
@@ -291,9 +292,10 @@ var localisator = function (hookId, width, title, id, WEST, NORTH, EAST, SOUTH) 
 		.attr('r', width/2 )
 		.attr('fill', 'url(#gradient)');
 	
+var root= urlToData("world-sp.07",nodejs); timer.now("Ready to load files");
 
 /* GIS data injection *********************************** */
-d3.json("./output/world-sp.07/administrative.topo.json", function(error, Stone) {
+d3.json(root+"/administrative.topo.json", function(error, Stone) {
 // data organized
     var countries = topojson.feature(Stone, Stone.objects.admin_0),
         subunits  = topojson.feature(Stone, Stone.objects.admin_1),
@@ -346,7 +348,7 @@ d3.json("./output/world-sp.07/administrative.topo.json", function(error, Stone) 
 				.concat(parallel(NORTH+d, WEST-d, EAST+d))
 				.concat(parallel(SOUTH-d, WEST-d, EAST+d).reverse())
 			]};	
-		var area = d3.geo.path().projection(geoRect).area(geoRect);
+		var area = d3.geo.path().projection(function(geoRect){return geoRect;}).area(geoRect);
 		console.log(area);
 		if(area <250){
 			hook.append("path")
@@ -411,9 +413,7 @@ injectPattern("svg"); //Pattern injection : disputed-in, disputed-out
 console.log("pattern()"); 			timer.now("Add patterns");
 
 // Runs code server or client side => raster images urls
-var root="";
-if (nodejs) { root = "http://localhost:8080/output/"+title; } 
-else { root = "../output/"+title; }						timer.now("Ready to load files");
+var root= urlToData(title,nodejs); timer.now("Ready to load files");
 
 var url1 = root+"/administrative.topo.json", // https://rugger-demast.codio.io/output/"
 	url2 = root+"/color.jpg.b64",
@@ -631,7 +631,7 @@ var drawHillshade_raster = function(){
 	.append("image")
 		.attr("width", width)
 		.attr("height", t.height)
-		.attr("style","pointer-events:none;")
+		.attr("style","pointer-events:none;opactiy:0.6;")
 		.attr("xlink:xlink:href", "data:image/png;base64," + file3); // replace link by data URI // replace href link by data URI, d3js + client handle the missing xlink
 };
 
@@ -793,8 +793,8 @@ var drawL1_labels = function(){
 	}
 	if(mapType.base_topography){
 		topographicMeta();
+		drawL0(); d3.selectAll(hookId+' #L0 > *').attr("style","fill:#94BF8B;");	timer.now("L0");
 		drawElevations();															timer.now("Elevations");
-		drawL0(); d3.selectAll(hookId+' #L0 > *').attr("style","fill:#ffffff;");	timer.now("L0");
 		drawL1(); d3.select(hookId+' #L1').attr("style","opacity:0;");				timer.now("L1");
 	}
 	if(mapType.base_topography || mapType.base_administrative ){ 
