@@ -17,7 +17,7 @@ S=111120
 
 #---- MAKEFILE
 #---- End here
-done: shade_trans shade_topojson
+done: shade_trans shade_topojson slope
 	mkdir -p ../output/$(NAME)
 	mv ./*.{gis.tif,*.json} -t ../output/$(NAME)/
 	rm -f *.tmp.*
@@ -40,27 +40,28 @@ shade_slices_vector: shade_slices_raster
 	done
 shade_slices_raster: resize
 	mkdir -p ./shade/
-	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./shade/1.tmp.tif --calc="70*(A<70)"   --NoDataValue=0
-	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./shade/2.tmp.tif --calc="140*(A<140)" --NoDataValue=0
-	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./shade/3.tmp.tif --calc="200*(A<200)" --NoDataValue=0
+	gdal_calc.py -A ./hillshades.gis.tif --outfile=./shade/1.tmp.tif --calc="70*(A<70)"   --NoDataValue=0
+	gdal_calc.py -A ./hillshades.gis.tif --outfile=./shade/2.tmp.tif --calc="140*(A<140)" --NoDataValue=0
+	gdal_calc.py -A ./hillshades.gis.tif --outfile=./shade/3.tmp.tif --calc="200*(A<200)" --NoDataValue=0
 
 # Layer: transparent hillshade ------------------------------------ #
 shade_trans: resize
-	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./color.tmp.tif   --calc="255*(A>200) + 1*(A<=200)" 		# filter out whites above X , set grey to 255.
-	gdal_calc.py -A ./hillshades.tmp.tif --outfile=./opacity.tmp.tif --calc="1*(A>200)   + (256-A)*(A<=200)" 	# filter out whites above X , set opacity to 1/255. Else, invert opacity.
-	gdalbuildvrt -separate ./trans.tmp.vrt ./color.tmp.tif ./opacity.tmp.tif
+	gdal_calc.py -A ./hillshades.gis.tif --outfile=./greys.tmp.tif   --calc="255*(A>200) + 1*(A<=200)" 		# filter out whites above X , set grey to 255.
+	gdal_calc.py -A ./hillshades.gis.tif --outfile=./opacity.tmp.tif --calc="1*(A>200)   + (256-A)*(A<=200)" 	# filter out whites above X , set opacity to 1/255. Else, invert opacity.
+	gdalbuildvrt -separate ./trans.tmp.vrt ./greys.tmp.tif ./opacity.tmp.tif
 	gdalwarp -of GTiff ./trans.tmp.vrt ./trans.gis.tmp.vrt   # reproj
 #	gdal_translate 					-co ALPHA=YES ./trans.gis.tmp.vrt ./trans_nocompress.gis.tif
 	gdal_translate -co COMPRESS=LZW -co ALPHA=YES ./trans.gis.tmp.vrt ./trans.gis.tif
 
 slope: crop
+	gdalwarp -of GTiff -ts $(WIDTH) 0 crop_xl.tmp.tif crop_xs.tmp.tif
 	gdaldem slope crop_xs.tmp.tif slope.tmp.tif
 	gdaldem color-relief -co compress=lzw slope.tmp.tif slope.txt slope.gis.tif
 
 #---- Crop, Resize
 resize: shading crop
 	gdalwarp -of GTiff -s_srs EPSG:4326 -t_srs $(PROJECTION) hillshades_xl.tmp.tif hillshades_reproj.tmp.tif
-	gdalwarp -of GTiff -ts $(WIDTH) 0 hillshades_reproj.tmp.tif hillshades.tmp.tif
+	gdalwarp -of GTiff -ts $(WIDTH) 0 hillshades_reproj.tmp.tif hillshades.gis.tif
 
 shading: crop reproj
 # must shade before resize. See http://gis.stackexchange.com/a/137290/19460
@@ -71,7 +72,7 @@ shading: crop reproj
 	gdal_calc.py -A hillshades_A.tmp.tif -B hillshades_B.tmp.tif -C hillshades_C.tmp.tif \
 		--outfile=./hillshades_xl.tmp.tif --calc="(A*(A<=B)*(A<=C)+ B*(B<A)*(B<=C)+ C*(C<A)*(C<B))"
 	gdal_calc.py -A hillshades_A.tmp.tif -B hillshades_B.tmp.tif -C hillshades_C.tmp.tif \
-		--outfile=./hillshades_xl_multiply.tmp.tif --calc="(A*B*C)^(1/3)"
+		--outfile=./hillshades_xl_multiply.tmp.tif --type=Float32 --calc="(A*B*C)^(1/3)"
 
 reproj: crop                 
 #	reproj can go here
