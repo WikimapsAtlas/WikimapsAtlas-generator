@@ -6,7 +6,7 @@ WIDTH=1280
 #---- MAKEFILE
 done: location topographic
 	mkdir -p ../output/$(NAME)
-	mv ./*{.svg,.tpl} ../output/$(NAME)/
+	mv ./*.{svg,tpl} ../output/$(NAME)/
 	
 topographic: b64
 	WIDTH=$(WIDTH) node topographic.node.js		# see inside this file for parameters' calls
@@ -22,7 +22,8 @@ b64: clean server
 	done;
 
 server:
-#	node ../node_modules/.bin/http-server &
+	node ../node_modules/.bin/forever ../node_modules/.bin/http-server --cors &
+
 clean:
 	rm -f *.svg
 #	rm -f *.json
