@@ -1,6 +1,7 @@
 # Wikimaps-D3js Atlas
-**Wikimaps-D3js Atlas** -- A command line utility and js library to generate raster, topojson and svg files and atlases.
-Wikimaps-D3js Atlas takes the power of GIS to the hands of web developpers, graphists, journalists and online readers. A single command let you process super heavy GIS sources such open source administrative [NaturalEarth][a] shapefiles and topographic ETOPO/SRTM tifs into light geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG files optimized for screens display. XML shapes and groups of shapes keep the most relevant data-attributes (name, iso_2, hasc code, population [and others][b]) allowing rich data binding while the graphic aspect keeps up to modern expectations. We believe our topojson and svg files to be the finest available online due to the smart selection and presence of these data attributes easing **data biding**.
+**Wikimaps-D3js Atlas** -- A command line utility and D3js based library to quickly generate elegant raster, topojson and svg maps.
+
+**Wikimaps-D3js Atlas** takes the power of GIS to the hands of web developpers, graphists, journalists and online readers. A single command let you process super heavy GIS sources such open source administrative [NaturalEarth][a] shapefiles and topographic ETOPO/SRTM tifs into light geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG files optimized for screens display. XML shapes and groups of shapes keep the most relevant data-attributes (name, iso_2, hasc code, population [and others][b]) allowing rich data binding while the graphic aspect keeps up to modern expectations. We believe our topojson and svg files to be the finest available online due to the smart selection and presence of these data attributes easing **data biding**.
 
 You can produce atlas-type maps for all major countries by running :
 
@@ -83,8 +84,8 @@ This API is inspired by `ogr2ogr`, `topojson`, `gdal`, and `convert` (imageMagic
 
 Commonly used:
 
-* **NAME**: name of the target/central geographic item, according to Natural Earth spelling.
-* **ISO2**: iso_2 of the target/central geographic item. While L1 provinces of the target area are in `administrative.topo.json` files, this parameter is used to filter the ones to visualize via d3js. 
+* **NAME**: name of the target/central geographic feature, according to Natural Earth spelling.
+* **ISO2**: iso_2 of the target/central geographic feature. While L1 provinces of the target area are in `administrative.topo.json` files, this parameter is used to filter the ones to visualize via d3js. 
 * **WEST**: Westernmost longitude value of the bounding box. 
  * *range*: `[180.0,-180.0]`.
 * **NORTH**: Northernmost latitude value of the bounding box.
@@ -106,8 +107,8 @@ Advanced use:
  * *default*: `epsg:4326` (equirectangular).
  * *major alternatives*: `epsg:3857` (mercator, requires `S=370400`)
 * **SELECTOR_PLACES**: selects and keeps placess (towns and cities) via SQL query.
- * *default*, 15 biggest places: `ADM0NAME = '$(ITEM)' AND ORDER BY POP_MAX DESC LIMIT 15` together with all countries capitals.
- * *alternative*, places with population above 2M : `ADM0NAME = '$(ITEM)' AND POP_MAX > 2000000`
+ * *default*, 15 biggest places: `ADM0NAME = '$(NAME)' AND ORDER BY POP_MAX DESC LIMIT 15` together with all countries capitals.
+ * *alternative*, places with population above 2M : `ADM0NAME = '$(NAME)' AND POP_MAX > 2000000`
 * **QUANTIZATION**: maximum number of differentiable points along either x and y dimensions
  * *default*: `1e4`, 
  * *range*: `[1e2,1e5]`.
@@ -135,14 +136,14 @@ Generated files are moved into `./output/<NAME>/`.
 
 ### Attributes (100%)
 Whenever available, these elements are transmitted to the final topojsons : 
-* `name`: item's English name (for all: countries, provinces, disputed, cities, rivers)
-* `L0`: item's country iso2 codes (for countries, provinces, disputed, cities), 
-* `L0_3`: item's iso3 codes (for countries, provinces, disputed, cities), 
-* `L1`: item's province hasc code (for provinces, disputed), [\*](https://github.com/WikimapsAtlas/make-modules/issues/3)
-* `L0_name`: item's country name (for provinces, disputed, cities), 
-* `L1_name`: item's province name (for cities),
+* `name`: feature's English name (for all: countries, provinces, disputed, cities, rivers)
+* `L0`: feature's country iso2 codes (for countries, provinces, disputed, cities), 
+* `L0_3`: feature's iso3 codes (for countries, provinces, disputed, cities), 
+* `L1`: feature's province hasc code (for provinces, disputed), [\*](https://github.com/WikimapsAtlas/make-modules/issues/3)
+* `L0_name`: feature's country name (for provinces, disputed, cities), 
+* `L1_name`: feature's province name (for cities),
 * `note`: "claimed by, controlled by" (for disputed areas)
-* `status`: item's status (for cities), 
+* `status`: feature's status (for cities), 
 * `pop`: population (for cities), 
 * `scalerank`: river scalerank. 
 
@@ -163,15 +164,16 @@ Whenever available, these elements are transmitted to the final topojsons :
 
 ### End products (30%)
 We mirror best practices refined by Wikipedia's cartographers over the past 8 years.
-* Administrative
- * {ITEM}_ -- without labels
- * {ITEM}_ -- with English labels
-* Topography (vector)
- * {ITEM}_
-* Shaded relief:
- * {ITEM}_
-* Localisator:
- * {ITEM}_
+* Administrative :
+ * {NAME}_location_map,_admin_relief_(2015)-en.svg -- 1 file, raster relief and hillshade, vector admin_0, admin_1, cities, labels, rivers.
+ * {NAME},_{Province_name}_locator_map,_admin_relief_(2015)-en.svg -- n files, idem previous, with provinces enlighten.
+ * {NAME},_{Province}_locator_map,_admin_blue_(2015)-en.svg -- n files, idem previous, no reliefs nor hillshades, 100% vector.
+ * {NAME}_location_map,_admin_blue_(2015).svg -- 1 file, no labels.
+* Topography :
+ * {NAME}_location_map,_admin-topographic_relief_(2015)-en.svg -- 1 file.
+ * {NAME},_{Province_name}_locator_map,_admin-topographic_relief_(2015)-en.svg -- n files.
+ * {NAME}_location_map,_admin-topographic_relief_(2015).svg -- 1 file.
+ * {NAME}_location_map,_topographic_blue_(2015).svg -- 1 file.
 
 ## Reference
 
