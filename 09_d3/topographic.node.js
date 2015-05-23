@@ -35,85 +35,81 @@ jsdom.env(
 
 /* ***************************************************************** */
 /* D3js FUNCTION *************************************************** */
-var mapType={ rich_background: true, base_administrative:false, base_topography:true, borders: true, labels:true };
-window.locationMap("#hook1",800, iso2, name, WEST, NORTH, EAST, SOUTH, true, mapType);
-console.log("Admin map, done: "+ new Date() );
+  var mapType={ rich_background: true, base_administrative:false, base_topography:true, borders: true, labels:true };
+  window.locationMap("#hook1",800, iso2, name, WEST, NORTH, EAST, SOUTH, true, mapType);
+  console.log("Topo map, projected: "+ new Date() );
 
 // END svg design
 
 /* ***************************************************************** */
 /* SVG PRINT ******************************************************* */
-    var svgheader = '<?xml version="1.0" encoding="utf-8"?>\n' // <?xml version="1.0" standalone="no"?>
-  +'<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n';
+  var svgheader = '<?xml version="1.0" encoding="utf-8"?>\n' // <?xml version="1.0" standalone="no"?>
+    +'<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n';
+
+  var loopOnL1 = function(hook,name,type) {
+    var nodes = window.d3.selectAll(hook+" #L1 > *")[0].length, // SO: /29278107/
+      m = window.d3.select(hook+" svg").attr("width")/100*5, // frame margin
+      mSqr = m*m;
+    for(var j=1;j<= nodes;j++){
+      var selector1 = hook+' #L1 > *:nth-child('+j+')',
+        shape = window.d3.selectAll(selector1),
+        shapeName = shape.attr("name").replace(/ /g,"_"),
+        shapeArea = shape.attr("area");
+        shape.attr("style", "fill:#B10000;opacity:1;");            
+      var selector2 = hook+' #L1_frames > *:nth-child('+j+')',
+      c = shapeArea < mSqr;
+      if(c){ window.d3.selectAll(selector2).attr("style", "visibility:visible;opacity:1;") };
+
+      console.log("Printing: "+j+" ; name: "+shapeName+" ; area: "+shapeArea+" .")
+      var filename = name_+',_'+shapeName+type;
+      fs.writeFileSync(filename, svgheader + window.d3.select(hook).html()); 
+      // Reset colors :
+      window.d3.selectAll(hook+" #L1 > *").attr("style","opacity:0;");
+      window.d3.selectAll(hook+" #L1_frames > *").attr("style","opacity:0;");
+    }
+  };
+
 
   setTimeout(
     function() { 
-      window.d3.selectAll("svg")
-          .attr(':xmlns','http://www.w3.org/2000/svg')            // if not: file does not appear to have any style information
-          .attr(':xmlns:xlink','http://www.w3.org/1999/xlink');   // if not: Namespace prefix xlink for href
 
+    window.d3.selectAll("svg")
+        .attr(':xmlns','http://www.w3.org/2000/svg')            // if not: file does not appear to have any style information
+        .attr(':xmlns:xlink','http://www.w3.org/1999/xlink');   // if not: Namespace prefix xlink for href
 
-var loopOnL1 = function(hook,name,type) {
-      var nodes = window.d3.selectAll(hook+" #L1 > *")[0].length, // SO: /29278107/
-        m = window.d3.select(hook+" svg").attr("width")/100*5, // frame margin
-        mSqr = m*m;
-      for(var j=1;j<= nodes;j++){
-          window.d3.selectAll(hook+" #L1 > *").attr("style","opacity:0;");
-            var selector1 = hook+' #L1 > *:nth-child('+j+')',
-            node = window.d3.selectAll(selector1),
-            nodeName = node.attr("name").replace(/ /g,"_"),
-            nodeArea = node.attr("area");
-            node.attr("style", "fill:#B10000;opacity:1;");            
-          window.d3.selectAll(hook+" #L1_frames > *").attr("style","opacity:0;");
-            var selector2 = hook+' #L1_frames > *:nth-child('+j+')',
-            c = nodeArea < mSqr;
-            if(c){ window.d3.selectAll(selector2).attr("style", "visibility:visible;opacity:1;") };
+    var hook = "#hook1";
+// 1 file :
+var filename = name_+'_location_map,_admin-topographic_relief_(2015)-en.svg';
+    window.d3.selectAll("#hook1 #L0").attr("style","fill-opacity:0.3");
+    window.d3.selectAll("#hook1 #L0 [code="+iso2+"]").remove();
+    window.d3.selectAll("#hook1 #L1").attr("style","opacity:0.6;");
+    window.d3.selectAll("#hook1 #L1 > *").attr("style","opacity:0;"); // at each loopOnL1 cycle, one L1 shape get opacity:1; 
+    fs.writeFileSync(filename, svgheader + window.d3.select(hook).html())  
+    console.log("Admin map, printed: "+ new Date() );
 
-        console.log("Printing: "+j+" ; name: "+nodeName+" ; area: "+nodeArea+" .")
-        var filename = name_+',_'+nodeName+type;
-        fs.writeFileSync(filename, svgheader + window.d3.select(hook).html()); 
-      }
-}
-var hook = "#hook1";
-window.d3.selectAll("#hook1 #L0").attr("style","fill-opacity:0.3");
-window.d3.selectAll("#hook1 #L0 [code="+iso2+"]").remove();
+//n   {NAME},_{Province_name}_locator_map,_admin-topographic_relief_(2015)-en.svg :
+var fileext =               '_locator_map,_admin-topographic_relief_(2015)-en.svg';
+    loopOnL1('#hook1',name_,fileext);                                              
+    console.log("Admin map, printed: "+ new Date() );
 
-window.d3.selectAll("#hook1 #L1").attr("style","opacity:0.6;");
-window.d3.selectAll("#hook1 #L1 > *").attr("style","opacity:0;");
+//1             {NAME}_location_map,_admin-topographic_relief_(2015).svg :
+var filename = name_+'_location_map,_admin-topographic_relief_(2015).svg'; // no -en = blank
+    window.d3.selectAll("#hook1 #L0_labels").remove();
+    window.d3.selectAll("#hook1 #L1_labels").remove();
+    window.d3.selectAll("#hook1 #Places").remove();
+    window.d3.selectAll("#hook1 #Places_labels").remove();
+    fs.writeFileSync(filename, svgheader + window.d3.select(hook).html())  
 
-// Type: L0 admin
-fs.writeFileSync(name_+'_admin-topographic_(2015)-en.svg', svgheader + window.d3.select(hook).html());                 //1 <Country>_location_map,_admin-topographic_(2015)-en.svg
-console.log("Admin map, printed: "+ new Date() );
+var filename = name_+"_location_map,_topographic_blue_(2015).svg"; // 1 file
+    window.d3.selectAll("#hook1 #L1").remove();
+    window.d3.selectAll("#hook1 #Relief_raster").remove();
+    window.d3.selectAll("#hook1 #Hillshade_raster").remove();
+    window.d3.selectAll("#hook1 #Disputed").remove();
+    fs.writeFileSync(filename, svgheader + window.d3.select(hook).html());        
 
-loopOnL1('#hook1',name_,'_locator_map,_admin-topographic_(2015)-en.svg');                                             //n <Country>,_<Province>_locator_map,_admin-topographic_(2015)-en.svg
-console.log("Admin map, printed: "+ new Date() );
-
-//window.d3.selectAll("#hook1 #Relief_raster").remove();
-//window.d3.selectAll("#hook1 #Hillshade_raster").remove();
-//loopOnL1('#hook1',name__locator_map,_admin-topographic_(2015)-en.svg');                                              //n <Country>,_<Province>_locator_map,_admin-topographic_blue_(2015)-en.svg
-
-window.d3.selectAll("#hook1 #L0_labels").remove();
-window.d3.selectAll("#hook1 #L1_labels").remove();
-window.d3.selectAll("#hook1 #Places").remove();
-window.d3.selectAll("#hook1 #Places_labels").remove();
-fs.writeFileSync(name_+'_location_map,_admin-topographic_blank_(2015).svg', svgheader + window.d3.select(hook).html())  //1 <Country>_location_map,_admin-topographic_blank_(2015).svg
-
-
-fs.writeFileSync(name_+'_location_map,_topographic_blank_(2015).svg', svgheader + window.d3.select(hook).html());        //1 <Country>_location_map,_topographic_blank_(2015).svg
-
-window.d3.selectAll("#hook1 #Disputed").remove();
-window.d3.selectAll("#hook1 #L1").remove();
-fs.writeFileSync(name_+'_location_map,_topographic_blank_(2015).svg', svgheader + window.d3.select(hook).html());        //1 <Country>_location_map,_topographic_blank_(2015).svg
     },4000
   );
 
- }
+}
 // END (D3JS) * * * * * * * * * * * * * * * * * * * * * * * *
 );
-
-/*
-
-
-
-
-*/
