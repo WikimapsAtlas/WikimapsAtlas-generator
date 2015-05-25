@@ -155,10 +155,10 @@ Whenever available, these elements are transmitted to the final topojsons :
  * `trans.png`: a transparent hillshade, see [How to create transparent hillshade?](http://gis.stackexchange.com/questions/144535/how-to-create-transparent-hillshade/144700#144700).  (default: Mercator)
  * `hillshades.topo.json`: vector version of the previous.
 * 1 `administrative.topo.json` containing the layers:
- * `admin_0`: countries
- * `admin_1`: subdivisions of the target country
- * `disputed`: disputed area within the range of the query
- * `places`: cities with population above a given number
+ * `admin_0.topo.json`: countries
+ * `admin_1.topo.json`: subdivisions of the target country
+ * `disputed.topo.json`: disputed area within the range of the query
+ * `places.topo.json`: cities with population above a given number
 * 1 `waters.topo.json`: major rivers of the area.
 
 
@@ -167,7 +167,7 @@ We mirror best practices refined by Wikipedia's cartographers over the past 8 ye
 * Administrative :
  * `{NAME}_location_map,_admin_relief_(2015)-en.svg` -- 1 file, raster relief and hillshade, vector admin_0, admin_1, cities, labels, rivers.
  * `{NAME},_{Province_name}_locator_map,_admin_relief_(2015)-en.svg` -- n files, idem previous, with provinces enlighten.
- * `{NAME},_{Province}_locator_map,_admin_blue_(2015)-en.svg` -- n files, idem previous, no reliefs nor hillshades, 100% vector.
+ * `{NAME},_{Province_name}_locator_map,_admin_blue_(2015)-en.svg` -- n files, idem previous, no reliefs nor hillshades, 100% vector.
  * `{NAME}_location_map,_admin_blue_(2015).svg` -- 1 file, no labels.
 * Topography :
  * `{NAME}_location_map,_admin-topographic_relief_(2015)-en.svg` -- 1 file.
