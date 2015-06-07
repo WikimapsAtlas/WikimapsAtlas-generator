@@ -11,6 +11,7 @@ export NORTH=37.5
 export EAST=99.0
 export SOUTH=05.0
 export WIDTH=1280
+export AREA_SIZE=etopo
 # Pseudo-Mercator|GoogleMaps|OSM=EPSG:3857 (m)
 # World Mercator=EPSG:3395  (m)
 # WGS84-WGS84=EPSG:4326 (⁰)  -------- GIS raw default
