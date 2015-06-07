@@ -3,25 +3,28 @@
 
 **Wikimaps-D3js Atlas** takes the power of GIS to the hands of web developpers, graphists, journalists and online readers. A single command let you process super heavy GIS sources such open source administrative [NaturalEarth][a] shapefiles and topographic ETOPO/SRTM tifs into light geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG files optimized for screens display. XML shapes and groups of shapes keep the most relevant data-attributes (name, iso_2, hasc code, population [and others][b]) allowing rich data binding while the graphic aspect keeps up to modern expectations. We believe our topojson and svg files to be the finest available online due to the smart selection and presence of these data attributes easing **data biding**.
 
-You can produce atlas-type maps for all major countries by running :
-
-    bash ./script/world_atlas_generator.bash  # may take a dozen of hours !
-
-You can custom the overall style by editing `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
-
 [a]: http://www.naturalearthdata.com/features/
 [b]: https://github.com/WikimapsAtlas/make-modules#attributes
 
-## Examples
+## Use case
+Toroduce a world atlas for all major countries, run :
+
+    bash ./script/world_atlas_generator.bash  # may take a dozen(s) of hours !
+
+To produce a single country's map, run:
+
 `make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280`
-and you get out :
+
+to and get back :
 
 <img src="http://i.stack.imgur.com/kaJH3.png" width="300" float="center">
 <img src="http://i.stack.imgur.com/1Q3p0.jpg" width="300" float="center">
 <img src="http://i.stack.imgur.com/mPZUd.png" width="300" float="center">
 <img src="http://i.stack.imgur.com/Vc0qK.png" width="300" float="center">
 
-as well as constitutives components (raster, topojson) and derivated variations (jpg, png, svg).
+Constitutives components (raster, topojson) and derivated variations (jpg, png, svg) will be gathed into `/output/India/`, about 70 files for this country.
+
+You can custom the overall style by editing `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
 
 ## Install (100%)
 You will need `gdal`, `nodejs`, `topojson`, `jsdom` and `d3js`.
