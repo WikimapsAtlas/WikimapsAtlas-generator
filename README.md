@@ -75,9 +75,9 @@ make -f master.makefile topography NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=
 # 2. hillshade module
 make -f master.makefile hillshade  NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 SLICES=8
 # 3. administrative module
-make -f master.makefile administrative NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 SELECTOR_L1="admin IN ('INDIA')"
+make -f master.makefile administrative NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0
 # 4. water module
-make -f master.makefile water NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 SELECTOR_L1="admin IN ('INDIA')"
+make -f master.makefile water NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0
 # 5. d3 module (depend on 1,2,3,4)
 make -f master.makefile d3    NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0
 ```
@@ -103,6 +103,10 @@ Commonly used:
 * **SLICES**: number of elevation levels above sea level.
  * *default*: `8`,
  * *range* : > `2` (!).
+* **PLACES**: number of non-capital places to keep. Capitals are always kept.
+ * *default*: `15`,
+ * *range* : `[0-100]`.
+
 
 Advanced use:
 
