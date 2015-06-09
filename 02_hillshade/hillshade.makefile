@@ -4,7 +4,7 @@
 SHELL=/bin/bash
 #---- DEFAULT VALUES (customizable):
 WIDTH=1280
-PROJECTION=EPSG:3395
+PROJECTION=EPSG:3857
 #---- Vectorization
 TOPOJSON_LOC=../node_modules/topojson/bin/topojson
 QUANTIZATION=1e4

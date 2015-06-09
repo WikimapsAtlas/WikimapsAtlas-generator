@@ -15,7 +15,7 @@ export AREA_SIZE=etopo
 # Pseudo-Mercator|GoogleMaps|OSM=EPSG:3857 (m)
 # World Mercator=EPSG:3395  (m)
 # WGS84-WGS84=EPSG:4326 (⁰)  -------- GIS raw default
-export PROJECTION=EPSG:3395
+export PROJECTION=EPSG:3857
 export PLACES=15
 export SLICE=6
 # script data

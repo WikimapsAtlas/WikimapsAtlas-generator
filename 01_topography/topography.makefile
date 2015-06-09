@@ -3,7 +3,7 @@
 escaped_A = $(subst $e ,_,$(NAME))
 #---- DEFAULT VALUES (customizable):
 WIDTH=2000
-PROJECTION=EPSG:3395
+PROJECTION=EPSG:3857
 #---- Vectorization
 QUANTIZATION=1e4
 TOPOJSON_LOC=../node_modules/topojson/bin/topojson
