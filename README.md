@@ -27,7 +27,7 @@ Constitutives components (raster, topojson) and derivated variations (jpg, png, 
 You can custom the overall style by editing `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
 
 ## Install (100%)
-You will need `gdal`, `nodejs`, `topojson`, `jsdom` and `d3js`.
+You will need `gdal`, `nodejs`, `topojson`, `jsdom` and `d3js`. Requires 15GB of free disk space for data.
 
 **On Linux Ubuntu**, run the following:
 ```shell
