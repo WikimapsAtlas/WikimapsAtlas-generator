@@ -22,7 +22,7 @@ to and get back :
 <img src="http://i.stack.imgur.com/mPZUd.png" width="300" float="center">
 <img src="http://i.stack.imgur.com/Vc0qK.png" width="300" float="center">
 
-Constitutives components (raster, topojson) and derivated variations (jpg, png, svg) will be gathed into `/output/India/`, about 70 files for this country.
+Constitutives components (raster, topojson) and derivated variations (jpg, png, svg) are gathered into `/output/{Country_name}/`, or about 70 files for India.
 
 You can custom the overall style by editing `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
 
