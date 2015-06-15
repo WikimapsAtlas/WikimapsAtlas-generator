@@ -26,7 +26,7 @@ Constitutives components (raster, topojson) and derivated variations (jpg, png, 
 
 You can custom the overall style by editing `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
 
-## Install (100%)
+## Install
 You will need `gdal`, `nodejs`, `topojson`, `jsdom` and `d3js`. Requires 15GB of free disk space for data.
 
 **On Linux Ubuntu**, run the following:
@@ -42,7 +42,7 @@ git clone https://github.com/WikimapsAtlas/node_modules.git  # get nodejs module
 **On OS X** use [Homebrew](http://mxcl.github.io/homebrew/)'s `brew install <program>`. (Are you on Mac ? Help us to write this section.).
 
 
-## Projections and dimensions (100%)
+## Projections and dimensions
 **Per default**, output files have the following characteristics:
 * WGS 84 lat/long reference system
 * .shp and .tif are either Non-projected or Mercator projected, with *cartesian* coordinates
@@ -141,7 +141,7 @@ Advanced use:
 ## Ouput
 Generated files are moved into `./output/<NAME>/`.
 
-### Attributes (100%)
+### Attributes
 Whenever available, these elements are transmitted to the final topojsons : 
 * `name`: feature's English name (for all: countries, provinces, disputed, cities, rivers)
 * `L0`: feature's country iso2 codes (for countries, provinces, disputed, cities), 
@@ -154,7 +154,7 @@ Whenever available, these elements are transmitted to the final topojsons :
 * `pop`: population (for cities), 
 * `scalerank`: river scalerank. 
 
-### Constitutive elements (100%)
+### Constitutive elements
 * 2 topographic reliefs:
   * 1 `elevations.topo.json`: n slices in vector format to represent signicative elevations of exponential altitude (ex: 0,50,200,500,2000, 5000m). 
   * 1 `color.jpg` : raster relief with two relative coloramps for landmass and sea. (default: Mercator)
@@ -169,7 +169,7 @@ Whenever available, these elements are transmitted to the final topojsons :
 * 1 `waters.topo.json`: major rivers of the area.
 
 
-### End products (30%)
+### End products
 We mirror best practices refined by Wikipedia's cartographers over the past 8 years.
 * Administrative :
  * `{NAME}_location_map,_admin_relief_(2015)-en.svg` -- 1 file, raster relief and hillshade, vector admin_0, admin_1, cities, labels, rivers.
@@ -215,6 +215,6 @@ Report issues or ideas [on github](https://github.com/WikimapsAtlas/make-modules
 * Individuals: cartographers from the French, German, and English Wikipedias, Yuvipanda, Siko Bouterse.
 * Organisations : Wikimedia Fundation's [Individual Engagement Grant](http://meta.wikimedia.org/wiki/Grants:IEG/Wikimaps_Atlas), Wikimedia-CH, Wikimedia-FR.
 
-## Licence (100%)
+## Licence
 
-Copyright 2014 [MIT License](./LICENSE) CC-by-sa-3.0 — LOPEZ Hugo (Yug), for the Wikimedia Foundation.
+[MIT License](./LICENSE) or CC-by-sa-3.0 — LOPEZ Hugo (Yug), for the Wikimedia Foundation.
