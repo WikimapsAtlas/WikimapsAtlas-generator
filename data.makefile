@@ -14,10 +14,10 @@ unzip:
 	unrar e -o- './data/cgiar-csi_250/*.rar' '*.*' ./data/cgiar-csi_250/
 	unzip -n './data/cgiar-csi_90/*.zip' '*.tif' -d ./data/cgiar-csi_90/
 
-# TOPOGRAPHIC 90m from USGS (SRTMVF) ------------------------------------ #
+# TOPOGRAPHIC 90m from USGS (SRTMVF) ------------------------------------ # 
 SRTMVF:
 
-# TOPOGRAPHIC 90m from CGIAR-CSI (SRTM) --------------------------------- #
+# TOPOGRAPHIC 90m from CGIAR-CSI (SRTM) --------------------------------- # 
 SRTM_v41_90:
 	mkdir -p ./data/cgiar-csi_90/
 	curl -L -C - 'http://gis-lab.info/data/srtm-tif/srtm_[01-72]_[01-24].zip' -o './data/cgiar-csi_90/srtm41_#1_#2.zip' -f
