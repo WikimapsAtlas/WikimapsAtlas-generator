@@ -26,21 +26,21 @@ export VERSION=0.8
 end: topography hillshade administrative water d3
 topography: 
 	#works
-	$(MAKE) -C 01_topography		-f topography.makefile
+	$(MAKE) -C 01_topography	-f topography.makefile
 hillshade:
 	#works
-	$(MAKE) -C 02_hillshade 		-f hillshade.makefile
+	$(MAKE) -C 02_hillshade 	-f hillshade.makefile
 administrative:
 	#works
 	$(MAKE) -C 03_administrative 	-f administrative.makefile
 water:
 	#works
-	$(MAKE) -C 04_water 			-f water.makefile
+	$(MAKE) -C 04_water 		-f water.makefile
 grouping:
 	# to do (?)
-#	$(MAKE) -C 07_move 				-f merge.makefile
+#	$(MAKE) -C 07_move 		-f merge.makefile
 d3: server
 	#works
-	$(MAKE) -C 09_d3 				-f d3.makefile
+	$(MAKE) -C 09_d3 		-f d3.makefile
 server:
 	node ./node_modules/.bin/forever ./node_modules/.bin/http-server --cors &

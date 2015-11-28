@@ -9,7 +9,7 @@
 ## Use case
 To produce a world atlas for all major countries, run :
 
-    bash ./script/world_atlas_generator.bash  # may take a dozen(s) of hours !
+    bash ./script/world_atlas_generator.bash ./script/world_atlas_commands.txt # may take a dozen(s) of hours !
 
 To produce a single country's map, run:
 
