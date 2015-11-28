@@ -7,10 +7,16 @@
 ## Online UI pool (3): http://earthexplorer.usgs.gov/
 
 # UNZIP DATA
-unzip:  
+core: unzip_core
+
+precise: unzip_core unzip_precise
+
+unzip_core: NE ETOPO1
 	unzip -n ./data/natural_earth_vector/natural_earth_vector.zip  -d ./data/natural_earth_vector/
-#	unzip -n ./data/gadm/gadm2.zip -d ./data/gadm/
-	unzip -n ./data/noaa/ETOPO1_Ice_g_geotiff.zip '*.tif'  -d ./data/noaa/    
+	unzip -n ./data/noaa/ETOPO1_Ice_g_geotiff.zip '*.tif'  -d ./data/noaa/  
+  
+unzip_precise: SRTM_v41_250 SRTM_v41_90 GADM2
+	unzip -n ./data/gadm/gadm2.zip -d ./data/gadm/
 	unrar e -o- './data/cgiar-csi_250/*.rar' '*.*' ./data/cgiar-csi_250/
 	unzip -n './data/cgiar-csi_90/*.zip' '*.tif' -d ./data/cgiar-csi_90/
 
