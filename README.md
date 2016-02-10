@@ -36,7 +36,7 @@ Data requires +15GB of free disk space.
 ```shell
 git clone https://github.com/WikimapsAtlas/make-modules.git  #get code
 cd ./make-modules
-npm install	# install node dependencies and system dependencies
+npm install	# install node dependencies and system dependencies. May need sudo.
 npm run data	# install default data. Recommanded, may take few hours. For more, see ./package.json
 ```
 
