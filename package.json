@@ -27,9 +27,10 @@
     "d3js"
   ],
   "scripts": {
-    "install":  "make -f install.makefile",
-    "data":     "make -f data.makefile",
-    "server":   "node ./node_modules/.bin/forever ./node_modules/.bin/http-server"
+    "install":	"make -f install.makefile",
+    "data":	"make -f data.makefile core",
+    "dataplus":	"make -f data.makefile precise",
+    "serve":	"node ./node_modules/.bin/forever ./node_modules/.bin/http-server"
   },
-  "license": "BSD"
+  "license": "CC-BY-SA-4.0"
 }

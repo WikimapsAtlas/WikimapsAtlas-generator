@@ -27,16 +27,20 @@ Constitutives components (raster, topojson) and derivated variations (jpg, png, 
 You can custom the overall style by editing `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
 
 ## Install
-You will need `gdal`, `nodejs`, `topojson`, `jsdom` and `d3js`. Requires 15GB of free disk space for data.
+You will need `gdal`, `nodejs`, `topojson`, `jsdom` and `d3js`. Requires +15GB of free disk space for data.
+
 
 **On Linux Ubuntu**, run the following:
 ```shell
-sudo apt-get install git make  # tools needed for install
+# If need git, make, nodejs :
+sudo apt-get install git make && make -f install.makefile nodejs npm
+# repository itself
 git clone https://github.com/WikimapsAtlas/make-modules.git  #get code
 cd ./make-modules
-make -f ./install.makefile     # install needed tools
-make -f ./data.makefile        # install default data (recommanded, may take up to few hours)
-git clone https://github.com/WikimapsAtlas/node_modules.git  # get nodejs modules
+npm install
+npm run install # install needed tools
+npm run data	# install default data (recommanded, may take up to few hours)
+# git clone https://github.com/WikimapsAtlas/node_modules.git  # get nodejs modules
 ```
 
 **On OS X** use [Homebrew](http://mxcl.github.io/homebrew/)'s `brew install <program>`. (Are you on Mac ? Help us to write this section.).

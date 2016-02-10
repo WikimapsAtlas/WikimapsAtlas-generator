@@ -5,9 +5,10 @@ WIDTH=1280
 
 #---- MAKEFILE
 done: location topographic
+done2:
 	mkdir -p ../output/$(NAME)
-	mv ./*.{svg,tpl} ../output/$(NAME)/
-	
+	mv ./*.svg ./*.tpl -t ../output/$(NAME)/
+
 topographic: b64
 	WIDTH=$(WIDTH) node topographic.node.js		# see inside this file for parameters' calls
 
