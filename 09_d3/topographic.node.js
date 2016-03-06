@@ -28,7 +28,7 @@ jsdom.env(
         iso2= process.env.ISO2,
         name = process.env.NAME,
         name_ = name.replace(/ /g,"_"),
-        width = process.env.WIDTH;
+        width = process.env.WIDTH || 800;
 // New paramater (if needed)
     var DATE  = (new Date()).toISOString().slice(0,10).replace(/-/g,"."),
         VERSION = process.env.VERSION;
@@ -36,7 +36,7 @@ jsdom.env(
 /* ***************************************************************** */
 /* D3js FUNCTION *************************************************** */
   var mapType={ rich_background: true, base_administrative:false, base_topography:true, borders: true, labels:true };
-  window.locationMap("#hook1",800, iso2, name, WEST, NORTH, EAST, SOUTH, true, mapType);
+  window.locationMap("#hook1",width, iso2, name, WEST, NORTH, EAST, SOUTH, true, mapType);
   console.log("Topo map, projected: "+ new Date() );
 
 // END svg design

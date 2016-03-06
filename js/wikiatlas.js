@@ -240,7 +240,7 @@ var localisator = function (hookId, width, title, id, WEST, NORTH, EAST, SOUTH, 
 
 /* SVG container **************************************** */
 	var svg = d3.select(hookId).append("svg")
-		.attr("id", title+"-orthographic_globe_locator_(wikiatlas_2014)")
+		.attr("id", title+"-orthographic_globe_locator_(wikiatlas_2016)")
 		.attr("width", width)
 		.attr("height", height)
 		.call(d3.behavior.drag()
@@ -469,8 +469,8 @@ function makeMap(error, json, file2, file3, waters, elevations){								timer.no
 /* *************************************************************** */
 /* META ********************************************************** */
 /* *************************************************************** */ timer.now("Define minor meta (svg name)!-----------");
-var administrativeMeta = function (){ svg.attr("name", title_+"_administrative_map_(2015)"); };
-var topographicMeta = function (){ svg.attr("name", title_+"_topographic_map_(2015)"); };
+var administrativeMeta = function (){ svg.attr("name", title_+"_administrative_map_(2016)"); };
+var topographicMeta = function (){ svg.attr("name", title_+"_topographic_map_(2016)"); };
 
 /* *************************************************************** */
 /* DEFINE LAYERS DRAWING ***************************************** */
