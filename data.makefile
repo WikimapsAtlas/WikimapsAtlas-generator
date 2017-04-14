@@ -5,11 +5,13 @@
 ## Online UI pool (1): http://gdex.cr.usgs.gov/gdex/ 
 ## Online UI pool (2): https://lpdaac.usgs.gov/data_access/daac2disk
 ## Online UI pool (3): http://earthexplorer.usgs.gov/
+## Online UI pool (4): http://gisweb.ciat.cgiar.org/TRMM/SRTM_Resampled_250m/
+## http://www.gadm.org/version2
 
 # UNZIP DATA
 core: unzip_core
 
-precise: unzip_core unzip_precise
+precise: unzip_precise
 
 unzip_core: NE ETOPO1
 	unzip -n ./data/natural_earth_vector/natural_earth_vector.zip  -d ./data/natural_earth_vector/
@@ -20,19 +22,20 @@ unzip_precise: SRTM_v41_250 SRTM_v41_90 GADM2
 	unrar e -o- './data/cgiar-csi_250/*.rar' '*.*' ./data/cgiar-csi_250/
 	unzip -n './data/cgiar-csi_90/*.zip' '*.tif' -d ./data/cgiar-csi_90/
 
-# TOPOGRAPHIC 90m from USGS (SRTMVF) ------------------------------------ # 
-SRTMVF:
-
-# TOPOGRAPHIC 90m from CGIAR-CSI (SRTM) --------------------------------- # 
-SRTM_v41_90:
-	mkdir -p ./data/cgiar-csi_90/
-	curl -L -C - 'http://gis-lab.info/data/srtm-tif/srtm_[01-72]_[01-24].zip' -o './data/cgiar-csi_90/srtm41_#1_#2.zip' -f
+# ADMINISTRATIVE from NATURAL EARTH ------------------------------------- #
+NE:
+	mkdir -p ./data/natural_earth_vector/
+	curl \
+		-L -C - 'http://naciscdn.org/naturalearth/packages/natural_earth_vector.zip' \
+		-o ./data/natural_earth_vector/natural_earth_vector.zip
 	#* Downloaded 100% ---------------------------------------------------#
 
-# TOPOGRAPHIC 250m from CGIAR-CSI (SRTM) -------------------------------- #
-SRTM_v41_250:
-	mkdir -p ./data/cgiar-csi_250/
-	curl -L -C - 'ftp://192.156.137.225/SRTM_v41/SRTM_Resampled/SRTM_{NE,SE,W}_250m_TIF.rar' -o './data/cgiar-csi_250/srtm41_#1.rar' -f
+# ADMINISTRATIVE from GADM.org ------------------------------------------ #
+GADM2:
+	mkdir -p ./data/gadm/
+	curl \
+		-L -C - 'http://biogeo.ucdavis.edu/data/gadm2.8/gadm28.shp.zip' \
+		-o ./data/gadm/gadm2.zip
 	#* Downloaded 100% ---------------------------------------------------#
 
 # TOPOGRAPHIC 1km from NOAA ----------------------------------------------#
@@ -43,21 +46,22 @@ ETOPO1: clean
 		-o ./data/noaa/ETOPO1_Ice_g_geotiff.zip
 	#* Downloaded 100% ---------------------------------------------------#
 
-# ADMINISTRATIVE from GADM.org ------------------------------------------ #
-GADM2:
-	mkdir -p ./data/gadm/
-	curl \
-		-L -C - 'http://biogeo.ucdavis.edu/data/gadm2/gadm_v2_shp.zip' \
-		-o ./data/gadm/gadm2.zip
+# TOPOGRAPHIC 90m from USGS (SRTMVF) ------------------------------------ # 
+SRTMVF:
+
+# TOPOGRAPHIC 250m from CGIAR-CSI (SRTM) -------------------------------- #
+SRTM_v41_250:
+	mkdir -p ./data/cgiar-csi_250/
+	# curl -L -C - 'ftp://192.156.137.225/SRTM_v41/SRTM_Resampled/SRTM_{NE,SE,W}_250m_TIF.rar' -o './data/cgiar-csi_250/srtm41_#1.rar' -f
+	curl -L -C - 'http://gisweb.ciat.cgiar.org/TRMM/SRTM_Resampled_250m/SRTM_{NE,SE,W}_250m_TIF.rar' -o './data/cgiar-csi_250/srtm41_#1.rar' -f
 	#* Downloaded 100% ---------------------------------------------------#
 
-# ADMINISTRATIVE from NATURAL EARTH ------------------------------------- #
-NE:
-	mkdir -p ./data/natural_earth_vector/
-	curl \
-		-L -C - 'http://naciscdn.org/naturalearth/packages/natural_earth_vector.zip' \
-		-o ./data/natural_earth_vector/natural_earth_vector.zip
+# TOPOGRAPHIC 90m from CGIAR-CSI (SRTM) --------------------------------- # 
+SRTM_v41_90:
+	mkdir -p ./data/cgiar-csi_90/
+	curl -L -C - 'http://gis-lab.info/data/srtm-tif/srtm_72_24.zip' -o './data/cgiar-csi_90/srtm41_72_24.zip' -f
 	#* Downloaded 100% ---------------------------------------------------#
+
 
 clean: 
 #	rm -f ./data/NE/*.zip
