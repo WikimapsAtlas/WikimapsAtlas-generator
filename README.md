@@ -17,10 +17,12 @@ To produce a single country's map, run:
 
 to and get back :
 
-<img src="http://i.stack.imgur.com/kaJH3.png" width="300" float="center">
-<img src="http://i.stack.imgur.com/1Q3p0.jpg" width="300" float="center">
-<img src="http://i.stack.imgur.com/mPZUd.png" width="300" float="center">
-<img src="http://i.stack.imgur.com/Vc0qK.png" width="300" float="center">
+| Topographic-Administrqtive  | Administrative |
+| ------------- | ------------- |
+| <img src="http://i.stack.imgur.com/mPZUd.png" width="300" float="center"> | <img src="http://i.stack.imgur.com/kaJH3.png" width="300" float="center"> |
+| Topographic  | Administrative localisator |
+| <img src="http://i.stack.imgur.com/1Q3p0.jpg" width="300" float="center"> | <img src="http://i.stack.imgur.com/Vc0qK.png" width="300" float="center"> |
+
 
 Constitutives components (raster, topojson) and derivated variations (jpg, png, svg) are gathered into `/output/{Country_name}/`, or about 70 files for India.
 
@@ -90,48 +92,48 @@ Commonly used:
 * **NAME**: name of the target/central geographic feature, according to Natural Earth spelling.
 * **ISO2**: iso_2 of the target/central geographic feature. While L1 provinces of the target area are in `administrative.topo.json` files, this parameter is used to filter the ones to visualize via d3js. 
 * **WEST**: Westernmost longitude value of the bounding box. 
- * *range*: `[180.0,-180.0]`.
+  * *range*: `[180.0,-180.0]`.
 * **NORTH**: Northernmost latitude value of the bounding box.
- * *range*: `[80.0,-80.0]` (GIS data often missing for poles)
+  * *range*: `[80.0,-80.0]` (GIS data often missing for poles)
 * **EAST**: Easternmost longitude value of the bounding box.
- * *range*: `[180.0,-180.0]`.
+  * *range*: `[180.0,-180.0]`.
 * **SOUTH**: Southernmost latitude value of the bounding box.
- * *range*: `[80.0⁰,-80.0]` (GIS data often missing for poles)
+  * *range*: `[80.0⁰,-80.0]` (GIS data often missing for poles)
 * **WIDTH**: width of the final SVG and associated bitmaps (tif, png). The EIGHT is calculated from `WNES` values and the `WIDTH`.
- * *default*: `1980` (px), 
- * *range*: `>0`.
+  * *default*: `1980` (px), 
+  * *range*: `>0`.
 * **SLICES**: number of elevation levels above sea level.
- * *default*: `8`,
- * *range* : > `2` (!).
+  * *default*: `8`,
+  * *range* : > `2` (!).
 * **PLACES**: number of non-capital places to keep. Capitals are always kept.
- * *default*: `15`,
- * *range* : `[0-100]`.
+  * *default*: `15`,
+  * *range* : `[0-100]`.
 
 
 Advanced use:
 
 * **PROJECTION**: code of the projection used ([list of projections](http://spatialreference.org/ref/epsg/)). Only affects rasters `.shp` & `.tif` outputs.
- * *default*: `epsg:4326` (equirectangular).
- * *major alternatives*: `epsg:3857` (mercator, requires `S=370400`)
+  * *default*: `epsg:4326` (equirectangular).
+  * *major alternatives*: `epsg:3857` (mercator, requires `S=370400`)
 * **SELECTOR_PLACES**: selects and keeps placess (towns and cities) via SQL query.
- * *default*, 15 biggest places: `ADM0NAME = '$(NAME)' AND ORDER BY POP_MAX DESC LIMIT 15` together with all countries capitals.
- * *alternative*, places with population above 2M : `ADM0NAME = '$(NAME)' AND POP_MAX > 2000000`
+  * *default*, 15 biggest places: `ADM0NAME = '$(NAME)' AND ORDER BY POP_MAX DESC LIMIT 15` together with all countries capitals.
+  * *alternative*, places with population above 2M : `ADM0NAME = '$(NAME)' AND POP_MAX > 2000000`
 * **QUANTIZATION**: maximum number of differentiable points along either x and y dimensions
- * *default*: `1e4`, 
- * *range*: `[1e2,1e5]`.
+  * *default*: `1e4`, 
+  * *range*: `[1e2,1e5]`.
 * **Z** (aka zFactor): vertical exaggeration used to pre-multiply the elevations
- * *default*: `5`,
- * *range*: `>0`.
+  * *default*: `5`,
+  * *range*: `>0`.
 * **S** (aka scale): vertical exaggeration used to pre-multiply the elevations
- * *default*: `111120` (if surface in decimal degrees and vertical in meters use `S=111120`, if vertical in feets use `S=370400`)
+  * *default*: `111120` (if surface in decimal degrees and vertical in meters use `S=111120`, if vertical in feets use `S=370400`)
 * **AZ**: azimuth of the light, in degrees. 0 if it comes from the top of the raster, 90 from the east, ... The default value, 315, should rarely be changed as it is the value generally used to generate shaded maps.
- * *default*: `315`, 
- * *range*: `[0-359]`.
+  * *default*: `315`, 
+  * *range*: `[0-359]`.
 * **ALT**:  altitude of the light, in degrees. 90 if the light comes from above the DEM, 0 if it is raking light.
- * *default*: `60`,
- * *range*: `[0-90]`.
+  * *default*: `60`,
+  * *range*: `[0-90]`.
 * **SHADOW**: opacity of the hillshade upon color-relief
- * *range*: `[0-100]`
+  * *range*: `[0-100]`
 
 **Note:** 
  * if the input GIS raster is in feet, then `s` scale should be edited. See `man gdal`.
@@ -159,28 +161,28 @@ Whenever available, these elements are transmitted to the final topojsons :
   * 1 `elevations.topo.json`: n slices in vector format to represent signicative elevations of exponential altitude (ex: 0,50,200,500,2000, 5000m). 
   * 1 `color.jpg` : raster relief with two relative coloramps for landmass and sea. (default: Mercator)
 * 2 hillshades:
- * `trans.png`: a transparent hillshade, see [How to create transparent hillshade?](http://gis.stackexchange.com/questions/144535/how-to-create-transparent-hillshade/144700#144700).  (default: Mercator)
- * `hillshades.topo.json`: vector version of the previous.
+  * `trans.png`: a transparent hillshade, see [How to create transparent hillshade?](http://gis.stackexchange.com/questions/144535/how-to-create-transparent-hillshade/144700#144700).  (default: Mercator)
+  * `hillshades.topo.json`: vector version of the previous.
 * 1 `administrative.topo.json` containing the layers:
- * `admin_0.topo.json`: countries
- * `admin_1.topo.json`: subdivisions of the target country
- * `disputed.topo.json`: disputed area within the range of the query
- * `places.topo.json`: cities with population above a given number
+  * `admin_0.topo.json`: countries
+  * `admin_1.topo.json`: subdivisions of the target country
+  * `disputed.topo.json`: disputed area within the range of the query
+  * `places.topo.json`: cities with population above a given number
 * 1 `waters.topo.json`: major rivers of the area.
 
 
 ### End products
 We mirror best practices refined by Wikipedia's cartographers over the past 8 years.
 * Administrative :
- * `{NAME}_location_map,_admin_relief_(2015)-en.svg` -- 1 file, raster relief and hillshade, vector admin_0, admin_1, cities, labels, rivers.
- * `{NAME},_{Province_name}_locator_map,_admin_relief_(2015)-en.svg` -- n files, idem previous, with provinces enlighten.
- * `{NAME},_{Province_name}_locator_map,_admin_blue_(2015)-en.svg` -- n files, idem previous, no reliefs nor hillshades, 100% vector.
- * `{NAME}_location_map,_admin_blue_(2015).svg` -- 1 file, no labels.
+  * `{NAME}_location_map,_admin_relief_(2015)-en.svg` -- 1 file, raster relief and hillshade, vector admin_0, admin_1, cities, labels, rivers.
+  * `{NAME},_{Province_name}_locator_map,_admin_relief_(2015)-en.svg` -- n files, idem previous, with provinces enlighten.
+  * `{NAME},_{Province_name}_locator_map,_admin_blue_(2015)-en.svg` -- n files, idem previous, no reliefs nor hillshades, 100% vector.
+  * `{NAME}_location_map,_admin_blue_(2015).svg` -- 1 file, no labels.
 * Topography :
- * `{NAME}_location_map,_admin-topographic_relief_(2015)-en.svg` -- 1 file.
- * `{NAME},_{Province_name}_locator_map,_admin-topographic_relief_(2015)-en.svg` -- n files.
- * `{NAME}_location_map,_admin-topographic_relief_(2015).svg` -- 1 file.
- * `{NAME}_location_map,_topographic_blue_(2015).svg` -- 1 file.
+  * `{NAME}_location_map,_admin-topographic_relief_(2015)-en.svg` -- 1 file.
+  * `{NAME},_{Province_name}_locator_map,_admin-topographic_relief_(2015)-en.svg` -- n files.
+  * `{NAME}_location_map,_admin-topographic_relief_(2015).svg` -- 1 file.
+  * `{NAME}_location_map,_topographic_blue_(2015).svg` -- 1 file.
 
 ## Reference
 
