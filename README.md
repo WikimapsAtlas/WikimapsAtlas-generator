@@ -174,15 +174,15 @@ Whenever available, these elements are transmitted to the final topojsons :
 ### End products
 We mirror best practices refined by Wikipedia's cartographers over the past 8 years.
 * Administrative :
-  * `{NAME}_location_map,_admin_relief_(2015)-en.svg` -- 1 file, raster relief and hillshade, vector admin_0, admin_1, cities, labels, rivers.
-  * `{NAME},_{Province_name}_locator_map,_admin_relief_(2015)-en.svg` -- n files, idem previous, with provinces enlighten.
-  * `{NAME},_{Province_name}_locator_map,_admin_blue_(2015)-en.svg` -- n files, idem previous, no reliefs nor hillshades, 100% vector.
-  * `{NAME}_location_map,_admin_blue_(2015).svg` -- 1 file, no labels.
+  * 1 x `{NAME}_location_map,_admin_relief_(2015)-en.svg` -- raster relief and hillshade, vector admin_0, admin_1, cities, labels, rivers.
+  * n x `{NAME},_{Province_name}_locator_map,_admin_relief_(2015)-en.svg` -- idem previous, with provinces enlighten.
+  * n x `{NAME},_{Province_name}_locator_map,_admin_blue_(2015)-en.svg` -- idem previous, no reliefs nor hillshades, 100% vector.
+  * 1 x `{NAME}_location_map,_admin_blue_(2015).svg` -- no labels.
 * Topography :
-  * `{NAME}_location_map,_admin-topographic_relief_(2015)-en.svg` -- 1 file.
-  * `{NAME},_{Province_name}_locator_map,_admin-topographic_relief_(2015)-en.svg` -- n files.
-  * `{NAME}_location_map,_admin-topographic_relief_(2015).svg` -- 1 file.
-  * `{NAME}_location_map,_topographic_blue_(2015).svg` -- 1 file.
+  * 1 x `{NAME}_location_map,_admin-topographic_relief_(2015)-en.svg`
+  * n x `{NAME},_{Province_name}_locator_map,_admin-topographic_relief_(2015)-en.svg`
+  * 1 x `{NAME}_location_map,_admin-topographic_relief_(2015).svg`
+  * 1 x `{NAME}_location_map,_topographic_blue_(2015).svg`
 
 ## Reference
 
