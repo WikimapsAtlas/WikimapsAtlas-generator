@@ -1,5 +1,4 @@
-# Wikimaps-D3js Atlas
-**Wikimaps-D3js Atlas** -- A command line utility and D3js based library to quickly generate elegant raster, topojson and svg maps.
+**Wikimaps-D3js Atlas** -- A command line utility to convert massive GIS sources into elegant administrative and topographic raster, topojson files and web friendly svg maps.
 
 **Wikimaps-D3js Atlas** takes the power of GIS to the hands of web developpers, graphists, journalists and online readers. A single command let you process super heavy GIS sources such open source administrative [NaturalEarth][a] shapefiles and topographic ETOPO/SRTM tifs into light geojson, [TopoJSON](https://github.com/mbostock/topojson) and SVG files optimized for screens display. XML shapes and groups of shapes keep the most relevant data-attributes (name, iso_2, hasc code, population [and others][b]) allowing rich data binding while the graphic aspect keeps up to modern expectations. We believe our topojson and svg files to be the finest available online due to the smart selection and presence of these data attributes easing **data biding**.
 
@@ -17,7 +16,7 @@ To produce a single country's map, run:
 
 to and get back :
 
-| Topographic-Administrqtive  | Administrative |
+| Topographic-Administrative  | Administrative |
 | ------------- | ------------- |
 | <img src="http://i.stack.imgur.com/mPZUd.png" width="300" float="center"> | <img src="http://i.stack.imgur.com/kaJH3.png" width="300" float="center"> |
 | Topographic  | Administrative localisator |
