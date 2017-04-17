@@ -27,7 +27,7 @@ NE:
 	mkdir -p ./data/natural_earth_vector/
 	curl \
 		-L -C - 'http://naciscdn.org/naturalearth/packages/natural_earth_vector.zip' \
-		-o ./data/natural_earth_vector/natural_earth_vector.zip
+		-o ./data/natural_earth_vector/natural_earth_vector.zip -f
 	#* Downloaded 100% ---------------------------------------------------#
 
 # ADMINISTRATIVE from GADM.org ------------------------------------------ #
