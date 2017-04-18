@@ -24,12 +24,22 @@ Constitutives components (raster, topojson) and derivated variations (jpg, png, 
 
 To custom the styles, edit `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
 
+
+## Requirements
+CPU :
+* GIS processing is CPU needy
+
+Disk space :
+* core *data* : 3GB
+* precise *datapus*: +20GB
+
+Environment :
+* [`nodejs`](https://nodejs.org/en/download/package-manager/) v6.8.2 (LTS Boron) & `npm`
+
+Core dependencies :
+* `gdal`, `topojson`, `jsdom`, `d3js`, `python`, `make`.
+
 ## Install
-You need [`nodejs`](https://nodejs.org/en/download/package-manager/) & `npm`. 
-We then install `gdal`, `topojson`, `jsdom` and `d3js`. 
-Data requires +15GB of free disk space.
-
-
 **On Linux Ubuntu**, run the following:
 ```shell
 git clone https://github.com/WikimapsAtlas/WikimapsAtlas-generator.git  #get code
@@ -51,6 +61,7 @@ npm run data	# install default data. Recommanded, may take few hours. For more, 
 Custom projection is possible but not yet implemented. See [issue 1](https://github.com/WikimapsAtlas/make-modules/issues/1).
 
 ## Run
+### Modules explained
 Wikimaps Atlas is usually run via the `master.makefile`, which pass variables to sub-module makefiles generating suit of cropped shp, rasters images, topojson and svgs. Modules can be ran independently as well.
 
 **Master:** When run, the `master.makefile` runs other layer-specialized sub-makefiles. These sub-makefiles process GIS sources, output topoJSON file(s) which `nodejs`, `jsdom`, and `D3js` convert into stand alone SVGs stored in the `./output` folder.
@@ -65,6 +76,7 @@ Wikimaps Atlas is usually run via the `master.makefile`, which pass variables to
 
 **D3 (svg generator):** When run, the `d3.makefile` queries the previously generated jpg, png, and topojson in order to create D3js svg visualisations, then printed into stand alone `.svg` files.
 
+### Example
 ```bash
 # master
 make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280
@@ -139,8 +151,25 @@ Advanced use:
 ## Ouput
 Generated files are moved into `./output/<NAME>/`.
 
+### Constitutive elements
+Files below are generated as intermediate steps before the svg maps creation.
+
+* 2 x topographic reliefs files:
+  * 1 x `elevations.topo.json`: n slices in vector format to represent signicative elevations of exponential altitude (ex: 0,50,200,500,2000, 5000m). 
+  * 1 x `color.jpg` : raster relief with two relative coloramps for landmass and sea. (default: Mercator)
+* 2 x  hillshades files:
+  * 1 x `trans.png`: a transparent hillshade, see [How to create transparent hillshade?](http://gis.stackexchange.com/questions/144535/how-to-create-transparent-hillshade/144700#144700).  (default: Mercator)
+  * 1 x `hillshades.topo.json`: vector version of the previous.
+* 5 x administrative files: 
+  * 1 x `administrative.topo.json` made by combining the following :
+  * 1 x `admin_0.topo.json`: countries
+  * 1 x `admin_1.topo.json`: subdivisions of the target country
+  * 1 x `disputed.topo.json`: disputed area within the range of the query
+  * 1 x `places.topo.json`: cities with population above a given number
+* 1 x `waters.topo.json`: major rivers of the area.
+
 ### Attributes
-Whenever available, these elements are transmitted to the final topojsons : 
+Whenever available, these elements are transmitted into the final topojson files : 
 * `name`: feature's English name (for all: countries, provinces, disputed, cities, rivers)
 * `L0`: feature's country iso2 codes (for countries, provinces, disputed, cities), 
 * `L0_3`: feature's iso3 codes (for countries, provinces, disputed, cities), 
@@ -152,33 +181,20 @@ Whenever available, these elements are transmitted to the final topojsons :
 * `pop`: population (for cities), 
 * `scalerank`: river scalerank. 
 
-### Constitutive elements
-* 2 topographic reliefs:
-  * 1 `elevations.topo.json`: n slices in vector format to represent signicative elevations of exponential altitude (ex: 0,50,200,500,2000, 5000m). 
-  * 1 `color.jpg` : raster relief with two relative coloramps for landmass and sea. (default: Mercator)
-* 2 hillshades:
-  * `trans.png`: a transparent hillshade, see [How to create transparent hillshade?](http://gis.stackexchange.com/questions/144535/how-to-create-transparent-hillshade/144700#144700).  (default: Mercator)
-  * `hillshades.topo.json`: vector version of the previous.
-* 1 `administrative.topo.json` containing the layers:
-  * `admin_0.topo.json`: countries
-  * `admin_1.topo.json`: subdivisions of the target country
-  * `disputed.topo.json`: disputed area within the range of the query
-  * `places.topo.json`: cities with population above a given number
-* 1 `waters.topo.json`: major rivers of the area.
-
-
 ### End products
-We mirror best practices refined by Wikipedia's cartographers over the past 8 years.
+Files below are complete web friendly maps.
 * Administrative :
   * 1 x `{NAME}_location_map,_admin_relief_(2015)-en.svg` -- raster relief and hillshade, vector admin_0, admin_1, cities, labels, rivers.
   * n x `{NAME},_{Province_name}_locator_map,_admin_relief_(2015)-en.svg` -- idem previous, with provinces enlighten.
   * n x `{NAME},_{Province_name}_locator_map,_admin_blue_(2015)-en.svg` -- idem previous, no reliefs nor hillshades, 100% vector.
   * 1 x `{NAME}_location_map,_admin_blue_(2015).svg` -- no labels.
-* Topography :
+* Topographic :
   * 1 x `{NAME}_location_map,_admin-topographic_relief_(2015)-en.svg`
   * n x `{NAME},_{Province_name}_locator_map,_admin-topographic_relief_(2015)-en.svg`
   * 1 x `{NAME}_location_map,_admin-topographic_relief_(2015).svg`
   * 1 x `{NAME}_location_map,_topographic_blue_(2015).svg`
+
+We here mirror best practices refined by Wikipedia's cartographers over the past 10 years.
 
 ## Reference
 
