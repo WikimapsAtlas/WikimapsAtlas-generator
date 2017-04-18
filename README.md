@@ -36,7 +36,7 @@ Disk space :
 Environment :
 * [`nodejs`](https://nodejs.org/en/download/package-manager/) v6.8.2 (LTS Boron) & `npm`
 
-Core dependencies :
+System dependencies :
 * `gdal`, `topojson`, `jsdom`, `d3js`, `python`, `make`.
 
 ## Install
@@ -44,8 +44,10 @@ Core dependencies :
 ```shell
 git clone https://github.com/WikimapsAtlas/WikimapsAtlas-generator.git  #get code
 cd ./WikimapsAtlas-generator
-npm install	    # install node dependencies and system dependencies. May need sudo.
-npm run data	# install default data. Recommanded, may take few hours. For more, see ./package.json
+npm install	     # install node dependencies and system dependencies. May need sudo.
+npm run data     # download ETOPO1, NaturalEarth data (default). See ./package.json & data.makefile
+# npm run dataplus # download SRTM250, SRTM90, GADM2 data (precise). See ./package.json & data.makefile
+
 ```
 
 **On OS X** use [Homebrew](http://mxcl.github.io/homebrew/)'s `brew install <program>`. (Are you on Mac ? Help us to write this section.).
