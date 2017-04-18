@@ -6,15 +6,12 @@
 [b]: https://github.com/WikimapsAtlas/make-modules#attributes
 
 ## Use case
-To produce a world atlas for all major countries, run :
-
-    bash ./script/world_atlas_generator.bash ./script/world_atlas_commands.txt # may take a dozen(s) of hours !
-
-To produce a single country's map, run:
-
-`make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280`
-
-to and get back :
+```
+# Generate map for India 
+make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280
+# Generate maps for all countries. /!\ : May take half a day.
+bash ./script/world_atlas_generator.bash ./script/world_atlas_commands.txt 
+```
 
 | Topographic-Administrative  | Administrative |
 | ------------- | ------------- |
@@ -23,9 +20,9 @@ to and get back :
 | <img src="http://i.stack.imgur.com/1Q3p0.jpg" width="300" float="center"> | <img src="http://i.stack.imgur.com/Vc0qK.png" width="300" float="center"> |
 
 
-Constitutives components (raster, topojson) and derivated variations (jpg, png, svg) are gathered into `/output/{Country_name}/`, or about 70 files for India.
+Constitutives components (raster, topojson) and derivated variations (jpg, png, svg) are gathered into `/output/{Country_name}/`, as for India it represent about 70 files.
 
-You can custom the overall style by editing `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
+To custom the styles, edit `./js/wikiatlas.js`'s "CSS MODULE", and `./01_topography/` relative color ramps.
 
 ## Install
 You need [`nodejs`](https://nodejs.org/en/download/package-manager/) & `npm`. 
