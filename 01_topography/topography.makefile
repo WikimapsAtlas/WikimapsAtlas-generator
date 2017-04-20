@@ -20,6 +20,9 @@ SHELL=/bin/bash
 end:  background_colors topojson
 	mkdir -p ../output/$(NAME)
 	mv ./*.{gis.tif,*.json} -t ../output/$(NAME)/
+	mv ./crop_xl_.tmp.tif -t ../output/$(NAME)/   # temporary line in order to see nodata areas.
+	mv ./crop_xl.tmp.tif -t ../output/$(NAME)/   # temporary line in order to see nodata areas.
+	mv ./crop_xs.tmp.tif -t ../output/$(NAME)/
 	rm -f *.tmp.*
 
 topojson: vector_slices
@@ -54,7 +57,7 @@ background_colors: resize
 	gdal_calc.py -A crop_xs_etopo.tmp.tif --outfile=crop_xs_sea.tmp.tif  --calc="A*(A<0)+1*(A>=0)" --NoDataValue=1 # gdallocationinfo ./crop_xs_sea.tmp.tif  -valonly 10 1800   > -4567
 	gdaldem color-relief crop_xs_land.tmp.tif color_relief-wikimaps_land.txt crop_xs_land_color.tmp.vrt 	# gdallocationinfo ./color_land.tmp.vrt   -valonly 10 1800   > null: 0,0,0 (due to color ramp)
 	gdaldem color-relief crop_xs_sea.tmp.tif  color_relief-wikimaps_sea.txt  crop_xs_sea_color.tmp.vrt  	# gdallocationinfo ./color_sea.tmp.vrt    -valonly 10 1800   > val : 22,59,94 (due to color ramp)
-	gdalwarp  crop_xs_land_color.tmp.vrt crop_xs_land_color.tmp.tif		# tif get 3 bands (RGB) 						# 
+	gdalwarp  crop_xs_land_color.tmp.vrt crop_xs_land_color.tmp.tif		# tif get 3 bands (RGB) 						#
 	gdalwarp  crop_xs_sea_color.tmp.vrt  crop_xs_sea_color.tmp.tif		# tif get bands (RGB)  						#
 	#merge attempts
 	gdal_merge.py -o color.tmp.tif -n 0 crop_xs_land_color.tmp.tif crop_xs_sea_color.tmp.tif
@@ -69,7 +72,7 @@ resize: crop
 	# gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts `expr $(WIDTH) \* 2` 0 crop_xl.tmp.tif crop_sm.tmp.tif
 	gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts $(WIDTH) 0 crop_xl_etopo.tmp.tif crop_xs_etopo.tmp.tif
 
-reproj: crop                 
+reproj: crop
 #	reproj can go here
 #	gdalwarp -of GTiff -s_srs EPSG:4326 -t_srs $(PROJECTION) -r cubic crop_xl.tmp.tif reproj.tmp.tif # -s_srs EPSG:4326
 crop: clean
@@ -80,7 +83,7 @@ crop: clean
 clean:
 	rm -f *.json
 	rm -f *.dbf
-	rm -f *.prj 
+	rm -f *.prj
 	rm -f *.shp
 	rm -f *.shx
 	rm -f *.tmp.*

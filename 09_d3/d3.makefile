@@ -16,7 +16,7 @@ location: b64
 	WIDTH=$(WIDTH) node location.node.js		# see inside this file for parameters' calls
 
 b64: clean
-	convert ../output/$(NAME)/trans.gis.tif -blur 3x3  ../output/$(NAME)/trans.png 
+	convert ../output/$(NAME)/trans.gis.tif -blur 3x3  ../output/$(NAME)/trans.png
 	convert ../output/$(NAME)/color.gis.tif ../output/$(NAME)/color.jpg
 	for file in ../output/$(NAME)/*.jpg ../output/$(NAME)/*.png  ; \
 	do echo $$file ; openssl base64 -in $$file -out ../output/$(NAME)/`basename $$file`.b64; \
@@ -29,7 +29,7 @@ clean:
 	rm -f *.svg
 #	rm -f *.json
 #	rm -f *.dbf
-#	rm -f *.prj 
+#	rm -f *.prj
 #	rm -f *.shp
 #	rm -f *.shx
 #	rm -f *.tif
