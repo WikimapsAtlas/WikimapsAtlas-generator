@@ -1,4 +1,4 @@
-// Run me with: 
+// Run me with:
 // $ COLOR=#66AAFF node svgcreator.node.js > out.svg   #passing var COLOR the old way
 
 var jsdom = require('jsdom');
@@ -9,8 +9,8 @@ jsdom.env(
   [ 'http://d3js.org/d3.v3.min.js',    // JS DEPENDENCIES online ...
   '../js/d3.v3.min.js',
   '../js/jquery-2.1.3.min.js',
-  '../js/topojson.v1.min.js', 
-  '../js/queue.min.js', 
+  '../js/topojson.v1.min.js',
+  '../js/queue.min.js',
   '../js/wikiatlas.js',
   '../js/b64.js' ],                 // ... & offline
 
@@ -21,7 +21,7 @@ jsdom.env(
 // console.log(typeof window.locationMap);  // => 'function' = ok
 
 // Parameters from Shell to JS
-    var WEST  = process.env.WEST, 
+    var WEST  = process.env.WEST,
         NORTH = process.env.NORTH,
         EAST  = process.env.EAST,
         SOUTH = process.env.SOUTH,
@@ -38,7 +38,6 @@ jsdom.env(
   var mapType={ rich_background: true, base_administrative:false, base_topography:true, borders: true, labels:true };
   window.locationMap("#hook1",width, iso2, name, WEST, NORTH, EAST, SOUTH, true, mapType);
   console.log("Topo map, projected: "+ new Date() );
-
 // END svg design
 
 /* ***************************************************************** */
@@ -55,23 +54,22 @@ jsdom.env(
         shape = window.d3.selectAll(selector1),
         shapeName = shape.attr("name").replace(/ /g,"_"),
         shapeArea = shape.attr("area");
-        shape.attr("style", "fill:#B10000;opacity:1;");            
+        shape.attr("style", "fill:#B10000;opacity:1;");
       var selector2 = hook+' #L1_frames > *:nth-child('+j+')',
       c = shapeArea < mSqr;
       if(c){ window.d3.selectAll(selector2).attr("style", "visibility:visible;opacity:1;") };
 
-      console.log("Printing: "+j+" ; name: "+shapeName+" ; area: "+shapeArea+" .")
+      console.log("Printing ("+new Date().toTimeString().slice(0,8)+"):"+("  "+j).slice(-3)+" ; area: "+parseFloat(shapeArea).toPrecision(6)+" ; name: "+shapeName)
       var filename = name_+',_'+shapeName+type;
-      fs.writeFileSync(filename, svgheader + window.d3.select(hook).html()); 
+      fs.writeFileSync(filename, svgheader + window.d3.select(hook).html());
       // Reset colors :
       window.d3.selectAll(hook+" #L1 > *").attr("style","opacity:0;");
       window.d3.selectAll(hook+" #L1_frames > *").attr("style","opacity:0;");
     }
   };
 
-
   setTimeout(
-    function() { 
+    function() {
 
     window.d3.selectAll("svg")
         .attr(':xmlns','http://www.w3.org/2000/svg')            // if not: file does not appear to have any style information
@@ -83,13 +81,13 @@ var filename = name_+'_location_map,_admin-topographic_relief_(2015)-en.svg';
     window.d3.selectAll("#hook1 #L0").attr("style","fill-opacity:0.3");
     window.d3.selectAll("#hook1 #L0 [code="+iso2+"]").remove();
     window.d3.selectAll("#hook1 #L1").attr("style","opacity:0.6;");
-    window.d3.selectAll("#hook1 #L1 > *").attr("style","opacity:0;"); // at each loopOnL1 cycle, one L1 shape get opacity:1; 
-    fs.writeFileSync(filename, svgheader + window.d3.select(hook).html())  
+    window.d3.selectAll("#hook1 #L1 > *").attr("style","opacity:0;"); // at each loopOnL1 cycle, one L1 shape get opacity:1;
+    fs.writeFileSync(filename, svgheader + window.d3.select(hook).html())
     console.log("Admin map, printed: "+ new Date() );
 
 //n   {NAME},_{Province_name}_locator_map,_admin-topographic_relief_(2015)-en.svg :
 var fileext =               '_locator_map,_admin-topographic_relief_(2015)-en.svg';
-    loopOnL1('#hook1',name_,fileext);                                              
+    loopOnL1('#hook1',name_,fileext);
     console.log("Admin map, printed: "+ new Date() );
 
 //1             {NAME}_location_map,_admin-topographic_relief_(2015).svg :
@@ -98,14 +96,14 @@ var filename = name_+'_location_map,_admin-topographic_relief_(2015).svg'; // no
     window.d3.selectAll("#hook1 #L1_labels").remove();
     window.d3.selectAll("#hook1 #Places").remove();
     window.d3.selectAll("#hook1 #Places_labels").remove();
-    fs.writeFileSync(filename, svgheader + window.d3.select(hook).html())  
+    fs.writeFileSync(filename, svgheader + window.d3.select(hook).html())
 
 var filename = name_+"_location_map,_topographic_blue_(2015).svg"; // 1 file
     window.d3.selectAll("#hook1 #L1").remove();
     window.d3.selectAll("#hook1 #Relief_raster").remove();
     window.d3.selectAll("#hook1 #Hillshade_raster").remove();
     window.d3.selectAll("#hook1 #Disputed").remove();
-    fs.writeFileSync(filename, svgheader + window.d3.select(hook).html());        
+    fs.writeFileSync(filename, svgheader + window.d3.select(hook).html());
 
     },4000
   );

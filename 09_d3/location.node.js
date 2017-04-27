@@ -1,6 +1,3 @@
-// Run me with: 
-// $ COLOR=#66AAFF node svgcreator.node.js > out.svg   #passing var COLOR the old way
-
 var jsdom = require('jsdom');
 var fs    = require('fs');
 
@@ -9,8 +6,8 @@ jsdom.env(
   [ 'http://d3js.org/d3.v3.min.js',    // JS DEPENDENCIES online ...
   '../js/d3.v3.min.js',
   '../js/jquery-2.1.3.min.js',
-  '../js/topojson.v1.min.js', 
-  '../js/queue.min.js', 
+  '../js/topojson.v1.min.js',
+  '../js/queue.min.js',
   '../js/wikiatlas.js',
   '../js/b64.js' ],                 // ... & offline
 
@@ -21,7 +18,7 @@ jsdom.env(
 // console.log(typeof window.locationMap);  // => 'function' = ok
 
 // Parameters from Shell to JS
-    var WEST  = process.env.WEST, 
+    var WEST  = process.env.WEST,
         NORTH = process.env.NORTH,
         EAST  = process.env.EAST,
         SOUTH = process.env.SOUTH,
@@ -38,13 +35,6 @@ jsdom.env(
   var mapType={ rich_background: true, base_administrative:true, base_topography:false, borders: true, labels:true };
   window.locationMap("#hook1",width, iso2, name, WEST, NORTH, EAST, SOUTH, true, mapType);
   console.log("Admin map, projected: "+ new Date() );
-
-  var content = '{{wikimaps_topic|west='+WEST+'|=north'+NORTH+'|south='+SOUTH+'|east='+EAST+'|name='+name+'|version=2016/05}}';
-  fs.writeFileSync('meta_commons.tpl', content);
-//  window.localisator("#hook2", 600, name, name, WEST, NORTH, EAST, SOUTH);
-//  console.log("Globe map, done: "+ new Date() );
-//  fs.writeFileSync(name_+"-orthographic_(2016).svg", svgheader + window.d3.select("#hook2").html())
-//  window.d3.select("#hook2").remove();
 // END svg design
 
 /* ***************************************************************** */
@@ -61,14 +51,14 @@ jsdom.env(
         shape = window.d3.selectAll(selector1),
         shapeName = shape.attr("name").replace(/ /g,"_"),
         shapeArea = shape.attr("area");
-        shape.attr("style", "fill:#B10000;opacity:1;");            
+        shape.attr("style", "fill:#B10000;opacity:1;");
       var selector2 = hook+' #L1_frames > *:nth-child('+j+')',
       c = shapeArea < mSqr;
       if(c){ window.d3.selectAll(selector2).attr("style", "visibility:visible;opacity:1;") };
 
-      console.log("Printing: "+j+" ; name: "+shapeName+" ; area: "+shapeArea+" .")
+      console.log("Printing ("+new Date().toTimeString().slice(0,8)+"):"+("  "+j).slice(-3)+" ; area: "+parseFloat(shapeArea).toPrecision(6)+" ; name: "+shapeName)
       var filename = name_+',_'+shapeName+type;
-      fs.writeFileSync(filename, svgheader + window.d3.select(hook).html()); 
+      fs.writeFileSync(filename, svgheader + window.d3.select(hook).html());
       // Reset colors :
       window.d3.selectAll(hook+" #L1 > *").attr("style","opacity:0;");
       window.d3.selectAll(hook+" #L1_frames > *").attr("style","opacity:0;");
@@ -76,29 +66,29 @@ jsdom.env(
   };
 
   setTimeout(
-    function() { 
+    function() {
 
-     window.d3.selectAll("svg")
+    window.d3.selectAll("svg")
         .attr(':xmlns','http://www.w3.org/2000/svg')            // if not: file does not appear to have any style information
         .attr(':xmlns:xlink','http://www.w3.org/1999/xlink');   // if not: Namespace prefix xlink for href
 
     var hook = "#hook1"
 // 1 file
 var filename = name_+'_location_map,_admin_relief_(2016)-en.svg';
-    fs.writeFileSync(filename, svgheader + window.d3.select(hook).html())  
+    fs.writeFileSync(filename, svgheader + window.d3.select(hook).html())
     console.log("Admin location relief map, printed: "+ new Date() );
 
 //n  {NAME},_{Province_name}_locator_map,_admin_relief_(2016)-en.svg :
 var fileext  =             '_locator_map,_admin_relief_(2016)-en.svg';
-    loopOnL1('#hook1',name_,fileext);                                              
+    loopOnL1('#hook1',name_,fileext);
     console.log("Admin locator relief map, printed: "+ new Date() );
 
 //n {NAME},_{Province}_locator_map,_admin_blue_(2016)-en.svg :
 var fileext  =       '_locator_map,_admin_blue_(2016)-en.svg';
     window.d3.selectAll("#hook1 #Relief_raster").remove();
     window.d3.selectAll("#hook1 #Hillshade_raster").remove();
-    loopOnL1('#hook1',name_,fileext);                                                     
- 
+    loopOnL1('#hook1',name_,fileext);
+
 //1             {NAME}_location_map,_admin_blue_(2016).svg :
 var filename = name_+'_location_map,_admin_blue_(2016).svg'; // no -en = blank
     window.d3.selectAll("#hook1 #L0_labels").remove();
