@@ -4,24 +4,24 @@
 WIDTH=1280
 
 #---- MAKEFILE
-done: template location topographic
+done: template location topography
 done2:
 	mkdir -p ../output/$(NAME)
 	mv ./*.svg ./*.tpl -t ../output/$(NAME)/
 
 template: b64
-	node template_commons.node.js
+	#node template_commons.node.js
 	echo "Done: Commons.Wikimedia.org template printed to .txt file"
 
-topographic: b64
-	WIDTH=$(WIDTH) node topographic.node.js		# see inside this file for parameters' calls
+topography: b64
+	WIDTH=$(WIDTH) node jsdom@16-topographic.node.js		# see inside this file for parameters' calls
 
 location: b64
-	WIDTH=$(WIDTH) node location.node.js		# see inside this file for parameters' calls
+	WIDTH=$(WIDTH) node jsdom@16-location.node.js		# see inside this file for parameters' calls
 
-b64: clean
-	convert ../output/$(NAME)/trans.gis.tif ../output/$(NAME)/trans.png #  -blur 3x3
-	convert ../output/$(NAME)/color.gis.tif ../output/$(NAME)/color.jpg
+b64: server clean
+	convert -quiet ../output/$(NAME)/trans.gis.tif ../output/$(NAME)/trans.png #  -blur 3x3
+	convert -quiet ../output/$(NAME)/color.gis.tif ../output/$(NAME)/color.jpg
 	for file in ../output/$(NAME)/*.jpg ../output/$(NAME)/*.png  ; \
 	do echo $$file ; openssl base64 -in $$file -out ../output/$(NAME)/`basename $$file`.b64; \
 	done;
