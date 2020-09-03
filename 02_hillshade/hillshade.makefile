@@ -72,7 +72,7 @@ shading: crop reproj
 	gdal_calc.py -A hillshades_A.tmp.tif -B hillshades_B.tmp.tif -C hillshades_C.tmp.tif \
 		--outfile=./hillshades_xl.tmp.tif --calc="(A*(A<=B)*(A<=C)+ B*(B<A)*(B<=C)+ C*(C<A)*(C<B))"
 	gdal_calc.py -A hillshades_A.tmp.tif -B hillshades_B.tmp.tif -C hillshades_C.tmp.tif \
-		--outfile=./hillshades_xl_multiply.tmp.tif --type=Float32 --calc="(A*B*C)^(1/3)"
+		--outfile=./hillshades_xl_multiply.tmp.tif --type=Float32 --calc="(A*B*C)**(1/3)"
 
 reproj: crop                 
 #	reproj can go here
@@ -85,6 +85,7 @@ crop: clean
 .PHONY: clean
 
 clean:  
+	rm shade/*
 	rm -f *.tiff
 	rm -f *.tif
 	rm -f *.jpg
