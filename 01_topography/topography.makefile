@@ -20,7 +20,7 @@ SHELL=/bin/bash
 end:  background_colors topojson
 	mkdir -p ../output/$(NAME)
 	mv ./*.{gis.tif,*.json} -t ../output/$(NAME)/
-	mv ./crop_xl_.tmp.tif -t ../output/$(NAME)/   # temporary line in order to see nodata areas.
+	mv ./crop_xl_raw.tmp.tif -t ../output/$(NAME)/   # temporary line in order to see nodata areas.
 	mv ./crop_xl.tmp.tif -t ../output/$(NAME)/   # temporary line in order to see nodata areas.
 	mv ./crop_xs.tmp.tif -t ../output/$(NAME)/
 	rm -f *.tmp.*
@@ -69,9 +69,9 @@ background_colors: resize
 #---- Crop, Resize
 resize: crop
 	echo "Resize various raw raster for speed"
-	gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts $(WIDTH) 0 crop_xl_.tmp.tif crop_xs.tmp.tif
+	gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts $(WIDTH) 0 crop_xl_raw.tmp.tif crop_xs.tmp.tif
 	# gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts `expr $(WIDTH) \* 2` 0 crop_xl.tmp.tif crop_sm.tmp.tif
-	gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts $(WIDTH) 0 crop_xl_etopo.tmp.tif crop_xs_etopo.tmp.tif
+	gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts $(WIDTH) 0 crop_xl.etopo.tmp.tif crop_xs_etopo.tmp.tif
 
 reproj: crop
 #	reproj can go here
