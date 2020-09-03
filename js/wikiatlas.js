@@ -18,7 +18,7 @@ function click(a){
 function dblclick(a){ window.location.assign("http://en.wikipedia.org/wiki/"+a.properties.name, '_blank');}
 function urlToData(name_,nodejs){
 	var root;
-	return root = nodejs? "http://127.0.0.1:8082/output/"+name_ : "../output/"+name_;
+	return root = nodejs? "http://127.0.0.1:8080/output/"+name_ : "../output/"+name_;
 	console.log('root',root)
 }	
 /* Math helpers ************************************************** */
