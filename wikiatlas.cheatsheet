@@ -1,15 +1,15 @@
 blog.commands.cheatheet:
-This file gather the commands and only the commands used by the Wikimaps_Atlas' make-modules.
+This file gather *all* the commands and *only* the commands used by the Wikimaps_Atlas' make-modules.
 
 
 =============================================================
 SERVER ======================================================
 
 http-server: http-server is a simple, zero-configuration command-line http server. 
-	node ./node_modules/.bin/http-server
+	node ./node_modules/.bin/http-server --cors &
 
 forever with http-server: http-server is a simple, zero-configuration command-line http server. 
-	node ./node_modules/.bin/forever ./node_modules/.bin/http-server
+	node ./node_modules/.bin/forever ./node_modules/.bin/http-server --cors &
 
 
 =============================================================
@@ -28,7 +28,7 @@ man MAKEFILE: make - GNU make utility to maintain groups of programs
 	myvar=something
 		Assign "something" to variable `myvar`. Called via `$(myvar)`.
 	$$
-		Escaped $, to avoid conflit with makefile variables.
+		Escaped "$", to avoid conflit with makefile variables such in `$(myvar)`.
 
 =============================================================
 GIS TOOLS ===================================================
