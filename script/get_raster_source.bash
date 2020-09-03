@@ -50,7 +50,6 @@ gdal_merge.py -o ./crop_xl_raw.tmp.tif ./tmp/crop.*.tmp.tif	|| true	# -n -32768 
 #if [[ ${AREA_SIZE} == "etopo" || -z ${AREA_SIZE} ]]; then
 	echo "Source selected: ETOPO (1km/px)"
 	gdal_translate -projwin $WEST $NORTH $EAST $SOUTH -eco ../data/noaa/ETOPO1_Ice_g_geotiff.tif ./tmp/crop_xl.etopo.tmp.tif
-
 #fi
 
 cp ./tmp/crop_xl.etopo.tmp.tif ./crop_xl.etopo.tmp.tif
