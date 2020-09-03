@@ -15,7 +15,9 @@ timer.toll = function(comment){
 // COLOR=#66AAFF NAME=India ISO2=IN WEST=67.0 NORTH=37.5 EAST=99.0 SOUTH=05.0 WIDTH=1280 node jsdom@16-mini.js  #passing var COLOR the old way
 const fs    = require("fs");
 const jsdom = require("jsdom");
+const wa    = require("../js/wikiatlas.js");
 const { JSDOM } = jsdom;
+//var timer = wa.timer;
 
 /* COLLECT ENV.VARIABLES ******************************************* */
 // Parameters from Shell to JS
