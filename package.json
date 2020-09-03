@@ -1,14 +1,14 @@
 {
   "name": "wikiatlas",
-  "version": "0.0.1",
-  "description": "Wikimaps Atlas (2015)",
-  "main": "Wikimaps Atlas (2015) is a piece of code to output nice web-friendly maps, administrative and physical. It installs relevant GIS resources, software dependencies, then can be ran on demand for a target area. See README.md for the API.",
+  "version": "0.0.2",
+  "description": "Wikimaps Atlas (2020)",
+  "main": "Wikimaps Atlas (2020) is a piece of code to output nice web-friendly maps, administrative and physical. It installs relevant GIS resources, software dependencies, then can be ran on demand for a target area. See README.md for the API.",
   "dependencies": {
     "d3": "~3.5.5",
     "forever": "^0.14.1",
-    "http-server": "^0.7.5",
-    "jsdom": "~1.0.3",
-    "minimist": "~1.1.0",
+    "http-server": "^0.12.3",
+    "jsdom": "^16.0.0",
+    "minimist": "^1.2.3",
     "topojson": "~1.6.18"
   },
   "repository": {
@@ -18,19 +18,16 @@
   "bugs": {
     "url": "https://github.com/<...>/<...>/issues"
   },
-  "author": [ 
-      "Hugo lopez <hugo.lpz@gmail.com> ", 
-      "Arun Ganesh <arun.planemad@gmail.com>"
-    ],
+  "author": "Hugo lopez <hugo.lpz@gmail.com>, Arun Ganesh <arun.planemad@gmail.com>",
   "keywords": [
     "map",
     "d3js"
   ],
   "scripts": {
-    "install":	"make -f install.makefile",
-    "data":	"make -f data.makefile core",
-    "dataplus":	"make -f data.makefile precise",
-    "serve":	"node ./node_modules/.bin/forever ./node_modules/.bin/http-server"
+    "install-make": "make -f install.makefile",
+    "data": "make -f data.makefile core",
+    "dataplus": "make -f data.makefile precise",
+    "serve": "node ./node_modules/.bin/forever ./node_modules/.bin/http-server"
   },
   "license": "CC-BY-SA-4.0"
 }
