@@ -4,7 +4,7 @@
 * Version: 2014.09.04 */
 /* Sister js ***************************************************** */
 /* http://wikimapsatlas.github.io/static/js/wikimaps.atlas.js **** */
-
+console.log("wikiatlas.js")
 
 /* *************************************************************** */
 /* D3JS SUGAR **************************************************** */
@@ -18,7 +18,8 @@ function click(a){
 function dblclick(a){ window.location.assign("http://en.wikipedia.org/wiki/"+a.properties.name, '_blank');}
 function urlToData(name_,nodejs){
 	var root;
-	return root = nodejs? "http://localhost:8080/output/"+name_ : "../output/"+name_;
+	return root = nodejs? "http://127.0.0.1:8097/output/"+name_ : "../output/"+name_;
+	console.log('root',root)
 }	
 /* Math helpers ************************************************** */
 function parallel(φ, λ0, λ1) {
@@ -415,19 +416,22 @@ console.log("pattern()"); 			timer.now("Add patterns");
 // Runs code server or client side => raster images urls
 var root= urlToData(title,nodejs); timer.now("Ready to load files");
 
-var url1 = root+"/administrative.topo.json", // https://rugger-demast.codio.io/output/"
-	url2 = root+"/color.jpg.b64",
-	url3 = root+"/trans.png.b64", 
-	url4 = root+"/waters.topo.json",
-	url5 = root+"/elevations.topo.json";
-
+var urls = [
+	root+"/administrative.topo.json", // https://rugger-demast.codio.io/output/"
+	root+"/color.jpg.b64",
+	root+"/trans.png.b64", 
+	root+"/waters.topo.json",
+	root+"/elevations.topo.json"
+];
+console.log('URLS:', urls[0], urls[5])
  queue()
-	.defer(d3.json, url1)	// timer.now("Load file: administrative");
-	.defer(d3.text, url2)	// timer.now("Load file: color");
-	.defer(d3.text, url3)	// timer.now("Load file: trans");
-	.defer(d3.json, url4)	// timer.now("Load file: waters");
-	.defer(d3.json, url5)	// timer.now("Load file: elevations");
+	.defer(d3.json, urls[0])	// timer.now("Load file: administrative");
+	.defer(d3.text, urls[1])	// timer.now("Load file: color");
+	.defer(d3.text, urls[2])	// timer.now("Load file: trans");
+	.defer(d3.json, urls[3])	// timer.now("Load file: waters");
+	.defer(d3.json, urls[4])	// timer.now("Load file: elevations");
 	.await(makeMap); timer.now("Loaded files");
+console.log('Queue():','/* **************************************** */')
 
 /* *************************************************************** */
 /* *************************************************************** */
@@ -883,14 +887,16 @@ d3.select(selector).html("").append("button")
 /* ****************************************************** */
 /* TIMER (performance check) **************************** */
 // use: var timer = []; timer.push([now(),"comment"]); timer.push([now(),"comment"]); cl.timer(timer);
-var timer = {a:[]};
-timer.now = function(comment) { timer.a.push([new Date(), comment|| "" ]) }
-timer.toll = function(){
-	var array = timer.a;
-	for(var i=0; i<array.length -1;i++){ 
-        console.log("Period_"+i+"⟶"+(i+1)+" : " +((array[i+1][0]-array[i][0])/1000).toFixed(3)+"sec.          "+array[i][1]); // local period x<=>x+1
-	}	console.log("Period_0⟶"+(array.length-1)+" : "+(array[array.length-1][0]-array[0][0])/1000+"sec. (total) <-----------------------"); // total period
-};
+var timer = { 
+	records:[],
+	now : function(comment) { timer.records.push([new Date(), comment|| "" ]) },
+	toll: function(){
+		var array = timer.records;
+		for(var i=0; i<array.length -1;i++){ 
+        	console.log("Period_"+i+"⟶"+(i+1)+" : " +((array[i+1][0]-array[i][0])/1000).toFixed(3)+"sec.          "+array[i][1]); // local period x<=>x+1
+		}	console.log("Period_0⟶"+(array.length-1)+" : "+(array[array.length-1][0]-array[0][0])/1000+"sec. (total) <-----------------------"); // total period
+	}
+}
 /* ****************************************************** */
 /* SELECT LANGUAGE MODULE ******************************* */
 // 1_wiki_translate
