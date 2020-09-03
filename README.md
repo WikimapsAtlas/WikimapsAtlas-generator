@@ -44,7 +44,7 @@ System dependencies :
 ```shell
 git clone https://github.com/WikimapsAtlas/WikimapsAtlas-generator.git  #get code
 cd ./WikimapsAtlas-generator
-npm install	     # install node dependencies and system dependencies. May need sudo.
+npm install	 # install node dependencies and system dependencies. May need sudo.
 npm run data     # download ETOPO1, NaturalEarth data (default). See ./package.json & data.makefile
 # npm run dataplus # download SRTM250, SRTM90, GADM2 data (precise). See ./package.json & data.makefile
 
