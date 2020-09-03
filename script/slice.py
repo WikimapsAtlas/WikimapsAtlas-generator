@@ -35,15 +35,15 @@ def slice_linear(zmin, zmax, n, scale=None):
         (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ),
     ]
     if scale is None:
-        scale = 10 * ceil_pow10((zmax - zmin) / n)
+        scale = int(10 * ceil_pow10((zmax - zmin) / n))
     step = scale // 10
     def generate(comb, bases):
         if comb is None:
             return []
         result = [base + _ * step for base in bases for _ in comb]
         return [_ for _ in result if zmin < _ < zmax]
-    zmin_floored = math.floor(zmin - math.fmod(zmin, scale))  # XXX: these might be numerically unstable
-    zmax_ceiled = math.ceil(zmax - math.fmod(zmax, scale))
+    zmin_floored = int(math.floor(zmin - math.fmod(zmin, scale)))  # XXX: these might be numerically unstable
+    zmax_ceiled = int(math.ceil(zmax - math.fmod(zmax, scale)))
     multiples = list(range(zmin_floored, zmax_ceiled + scale, scale))
     multiples = [_ for _ in multiples if zmin < _ < zmax]
     if len(multiples) == 0:

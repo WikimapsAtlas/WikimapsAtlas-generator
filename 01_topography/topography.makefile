@@ -28,7 +28,7 @@ end:  background_colors topojson
 topojson: vector_slices
 	$(TOPOJSON_LOC) --id-property none \
 		-q $(QUANTIZATION) \
-		--simplify-proportion=0.25 \
+		--simplify-proportion=0.5 \
 		-o elevations.topo.json --  \
 		`ls elevation[^a-zA-Z]*.tmp.shp|sort -k1.10n | sed 's/\(elevation\([^a-zA-Z]*\).tmp.shp\)/elevation_\2=\1/' | tr '\n' ' '`
 
@@ -48,8 +48,9 @@ raster_slices: crop zvals
 zvals: resize
 	zMin=$$(gdalinfo -mm ./crop_xl.tmp.tif | sed -ne 's/.*Computed Min\/Max=//p'| tr -d ' ' | cut -d "," -f 1 | cut -d . -f 1);\
 	zMax=$$(gdalinfo -mm ./crop_xl.tmp.tif | sed -ne 's/.*Computed Min\/Max=//p'| tr -d ' ' | cut -d "," -f 2 | cut -d . -f 1);\
-	echo Altidutes range: $$zMin $$zMax ;\
+	echo Altidutes range: $$zMin $$zMax;\
 	python ../script/slice.py $$zMin $$zMax $(SLICES) > ./slices.tmp.txt
+	# ERROR: slice.py output as complex text not valid. Expect list of numbers separated by
 
 #--- Background : Color
 background_colors: resize
@@ -68,7 +69,7 @@ background_colors: resize
 #---- Crop, Resize
 resize: crop
 	echo "Resize various raw raster for speed"
-	gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts $(WIDTH) 0 crop_xl.tmp.tif crop_xs.tmp.tif
+	gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts $(WIDTH) 0 crop_xl_.tmp.tif crop_xs.tmp.tif
 	# gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts `expr $(WIDTH) \* 2` 0 crop_xl.tmp.tif crop_sm.tmp.tif
 	gdalwarp -of GTiff  -te $(WEST) $(SOUTH) $(EAST) $(NORTH) -ts $(WIDTH) 0 crop_xl_etopo.tmp.tif crop_xs_etopo.tmp.tif
 
