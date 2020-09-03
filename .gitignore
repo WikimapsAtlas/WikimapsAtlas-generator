@@ -1,15 +1,16 @@
 # Folder/all
 data/
-node_modules/
-scripts/mdenoise
 output/
-files/
+node_modules/
+z_*/
+
 **/arch/
 **/academic/
 **/test*
 **/test/
 **/*~
-temp/
+
+scripts/mdenoise
 09_d3/*.svg
 09_d3/img
 
@@ -43,6 +44,5 @@ temp/
 # Root
 *.README.html
 *.VERSION.txt
-
 
 
