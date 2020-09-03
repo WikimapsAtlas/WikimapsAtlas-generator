@@ -2,20 +2,24 @@
 data/
 output/
 node_modules/
+build/
 z_*/
 
+# Temporary folders
 **/arch/
 **/academic/
 **/test*
 **/test/
-**/*~
 
 scripts/mdenoise
 09_d3/*.svg
 09_d3/img
+09_d3/tpl.commons.txt
+
 
 # Files (globes)
 *~
+**/*~
 *.zip
 *.rar
 *.shp
