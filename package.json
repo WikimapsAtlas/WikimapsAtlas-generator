@@ -8,11 +8,7 @@
     "forever": "^3.0.2",
     "http-server": "^0.12.3",
     "jsdom": "^16.4.0",
-    "minimist": "^1.2.5",
-    "shapefile": "^0.6.6",
-    "topojson": "^3.0.2",
-    "topojson-server": "^3.0.1",
-    "topojson-simplify": "^3.0.3"
+    "topojson": "^1.6.27"
   },
   "repository": {
     "type": "git",
@@ -32,5 +28,12 @@
     "dataplus": "make -f data.makefile precise",
     "serve": "node ./node_modules/.bin/forever ./node_modules/.bin/http-server"
   },
-  "license": "CC-BY-SA-4.0"
+  "license": "CC-BY-SA-4.0",
+  "devDependencies": {
+    "commander": "^6.1.0",
+    "shapefile": "^0.6.6",
+    "tape": "^5.0.1",
+    "topojson-server": "^3.0.1",
+    "topojson-simplify": "^3.0.3"
+  }
 }
