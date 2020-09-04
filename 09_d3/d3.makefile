@@ -12,7 +12,7 @@ move: template location topography
 	mv ./*.svg ./tpl* -t ../output/$(NAME)/
 
 template: b64
-	#node template_commons.node.js
+	node template_commons.node.js
 	echo "Done: Commons.Wikimedia.org template printed to .txt file"
 
 topography: b64
