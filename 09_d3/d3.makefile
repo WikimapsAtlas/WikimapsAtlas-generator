@@ -9,10 +9,10 @@ done: move
 
 move: template location topography
 	mkdir -p ../output/$(NAME)
-	mv ./*.svg ./tpl* -t ../output/$(NAME)/
+	mv ./*.svg ./template-commons.txt -t ../output/$(NAME)/
 
 template: b64
-	node template_commons.node.js
+	node template-commons.node.js
 	echo "Done: Commons.Wikimedia.org template printed to .txt file"
 
 topography: b64
