@@ -142,8 +142,6 @@ Advanced use:
 * **ALT**:  altitude of the light, in degrees. 90 if the light comes from above the DEM, 0 if it is raking light.
   * *default*: `60`,
   * *range*: `[0-90]`.
-* **SHADOW**: opacity of the hillshade upon color-relief
-  * *range*: `[0-100]`
 * **OPACITY**: opacity for hillshade layer, used in svg files
   * *default*: `1`,
   * *range*: `[0-1]`
