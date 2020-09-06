@@ -167,15 +167,17 @@ var wp={
 		frame :    "fill-opacity:0.3; stroke:#B10000;",
 		focus :    "fill:#FEFEE9;",
 		land  :    "fill:#E0E0E0;",
+		hillshade: "filter:url(#hillshade-blur-filter);",
 		border:    "fill: none; stroke:#646464;",	// line_sm
 		waterline: "fill: none; stroke:#0978AB;",	// line_sm
 		waterarea: "fill:#C6ECFF;",
 		temp:      "fill-opacity:0.6;stroke-dasharray:4,4;dasharray:4,4;"
 }};
 /* STYLES ******************************************************** */
-var S = {  // note on naming convention : if layers exist, take exact same name, #Rivers => S.Rivers.
+var STYLES = {  // note on naming convention : if layers exist, take exact same name, #Rivers => STYLES.Rivers.
 	focus : wp.location.focus+ wp.stroke.no,
 	land  : wp.location.land + wp.stroke.no,
+	hillshade:  wp.location.hillshade,
 	Disputed: wp.stroke.md + wp.dash.sm,
 	L1_frames : wp.location.locator + wp.location.frame + wp.stroke.md + "pointer-events:none;",
 	Background: wp.location.waterarea,
@@ -194,18 +196,25 @@ var S = {  // note on naming convention : if layers exist, take exact same name,
 //Pattern injection : disputed-in, disputed-out
 var injectPattern = function(selector){
 	// location maps. Note: "hash2_4" means "hash pattern overlay, 2px colored (on), 4px not colored (off)".
-	var pattern_disputed_in = d3.select(selector).append("defs")
+	var patterns = d3.select(selector).append("defs");
+	var patterns_disputed_in = patterns
 		.append("pattern")
 			.attr({ id:"hash2_4", width:"6", height:"6", patternUnits:"userSpaceOnUse", patternTransform:"rotate(-45)"})
 		.append("rect")
 			.attr({ width:"2", height:"6", transform:"translate(0,0)", fill:"#E0E0E0" }); // (!) fill: wp.location.land
-	var pattern_disputed_out = d3.select(selector).append("defs")
+	var pattern_disputed_out = patterns
 		.append("pattern")
 			.attr({ id:"hash4_2", width:"6", height:"6", patternUnits:"userSpaceOnUse", patternTransform:"rotate(-45)"})
 		.append("rect")
 			.attr({ width:"2", height:"6", transform:"translate(0,0)", fill:"#FEFEE9" }); // (!) fill: wp.location.focus
-// To style shapes:
-//    .attr("fill", function(d){ return d.properties.L0 === iso_a2? "url(#hash2_4)": "url(#hash4_2)"} ;)
+	// To style shapes:
+	//    .attr("fill", function(d){ return d.properties.L0 === iso_a2? "url(#hash2_4)": "url(#hash4_2)"} ;)
+
+	var hillshadeBlur = patterns
+		.append("filter")
+			.attr({ id:"hillshade-blur-filter"})
+		.append("feGaussianBlur")
+			.attr({ id:'hillshade-blur-gaussian', in:"SourceGraphic", "stdDeviation": "0" }); // Defaut blur none. Modified later if needed.
 };
 
 /* ****************************************************** */
@@ -226,13 +235,14 @@ var localisator = function (hookId, width, title, id, WEST, NORTH, EAST, SOUTH, 
 /* Init ************************************************* */
 	var height = width;
 	var lon_central = function(){ 
-		var num= EAST>WEST? -(WEST+EAST)/2 : -(WEST+EAST)/2+180;
-		return num;
-	}();
+			var num= EAST>WEST? -(WEST+EAST)/2 : -(WEST+EAST)/2+180;
+			return num;
+		}(),
+		lat_central = -(NORTH+SOUTH)/2 +10;
 
 	var proj = d3.geo.orthographic()
 		.scale(1/2*width)
-		.rotate([ lon_central, -(NORTH+SOUTH)/2 +10 ])
+		.rotate([ lon_central, lat_central ])
 		.translate([width / 2 , height / 2 ])
 		.clipAngle(90);
 
@@ -293,10 +303,13 @@ var localisator = function (hookId, width, title, id, WEST, NORTH, EAST, SOUTH, 
 		.attr('r', width/2 )
 		.attr('fill', 'url(#gradient)');
 	
-var root= urlToData("world-sp.07",nodejs); timer.now("Ready to load files");
+var root= urlToData("../data/world-sp.07/",nodejs); timer.now("Ready to load files");
+console.log('/* ******************************************************************************* */')
+console.log(root)
+console.log('/* ******************************************************************************* */')
 
 /* GIS data injection *********************************** */
-d3.json(root+"/administrative.topo.json", function(error, Stone) {
+d3.json(root+"administrative.topo.json", function(error, Stone) {
 // data organized
     var countries = topojson.feature(Stone, Stone.objects.admin_0),
         subunits  = topojson.feature(Stone, Stone.objects.admin_1),
@@ -375,7 +388,7 @@ d3.json(root+"/administrative.topo.json", function(error, Stone) {
 /* **************************************************************** */
 
 var locationMap = function(hookId, width, iso_a2, title, WEST, NORTH, EAST, SOUTH, nodejs, mapType){
-	mapType = mapType || { rich_background: true, base_administrative:false, base_topography:true, borders: true, labels:true };
+	var mapType = mapType || { rich_background: true, base_administrative:false, base_topography:true, borders: true, labels:true, opacity:"1", blur:"0" };
 	// mapType = mapType || { rich_background: true, base_administrative:true, base_topography:false, borders: true, labels:true };
 	console.log("locationMap()");
 /* SETTINGS ******************************************************* */
@@ -483,7 +496,7 @@ var drawBackground = function() {
 	svg.append("g")
 			.attr(":inkscape:groupmode","layer")
 			.attr({'id':'Background',':inkscape:label':'Background'})
-		.attr("style", S.Background)
+		.attr("style", STYLES.Background)
 		.append("rect")
 		.attr("x", 0)
 		.attr("y", 0)
@@ -512,7 +525,7 @@ var drawL0 = function() {
         .attr("class", "L0")
         .attr("code", function(d) { return d.properties.L0; })
         .attr("name", function(d) { return d.properties.name; })
-        .attr("style", function(d){ return d.properties.L0 === iso_a2? S.focus : S.land; } )
+        .attr("style", function(d){ return d.properties.L0 === iso_a2? STYLES.focus : STYLES.land; } )
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
         .attr("d", path)
 		.on("click", click);
@@ -523,13 +536,13 @@ var drawL1 = function(){
 	svg.append("g")
 		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'L1',':inkscape:label':'L1'})
-		.attr("style", S.focus)
+		.attr("style", STYLES.focus)
 	.selectAll(".subunit")
         .data(L1_focus)
       .enter().append("path")
         .attr("code", function(d) { return d.properties.L1; })
         .attr("name", function(d) { return d.properties.name; })
-//        .attr("style", function(d){ return d.properties.L0 === iso_a2? S.focus : S.land; } ) // filter done in data
+//        .attr("style", function(d){ return d.properties.L0 === iso_a2? STYLES.focus : STYLES.land; } ) // filter done in data
 		.attr("bounds", function(d){ var bb = path.bounds(d), o = {'left':bb[0][0],'top':bb[0][1],'right':bb[1][0],'bottom':bb[1][1]}; return JSON.stringify(o);} )
 		.attr("area", function(d){ return path.area(d);} )
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
@@ -540,7 +553,7 @@ var drawL1 = function(){
 var drawL1_frames = function(){ svg.append("g")
 		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'L1_frames',':inkscape:label':'L1_frames'})
-		.attr("style", S.L1_frames)
+		.attr("style", STYLES.L1_frames)
 	.selectAll("path")
         .data(L1_focus)
       .enter().append("path")
@@ -559,7 +572,7 @@ var drawL1_frames = function(){ svg.append("g")
     svg.append("g")
 		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'Disputed',':inkscape:label':'Disputed'})
-		.attr("style", S.Disputed+"stroke:#646464;")
+		.attr("style", STYLES.Disputed+"stroke:#646464;")
 	.selectAll(".disputed")
         .data(disputed.features)
       .enter().append("path")
@@ -582,12 +595,12 @@ var drawElevations = function(){
 		var color = colorScale(i);		// console.log("current: "+ i + "/" + elevationsKeys[i]+", color: "+color);
 		svg_elevation.append("g")
 			.attr({'id': name,':inkscape:label': name})
-			.attr("style", "fill:"+color+";"+S.Elevations )
+			.attr("style", "fill:"+color+";"+STYLES.Elevations )
 			.selectAll(".altitude")
 		.data(json_data.features)
 			.enter().append("path")
 			//  .attr("style", function(d){ return "fill:#88BB88;fill:opacity:0.2"; } )
-			//.attr("style", "fill:"+S.elevations[iteration]+";" )
+			//.attr("style", "fill:"+STYLES.elevations[iteration]+";" )
 			.attr("d", path )
 			.on("click",click);
 	};
@@ -629,13 +642,16 @@ var drawElevations = function(){
 	
 /* Hillshades *************************************************************** */
 var drawHillshade_raster = function(){ 
-	svg.append("g")
+	//default blur and opacity. Modified later.
+	var hillshade = svg.append("g")
 		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'Hillshade_raster',':inkscape:label':'Hillshade_raster'})
-	.append("image")
+		.attr("style", STYLES.hillshade); 							// links to filter:blur("#hillshade-blur-filter"). 
+	var hillshadeImage = hillshade.append("image")
+		.attr("id","hillshade-blur-image")
 		.attr("width", width)
 		.attr("height", t.height)
-		.attr("style","pointer-events:none;opactiy:0.6;")
+		.attr("style","pointer-events:none;")
 		.attr("xlink:xlink:href", "data:image/png;base64," + file3); // replace link by data URI // replace href link by data URI, d3js + client handle the missing xlink
 };
 
@@ -645,12 +661,12 @@ var drawHillshade_raster = function(){
     svg.append("g")
 		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'Rivers',':inkscape:label':'Rivers'})
-		.attr("style", S.Rivers + wp.stroke.xs)
+		.attr("style", STYLES.Rivers + wp.stroke.xs)
 	.selectAll(".rivers")
         .data(rivers.features)
       .enter().append("path")
 		.attr("name", function(d) { return d.properties.name; })
-		.attr("style", function(d) { return d.properties.scalerank >3? null: S.Rivers+wp.stroke.sm; })
+		.attr("style", function(d) { return d.properties.scalerank >3? null: STYLES.Rivers+wp.stroke.sm; })
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
         .attr("d", path );
 	}
@@ -661,7 +677,7 @@ var drawHillshade_raster = function(){
     svg.append("g")
 		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'Lakes',':inkscape:label':'Lakes'})
-		.attr("style", S.Lakes)
+		.attr("style", STYLES.Lakes)
 	.selectAll(".lakes")
         .data(lakes.features)
       .enter().append("path")
@@ -679,7 +695,7 @@ var drawHillshade_raster = function(){
 	.append("path")
         .datum(L1_border)
         .attr("class", "L1_border")
-        .attr("style", S.L1_borders) // css
+        .attr("style", STYLES.L1_borders) // css
         .attr("d", path);
 };
 // Admin0-borders filtered
@@ -689,7 +705,7 @@ var drawHillshade_raster = function(){
 	.append("path")
         .datum(L0_border)
         .attr("class", "L0_border")
-        .attr("style", S.L0_borders) // css
+        .attr("style", STYLES.L0_borders) // css
 		.attr("d", path);
 };
 // Coast-borders filtered
@@ -699,7 +715,7 @@ var drawHillshade_raster = function(){
 	.append("path")
         .datum(coast )
         .attr("class", "coastline")
-        .attr("style", S.Coast) // css
+        .attr("style", STYLES.Coast) // css
         .attr("d", path);
 };
 
@@ -710,7 +726,7 @@ var drawPlaces_dots = function(){
     svg.append("g")
 		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'Places_dots',':inkscape:label':'Places_dots'})
-		.attr("style", S.Places)
+		.attr("style", STYLES.Places)
 	.selectAll("path")
         .data(places.features)
       .enter().append("text")
@@ -732,7 +748,7 @@ var drawPlaces_labels = function(){
 	svg.append("g")
 		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'Places_labels',':inkscape:label':'Places_labels'})
-		.attr("style", S.Places_labels)
+		.attr("style", STYLES.Places_labels)
 	.selectAll(".place-label")
         .data(places.features)
       .enter().append("text")
@@ -755,7 +771,7 @@ var drawL0_labels = function(){
 	svg.append("g")
 		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'L0_labels',':inkscape:label':'L0_labels'})
-		.attr("style", S.L0_labels)
+		.attr("style", STYLES.L0_labels)
 	.selectAll(".countries-label")
         .data(admin_0.features)
       .enter().append("text")
@@ -770,7 +786,7 @@ var drawL1_labels = function(){
 	svg.append("g")
 		.attr(":inkscape:groupmode","layer")
 		.attr({'id':'L1_labels',':inkscape:label':'L1_labels'})
-		.attr("style", S.L1_labels)
+		.attr("style", STYLES.L1_labels)
 	.selectAll(".subunit-label")
         .data(L1_focus)
       .enter().append("text")
@@ -803,6 +819,8 @@ var drawL1_labels = function(){
 	}
 	if(mapType.base_topography || mapType.base_administrative ){ 
 		drawHillshade_raster();						timer.now("Hillshade_raster");
+		d3.select("#Hillshade_raster").style("opacity",+mapType.opacity);			// customize layer opacity
+		d3.select("#hillshade-blur-gaussian").attr("stdDeviation",+mapType.blur); // customize layer blur
 		drawRivers();								timer.now("Rivers");
 		drawLakes();								timer.now("Lakes");
 		drawCoasts();								timer.now("Coasts");
@@ -837,10 +855,10 @@ var getTransform = function(d,padding_pc, width, projection) {
 	/* GEOJSON PROFILING *********************************** */
 	var b = d3.geo.path()
 		.projection(projection)
-		.bounds(d); // [left, bottom], [right, top] // W S E N
+		.bounds(d); // [left, bottom], [right, top] // W STYLES E N
 		// b.w = b[0][0]; b.s = b[0][1]; b.e = b[1][0]; b.n = b[1][1];
 		b.dx = Math.abs(b[1][0] - b[0][0]);	// distance x = E-W
-		b.dy = Math.abs(b[1][1] - b[0][1]);	// distance y = N-S
+		b.dy = Math.abs(b[1][1] - b[0][1]);	// distance y = N-STYLES
 		b.cx = (b[1][0] + b[0][0]) / 2;		// center x
 		b.cy = (b[1][1] + b[0][1]) /2;		// center y
 	//compute meaningful ratio, scale, translation
