@@ -34,10 +34,6 @@ water:
 	$(MAKE) -C 04_water 			-f water.makefile 				#works
 grouping:
 	#$(MAKE) -C 07_move 			-f merge.makefile 				# what is this for ?
-d3: server
+d3:
 	$(MAKE) -C 09_d3 				-f d3.makefile					#works
-server:
-	# IMPORTANT: the d3 modules REQUIRES an http server on http://127.0.0.1:8080 OR to edit js/wikiatlas.js to active server and port
-	# The code below is now in 09_d3/d3.makefile
-	# node ./node_modules/.bin/forever ./node_modules/.bin/http-server --cors &
-	# node ../node_modules/.bin/forever stopall
+	# Note: d3.makefile and js/wikiatlas.js requires to http-server on http://127.0.0.1:8080 the resources files, staring at project root.
