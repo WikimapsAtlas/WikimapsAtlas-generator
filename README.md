@@ -144,6 +144,12 @@ Advanced use:
   * *range*: `[0-90]`.
 * **SHADOW**: opacity of the hillshade upon color-relief
   * *range*: `[0-100]`
+* **OPACITY**: opacity for hillshade layer, used in svg files
+  * *default*: `1`,
+  * *range*: `[0-1]`
+* **BLUR**: opacity for hillshade layer, used in svg files
+  * *default*: `0`,
+  * *range*: `[0-10]`
 
 **Note:** 
  * if the input GIS raster is in feet, then `s` scale should be edited. See `man gdal`.
