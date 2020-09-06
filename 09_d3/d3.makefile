@@ -29,7 +29,8 @@ b64: server clean
 	done;
 
 server:
-	node ../node_modules/.bin/forever ../node_modules/.bin/http-server --cors &
+	# Note: d3.makefile and js/wikiatlas.js requires to http-server on http://127.0.0.1:8080 the resources files, staring at project root.
+	node ../node_modules/.bin/forever ../node_modules/.bin/http-server ../ --cors &
 
 clean:
 	rm -f *.svg

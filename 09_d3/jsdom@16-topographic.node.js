@@ -28,7 +28,9 @@ var WEST  = process.env.WEST,
     ISO2  = process.env.ISO2,
     NAME  = process.env.NAME,
     NAME_ = NAME.replace(/ /g,"_"),
-    WIDTH = process.env.WIDTH || 800;
+    WIDTH = process.env.WIDTH || 800,
+    OPACITY=process.env.OPACITY ||'1',
+    BLUR  = process.env.BLUR ||'0';
 // New paramater (if needed)
 var DATE  = (new Date()).toISOString().slice(0,10).replace(/-/g,"."),
     VERSION = process.env.VERSION || DATE;
@@ -81,14 +83,14 @@ _window.document.head.appendChild(scriptElement);
 _window.document.addEventListener('DOMContentLoaded', () => {
   console.log('/* JSDOM > Run page ******************************************************** */')
 
-  /* ***************************************************************** */
-  /* D3js FUNCTION *************************************************** */
+/* ***************************************************************** */
+/* WIKIATLAS.JS FUNCTIONS ****************************************** */
+  var mapType={ 
+    rich_background: true, base_administrative:false, base_topography:true, borders: true, labels:true,
+    opacity: +OPACITY, blur: +BLUR }; timer.now("map function: defined");
   console.log(WIDTH, ISO2, NAME, WEST, NORTH, EAST, SOUTH, true, mapType)
-  var mapType={ rich_background: true, base_administrative:false, base_topography:true, borders: true, labels:true }; timer.now("map function: defined");
   _window.locationMap("#hook1",WIDTH, ISO2, NAME, WEST, NORTH, EAST, SOUTH, true, mapType); timer.now("map projection: done");
-
-  timer.toll(timer);
-  console.log("Topo map, projected: "+ new Date() );
+  console.log("Topo map, projected: "+ new Date() ); timer.toll(timer);
   // END svg design
 
   /* ***************************************************************** */

@@ -12,7 +12,9 @@ var WEST  = process.env.WEST,
     ISO2  = process.env.ISO2,
     NAME  = process.env.NAME,
     NAME_ = NAME.replace(/ /g,"_"),
-    WIDTH = process.env.WIDTH || 800;
+    WIDTH = process.env.WIDTH || 800,
+    OPACITY=process.env.OPACITY ||'1',
+    BLUR  = process.env.BLUR ||'0';
 // New paramater (if needed)
 var DATE  = (new Date()).toISOString().slice(0,10).replace(/-/g,"."),
     VERSION = process.env.VERSION || DATE;
@@ -66,12 +68,21 @@ _window.document.head.appendChild(scriptElement);
 _window.document.addEventListener('DOMContentLoaded', () => {
     console.log('/* JSDOM > Run page ******************************************************** */')
 
-    /* ***************************************************************** */
-/* D3js FUNCTION *************************************************** */
- console.log(WIDTH, ISO2, NAME, WEST, NORTH, EAST, SOUTH, true, mapType)
- var mapType={ rich_background: true, base_administrative:true, base_topography:false, borders: true, labels:true };
- _window.locationMap("#hook1",WIDTH, ISO2, NAME, WEST, NORTH, EAST, SOUTH, true, mapType);
- console.log("Admin map, projected: "+ new Date() );
+/* ***************************************************************** */
+/* WIKIATLAS.JS FUNCTIONS ****************************************** */
+    var nodejs = true;
+// APPEND MINI GLOBE
+    _window.localisator("#hook2", 600, NAME, NAME_, WEST, NORTH, EAST, SOUTH,nodejs);
+    console.log("Globe map, done: "+ new Date() );
+
+// APPEND LOCATION MAP
+    var mapType={
+        rich_background: true, base_administrative:true, base_topography:false, borders: true, labels:true,
+        opacity: +OPACITY, blur: +BLUR
+    };
+    console.log(WIDTH, ISO2, NAME, WEST, NORTH, EAST, SOUTH, true, mapType)
+    _window.locationMap("#hook1",WIDTH, ISO2, NAME, WEST, NORTH, EAST, SOUTH, true, mapType);
+    console.log("Admin map, projected: "+ new Date() );
 // END svg design
 
 /* ***************************************************************** */
@@ -108,36 +119,41 @@ setTimeout(
        .attr(':xmlns','http://www.w3.org/2000/svg')            // if not: file does not appear to have any style information
        .attr(':xmlns:xlink','http://www.w3.org/1999/xlink');   // if not: Namespace prefix xlink for href
 
-   var hook = "#hook1"
-   // 1 file :
-   var filename = NAME_+'_location_map,_admin_relief_(2020)-en.svg';
-   // console.log(filename)
 
-   // console.log(_window.d3.select(hook).html())
-       fs.writeFileSync(filename, svgheader + _window.d3.select(hook).html())
-       console.log("Admin location relief map, printed: "+ new Date() );
+    // ORTHOGRAPHIC PRINTED
+    fs.writeFileSync(NAME_+"-orthographic_(2020).svg", svgheader + _window.d3.select("#hook2").html())
+    _window.d3.select("#hook2").remove();
+
+    var hook = "#hook1"
+    var filename = NAME_+'_location_map,_admin_relief_(2020)-en.svg';
+
+    // console.log(_window.d3.select(hook).html())     // to terminal print svg. /!\ very large.
+    // ADMIN PRINTED
+    // One file :
+        fs.writeFileSync(filename, svgheader + _window.d3.select(hook).html())
+        console.log("Admin location relief map, printed: "+ new Date() );
 
 
-   //n  {NAME},_{Province_name}_locator_map,_admin_relief_(2020)-en.svg :
-   var fileext  =             '_locator_map,_admin_relief_(2020)-en.svg';
-       loopOnL1('#hook1',NAME_,fileext);
-       console.log("Admin locator relief map, printed: "+ new Date() );
+    //n  {NAME},_{Province_name}_locator_map,_admin_relief_(2020)-en.svg :
+    var fileext  =             '_locator_map,_admin_relief_(2020)-en.svg';
+        loopOnL1('#hook1',NAME_,fileext);
+        console.log("Admin locator relief map, printed: "+ new Date() );
 
-   //n {NAME},_{Province}_locator_map,_admin_blue_(2020)-en.svg :
-   var fileext  =       '_locator_map,_admin_blue_(2020)-en.svg';
-       _window.d3.selectAll("#hook1 #Relief_raster").remove();
-       _window.d3.selectAll("#hook1 #Hillshade_raster").remove();
-       loopOnL1('#hook1',NAME_,fileext);
+    //n {NAME},_{Province}_locator_map,_admin_blue_(2020)-en.svg :
+    var fileext  =       '_locator_map,_admin_blue_(2020)-en.svg';
+        _window.d3.selectAll("#hook1 #Relief_raster").remove();
+        _window.d3.selectAll("#hook1 #Hillshade_raster").remove();
+        loopOnL1('#hook1',NAME_,fileext);
 
-   //1             {NAME}_location_map,_admin_blue_(2020).svg :
-   var filename = NAME_+'_location_map,_admin_blue_(2020).svg'; // no -en = blank
-       _window.d3.selectAll("#hook1 #L0_labels").remove();
-       _window.d3.selectAll("#hook1 #L1_labels").remove();
-       _window.d3.selectAll("#hook1 #Places").remove();
-       _window.d3.selectAll("#hook1 #Places_labels").remove();
-       fs.writeFileSync(filename, svgheader + _window.d3.select(hook).html())
+    //1             {NAME}_location_map,_admin_blue_(2020).svg :
+    var filename = NAME_+'_location_map,_admin_blue_(2020).svg'; // no -en = blank
+        _window.d3.selectAll("#hook1 #L0_labels").remove();
+        _window.d3.selectAll("#hook1 #L1_labels").remove();
+        _window.d3.selectAll("#hook1 #Places").remove();
+        _window.d3.selectAll("#hook1 #Places_labels").remove();
+        fs.writeFileSync(filename, svgheader + _window.d3.select(hook).html())
 
-   },4000
+    },4000
  );
 
 });
