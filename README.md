@@ -115,7 +115,7 @@ Commonly used:
 * **SLICES**: number of elevation levels above sea level.
   * *default*: `8`,
   * *range* : > `2` (!).
-* **PLACES**: number of non-capital places to keep. Capitals are always kept.
+* **PLACES**: number of non-capital places to keep. Countries capitals are always kept.
   * *default*: `15`,
   * *range* : `[0-100]`.
 
@@ -126,10 +126,10 @@ Advanced use:
   * *default*: `epsg:4326` (equirectangular).
   * *major alternatives*: `epsg:3857` (mercator, requires `S=370400`)
 * **SELECTOR_PLACES**: selects and keeps placess (towns and cities) via SQL query.
-  * *default*, 15 biggest places: `ADM0NAME = '$(NAME)' AND ORDER BY POP_MAX DESC LIMIT 15` together with all countries capitals.
+  * *default*, 15 most populous places: `ADM0NAME = '$(NAME)' AND ORDER BY POP_MAX DESC LIMIT 15` together with all countries capitals.
   * *alternative*, places with population above 2M : `ADM0NAME = '$(NAME)' AND POP_MAX > 2000000`
-* **QUANTIZATION**: maximum number of differentiable points along either x and y dimensions
-  * *default*: `1e4`, 
+* **QUANTIZATION**: maximum number of differentiable points along either x or y dimensions
+  * *default*: `1e4` (10,000), 
   * *range*: `[1e2,1e5]`.
 * **Z** (aka zFactor): vertical exaggeration used to pre-multiply the elevations
   * *default*: `5`,
@@ -142,12 +142,18 @@ Advanced use:
 * **ALT**:  altitude of the light, in degrees. 90 if the light comes from above the DEM, 0 if it is raking light.
   * *default*: `60`,
   * *range*: `[0-90]`.
+
+Under consideration:
+
 * **OPACITY**: opacity for hillshade layer, used in svg files
   * *default*: `1`,
   * *range*: `[0-1]`
 * **BLUR**: opacity for hillshade layer, used in svg files
   * *default*: `0`,
   * *range*: `[0-10]`
+* **Source**: define the prefered raster DEM source
+  * *default*: `etopo`,
+  * *range*: `etopo`, `srtm250`, `srtm90`
 
 **Note:** 
  * if the input GIS raster is in feet, then `s` scale should be edited. See `man gdal`.
