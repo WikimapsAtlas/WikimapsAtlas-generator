@@ -113,8 +113,17 @@ man GDAL_translate.py ---- gdal_translate converts raster data between different
 
 =============================================================
 IMAGE PROCESSING ============================================
+######## THIS IMAGE SECTION IS A DRAFT TO CONTINUE #############
+
 Note: Use `gdal` for process in the field of GIS files whenever possible. See gdal_calc & co.
-Using `convert` destroys GIS metadata which frequently must be restored.
+Using `convert` destroys GIS metadata therefor must be extracted then reinjected.
+
+man CONVERT:
+	convert *.svg -set filename:base "%[basename]" "%[filename:base].png"
+	mkdir -p png/ ;
+	convert *kiri_*.svg -set filename:base "%[basename]" "./png/%[filename:base].png"
+man MOGRIFY:
+	mogrify -format png *.svg 
 
 =============================================================
 UTILITIES : =================================================
