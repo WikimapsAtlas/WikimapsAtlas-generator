@@ -4,16 +4,18 @@
 * Version: 2014.09.04 */
 /* Sister js ***************************************************** */
 /* http://wikimapsatlas.github.io/static/js/wikimaps.atlas.js **** */
-console.log("wikiatlas.js")
+console.log("wikiatlas.js");
 
 /* *************************************************************** */
 /* D3JS SUGAR **************************************************** */
 /* Interactive clicks helpers ************************************ */
 function click(a){ 
-	var name = a.properties.name || a.id ; console.log(name); 
+	var name = a.properties.name || a.id ;
+	var	geoBoundsObj = JSON.stringify(geobbPlusMargin(d3.geo.bounds(a),0.05));
 	d3.select("#interactions")
 		.append("div")
-		.html('(<a href="http://en.wikipedia.org/wiki/'+name+'">wiki</a>) '+name);
+		.html('(<a href="http://en.wikipedia.org/wiki/'+name+'">wiki</a>) '+name+'. Geobounds: '+ geoBounds);
+	 console.log(name, geoBoundsObj);
 }
 function dblclick(a){ window.location.assign("http://en.wikipedia.org/wiki/"+a.properties.name, '_blank');}
 function urlToData(name_,nodejs){
@@ -33,10 +35,68 @@ function normalise(x) {
 }
 
 /* Frame helpers ************************************************* */
-// Get Bounding Box
+/* Geo Bounding Box ********************************************** */
+var geobbAsWNESObj = function (feature){
+	var bb = d3.geo.bounds(feature);
+	return {'west':bb[0][0],'north':bb[1][1],'east':bb[1][0],'south':bb[0][1]};
+};
+// use raw d3 please
+var geoArea = function(feature){ return d3.geo.area(feature); };
+
+//Degree of precision to keep 4 meaningful digits, ie: 048⁰75 OR 0⁰05'44"6.
+var geoRoundingDigits = function (WEST,NORTH,EAST,SOUTH){
+	var digits,
+			geo_side_max = Math.abs( Math.max( EAST - WEST, NORTH - SOUTH) );
+	if      ( geo_side_max < 1000 && geo_side_max >= 100   ) { digits = 1; }
+	else if ( geo_side_max < 100  && geo_side_max >= 10    ) { digits = 2; }
+	else if ( geo_side_max < 10   && geo_side_max >= 1     ) { digits = 3; }
+	else if ( geo_side_max < 1    && geo_side_max >= 0.1   ) { digits = 4; }
+	else if ( geo_side_max < 0.1  && geo_side_max >= 0.01  ) { digits = 5; }
+	else if ( geo_side_max < 0.01 && geo_side_max >= 0.001 ) { digits = 6; }
+	
+	return digits;
+};
+var geobbPlusMargin = function (geoBounds,marginFactor){
+	// geobounds = d3.geo.bounds(feature); Array such as [[N,S],[E,W]];
+	// range marginFactor : [0-0.2] (recommanded)
+	marginFactor = marginFactor || 0.05;
+	// borders' geo-coordinates (decimal degrees)
+	var WNES = {};
+	WNES.W = geoBounds[0][0]; // Note: D3js is WSEN based.
+	WNES.N = geoBounds[1][1];
+	WNES.E = geoBounds[1][0];
+	WNES.S = geoBounds[0][1];
+	// frame's geo-dimensions (decimal degrees)
+	WNES.geo_width = (WNES.E - WNES.W); 
+	WNES.geo_height= (WNES.N - WNES.S); 
+	// center geo-coordinates
+	WNES.lat_center = (WNES.S + WNES.N)/2; 
+	WNES.lon_center = (WNES.W + WNES.E)/2;
+	// WNES.source= function(){ return WNES.area > 0.015? "large":"small" }();
+	// add a 5% padding on all WNES sides
+	var WNESplus = {};
+	WNESplus.W = WNES.W - WNES.geo_width  * marginFactor; 
+	WNESplus.N = WNES.N + WNES.geo_height * marginFactor;
+	WNESplus.E = WNES.E + WNES.geo_width  * marginFactor;  
+	WNESplus.S = WNES.S - WNES.geo_height * marginFactor;
+	/* frame+paddings' (decimal degrees)
+ var WNESplus.geo_width = (WNESplus.E - WNESplus.W),
+	WNESplus.geo_height= (WNESplus.N - WNESplus.S) */
+	
+	// Precision level
+	var digits = geoRoundingDigits(WNESplus.W,WNESplus.N,WNESplus.E,WNESplus.S);
+	
+	return { W: WNESplus.W.toFixed(digits), N: WNESplus.N.toFixed(digits), E: WNESplus.E.toFixed(digits), S: WNESplus.S.toFixed(digits) };
+};
+var selectGisSource = function (geometry){
+	var bb = d3.geo.bounds(geometry),
+			WNESarea = d3.geo.area(geometry);
+	// Area north of 60⁰ to stay on etopo:
+	return WNESarea>0.015 || bb[1][1]>60||bb[0][1]<-60 ?"etopo": (WNESarea<=0.015&&WNESarea>0.0015)? "srtm250": "srtm90";
+};
+/* XML Bounding Box ********************************************** */
 var getBBoxPxViaElementAttr = function (selector){
-	// var bb = getBBox(selector);
-	var bb = d3.selectAll(selector).attr("bounds").split(",");
+	var bb = d3.selectAll(selector).attr("bounds").split(",");  // <========= broket since bounds={ object } 
 	bb = [[bb[0],bb[1]],[bb[2],bb[3]]];
 	return bb;
 };
@@ -67,6 +127,7 @@ var bbPxToAugmentedXmlBBox = function(bb,marginPx,condition) {
 		return bbPxToXmlBBoxPath(bb);
 	}
 };
+
 
 /* Elevations helpers ******************************************** */
 var getElevationsDomain = function(elevations_json){
@@ -545,6 +606,8 @@ var drawL1 = function(){
 //        .attr("style", function(d){ return d.properties.L0 === iso_a2? STYLES.focus : STYLES.land; } ) // filter done in data
 		.attr("bounds", function(d){ var bb = path.bounds(d), o = {'left':bb[0][0],'top':bb[0][1],'right':bb[1][0],'bottom':bb[1][1]}; return JSON.stringify(o);} )
 		.attr("area", function(d){ return path.area(d);} )
+		.attr("geoBounds", function(d){ return JSON.stringify(geobbAsWNESObj(d)); } )
+		.attr("geoArea",   function(d){ return JSON.stringify(d3.geo.area(d)); } )
         //.style("fill", function(d, i) { return color(d.color = d3.max(neighbors[i], function(n) { return subunits[n].color; }) + 1 | 0); })  // coloring: fill
         .attr("d", path )
 		// .on("mouseover", )
@@ -896,8 +959,8 @@ d3.select(selector).html("").append("button")
 		console.log('2');
 		var e = document.createElement('script');
 		if (window.location.protocol === 'https:') { 
-			e.setAttribute('src', '../js/svg-crowbar.js'); } 
-		else { e.setAttribute('src', '../js/svg-crowbar.js'); }	
+			e.setAttribute('src', '../js/svg-crowbar-2.js'); } 
+		else { e.setAttribute('src', '../js/svg-crowbar-2.js'); }	
 		e.setAttribute('class', 'svg-crowbar'); 
 		document.body.appendChild(e); })
 	.text(" Download"); /* -- Works on Chrome. Feedback welcome for others web browsers.*/
@@ -930,3 +993,27 @@ var wikis = {"aa":"Qafár af (Afar)","ab":"Аҧсшәа (Abkhazian)","ace":"Ac
 
 /* ****************************************************** */
 /* REPROJECTION TOOLS MODULE **************************** */
+
+
+
+/* ****************************************************** */
+/* TOWARD NPM MODULE ? ********************************** */
+var wikiatlasCommandPrinter = function(ISO2,NAME,WIDTH,WEST,NORTH,EAST,SOUTH,AREA_SIZE,SOURCE,SLICES,OPACITY,BLUR){
+	var WNES = {
+		iso2: ISO2 || "ID",
+		name: NAME || "India",
+		W: WEST || 67.0,
+		N: NORTH|| 37.5,
+		E: EAST || 99.0,
+		S: SOUTH||  5.0,
+		width: WIDTH || 1280,
+		slices: SLICES || 6,
+		area: AREA_SIZE || 1,
+		source: SOURCE || "etopo",
+		opacity: OPACITY || 1,
+		blur: BLUR || 0
+	};
+	var str = 'make -f master.makefile ISO2='+ WNES.iso2 /*+' SOV3='+ WNES.iso3 */+' NAME='+ WNES.name.replace(/ /gi,"_") +' WEST='+ WNES.W.toFixed(digits) +' NORTH='+ WNES.N.toFixed(digits)+' EAST='+ WNES.E.toFixed(digits) +' SOUTH='+ WNES.S.toFixed(digits) +' AREA_SIZE='+WNES.area.toFixed(6)+' SOURCE='+WNES.source;
+console.log(str);
+	return str;
+}
