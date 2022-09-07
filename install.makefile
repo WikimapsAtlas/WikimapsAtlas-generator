@@ -14,6 +14,9 @@ low_level:			#for more advanced coding
 	sudo apt-get -y install python
 	sudo apt-get -y install python3-gdal 			# install osgeo ?
 	python3 -m pip install scipy
+	sudo apt-get -y install qgis 
+	sudo apt-get -y python-matplotlib
+	sudo apt-get -y python-scipy
 
 utilities:			# a task with no dependency
-	sudo apt-get install -y git curl unzip unrar gdal-bin imagemagick
+	sudo apt-get install -y git make curl unzip unrar gdal-bin imagemagick
