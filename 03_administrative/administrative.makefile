@@ -113,7 +113,7 @@ crop: clean
 	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) \
 		./crop_L0.tmp.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_0_countries.shp
 	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) \
-		./crop_L1.tmp.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_1_states_provinces_shp.shp
+		./crop_L1.tmp.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_1_states_provinces.shp
 	ogr2ogr -clipsrc $(WEST) $(NORTH) $(EAST) $(SOUTH) \
 		./crop_disputed.tmp.shp ../data/natural_earth_vector/10m_cultural/ne_10m_admin_0_disputed_areas.shp
 	ogr2ogr -spat $(WEST) $(NORTH) $(EAST) $(SOUTH) \
