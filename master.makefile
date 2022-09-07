@@ -1,5 +1,6 @@
 #---- RUN
 # make -f master.makefile NAME=India ISO2=IN WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 PLACES=15 SLICE=6
+# make -f master.makefile administrative NAME=India ISO2=IN WEST=67.0 NORTH=37.5  EAST=99.0 SOUTH=05.0 PLACES=15 SLICE=6
 
 #---- DEFAULT VALUES (customizable):
 # Geo data
@@ -30,6 +31,8 @@ hillshade:
 	$(MAKE) -C 02_hillshade 		-f hillshade.makefile			#works
 administrative:
 	$(MAKE) -C 03_administrative 	-f administrative.makefile		#works
+admgadm:
+	$(MAKE) -C 03_administrative 	-f adm-gadm.makefile		    #works
 water:
 	$(MAKE) -C 04_water 			-f water.makefile 				#works
 grouping:
