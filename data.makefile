@@ -18,8 +18,9 @@ unzip_core: NE ETOPO1
 	unzip -n ./data/natural_earth_vector/natural_earth_vector.zip  -d ./data/natural_earth_vector/
 	unzip -n ./data/noaa/ETOPO1_Ice_g_geotiff.zip '*.tif'  -d ./data/noaa/
 
-unzip_precise: SRTM_v41_250 SRTM_v41_90 GADM3
+unzip_precise: SRTM_v41_250 SRTM_v41_90 GADM3 GADM4
 	unzip -n ./data/gadm/gadm3.zip -d ./data/gadm/
+	unzip -n ./data/gadm/gadm_4.1-levels.zip -d ./data/gadm/
 	unrar e -o- './data/cgiar-csi_250/*.rar' '*.*' ./data/cgiar-csi_250/
 	unzip -n './data/cgiar-csi_90/*.zip' '*.tif' -d ./data/cgiar-csi_90/
 
@@ -39,6 +40,15 @@ GADM3:
 	curl \
 		-L -C - 'https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_shp.zip' \
 		-o ./data/gadm/gadm3.zip
+	#* Downloaded 100% ---------------------------------------------------#
+
+
+# ADMINISTRATIVE from GADM.org ------------------------------------------ #
+GADM4:
+	mkdir -p ./data/gadm/
+	curl \
+		-L -C - 'https://geodata.ucdavis.edu/gadm/gadm4.1/gadm_410-levels.zip' \
+		-o ./data/gadm/gadm_4.1-levels.zip
 	#* Downloaded 100% ---------------------------------------------------#
 
 # TOPOGRAPHIC 1km from NOAA ----------------------------------------------#
