@@ -15,9 +15,9 @@ bash ./script/world_atlas_generator.bash ./script/world_atlas_commands.txt
 
 | Topographic-Administrative  | Administrative |
 | ------------- | ------------- |
-| <img src="http://i.stack.imgur.com/mPZUd.png" width="300" float="center"> | <img src="http://i.stack.imgur.com/kaJH3.png" width="300" float="center"> |
+| <img src="doc/WikimapsAtlas-Admin_topographic_relief.png" width="300" float="center"> | <img src="doc/WikimapsAtlas-Admin_relief.png" width="300" float="center"> |
 | Topographic  | Administrative localisator |
-| <img src="http://i.stack.imgur.com/1Q3p0.jpg" width="300" float="center"> | <img src="http://i.stack.imgur.com/Vc0qK.png" width="300" float="center"> |
+| <img src="doc/WikimapsAtlas-Topographic.png" width="300" float="center"> | <img src="doc/WikimapsAtlas-Localisator.png" width="300" float="center"> |
 
 
 Constitutives components (raster, topojson) and derivated variations (jpg, png, svg) are gathered into `/output/{Country_name}/`, as for India it represent about 70 files.
