@@ -31,7 +31,7 @@ CPU :
 
 Disk space :
 * core *data* : 3GB
-* precise *datapus*: +20GB
+* precise *dataplus*: +20GB
 
 Environment :
 * [`nodejs`](https://nodejs.org/en/download/package-manager/) v6.8.2 (LTS Boron) & `npm`
